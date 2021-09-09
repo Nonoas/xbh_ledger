@@ -1,0 +1,29 @@
+// 顶级构建文件，您可以在其中添加所有子项目模块通用的配置选项。
+buildscript {
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.1.3"
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0' // add plugin
+
+        // 注意：不要将您的应用程序依赖项放在这里；它们属于单个模块 build.gradle 文件
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

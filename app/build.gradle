@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'org.greenrobot.greendao' // apply plugin
+    id 'org.greenrobot.greendao'
 
 }
 

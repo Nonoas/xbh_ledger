@@ -5,11 +5,11 @@ import indi.nonoas.xbh.R;
 
 import android.os.Bundle;
 
-public class AccTableActivity extends AppCompatActivity {
+public class AccListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_acc_table);
+        setContentView(R.layout.activity_acc_list);
     }
 }

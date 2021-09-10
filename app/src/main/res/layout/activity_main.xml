@@ -6,10 +6,34 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <FrameLayout
+        android:id="@+id/frg_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/welcome"
-        android:gravity="center"/>
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tab_acc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="账户列表" />
+
+        <TextView
+            android:id="@+id/tab_my"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="我的" />
+    </LinearLayout>
 
 </LinearLayout>

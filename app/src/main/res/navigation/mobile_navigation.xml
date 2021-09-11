@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_stats">
+
+    <fragment
+        android:id="@+id/nav_stats"
+        android:name="indi.nonoas.xbh.fragment.ui.slideshow.SettingFragment"
+        android:label="@string/menu_stats"
+        tools:layout="@layout/fragment_stats" />
+
+    <fragment
+        android:id="@+id/nav_setting"
+        android:name="indi.nonoas.xbh.fragment.ui.home.StatsFragment"
+        android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_setting" />
+
+</navigation>

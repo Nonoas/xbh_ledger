@@ -23,7 +23,11 @@ allprojects {
         mavenCentral()
     }
 }
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+

@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AccListFragment">
+    android:orientation="vertical"
+    tools:context=".fragment.ui.acclist.AccListFragment">
+
+    <ListView
+        android:id="@+id/lv_acc"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:nestedScrollingEnabled="true" />
 
     <TextView
+        android:id="@+id/tv_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/white"
-        android:text="账户列表" />
+        android:text="@string/menu_acc" />
 
-</FrameLayout>
+</LinearLayout>

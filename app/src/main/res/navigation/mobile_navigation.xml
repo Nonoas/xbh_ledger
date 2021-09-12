@@ -3,18 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_stats">
+    app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_stats"
-        android:name="indi.nonoas.xbh.fragment.ui.slideshow.SettingFragment"
-        android:label="@string/menu_stats"
-        tools:layout="@layout/fragment_stats" />
+        android:id="@+id/nav_home"
+        android:name="indi.nonoas.xbh.fragment.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_setting"
-        android:name="indi.nonoas.xbh.fragment.ui.home.StatsFragment"
+        android:name="indi.nonoas.xbh.fragment.ui.setting.SettingFragment"
         android:label="@string/menu_setting"
+        tools:layout="@layout/fragment_stats" />
+
+    <fragment
+        android:id="@+id/nav_acc"
+        android:name="indi.nonoas.xbh.fragment.ui.acclist.AccListFragment"
+        android:label="fragment_acc_list"
+        tools:layout="@layout/fragment_acc_list" />
+
+    <fragment
+        android:id="@+id/nav_stats"
+        android:name="indi.nonoas.xbh.fragment.ui.stats.StatsFragment"
+        android:label="@string/menu_stats"
         tools:layout="@layout/fragment_setting" />
+
 
 </navigation>

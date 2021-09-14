@@ -41,6 +41,7 @@ public class StatsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         statsViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
 
         CollapsingToolbarLayout collapsingToolbarLayout = requireActivity().findViewById(R.id.collapsing_bar);
@@ -94,11 +95,10 @@ public class StatsFragment extends Fragment {
         data.setValueTextColors(cols);
 
         data.setBarWidth(0.5f);
+        data.groupBars(0, 1f, 0);
 
         barChart.setData(data);
 
-        data.groupBars(0, 1f, 0);
-        barChart.groupBars(0, 1f, 0);
 
         barChart.invalidate();
 

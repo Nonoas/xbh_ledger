@@ -1,5 +1,6 @@
 package indi.nonoas.xbh;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -31,8 +32,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //代码设置状态栏颜色
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -59,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         // 抽屉导航
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navView = binding.navView;
-        navView.setItemIconTintList(null);
 
         NavController navController = Navigation.findNavController(this, R.id.fragment_content);
 

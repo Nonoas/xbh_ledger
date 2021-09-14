@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -62,7 +61,6 @@ public class AccListFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         CollapsingToolbarLayout ctBar = requireActivity().findViewById(R.id.collapsing_bar);
-        ctBar.setTitle(getString(R.string.menu_acc));
         ctBar.setExpandedTitleTextAppearance(R.style.actionbar_text_expand);
         ctBar.setCollapsedTitleTextAppearance(R.style.actionbar_text_collapse);
         binding = FragmentAccListBinding.inflate(inflater, container, false);
@@ -88,14 +86,26 @@ public class AccListFragment extends Fragment {
 
             @Override
             public View getView(int i, View view, ViewGroup viewGroup) {
-                view = new TextView(requireActivity());
-                ((TextView) view).setText(String.valueOf(i));
-                view.setPadding(10, 10, 10, 10);
+                ViewHolder holder;
+                if (null == view) {
+                    view = getLayoutInflater().inflate(R.layout.item_acc, null, false);
+                    holder = new ViewHolder();
+                    holder.textView = view.findViewById(R.id.textView2);
+                    view.setTag(holder);
+                } else {
+                    //复用holder
+                    holder = (ViewHolder) view.getTag();
+                }
+                holder.textView.setText(String.valueOf(i));
                 return view;
             }
         });
 
 
         return binding.getRoot();
+    }
+
+    static class ViewHolder {
+        TextView textView;
     }
 }

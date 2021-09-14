@@ -34,7 +34,6 @@ public class StatsFragment extends Fragment {
     public static StatsFragment newInstance() {
         StatsFragment fragment = new StatsFragment();
         Bundle args = new Bundle();
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,7 +44,6 @@ public class StatsFragment extends Fragment {
         statsViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
 
         CollapsingToolbarLayout collapsingToolbarLayout = requireActivity().findViewById(R.id.collapsing_bar);
-        collapsingToolbarLayout.setTitle(getString(R.string.menu_stats));
         collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.actionbar_text_expand);
         collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.actionbar_text_collapse);
 

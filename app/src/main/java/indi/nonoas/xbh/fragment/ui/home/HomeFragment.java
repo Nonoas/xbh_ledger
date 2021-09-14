@@ -4,13 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 
@@ -49,45 +49,35 @@ public class HomeFragment extends Fragment {
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
         ctBar = requireActivity().findViewById(R.id.collapsing_bar);
-        ctBar.setTitle(getString(R.string.menu_home));
         ctBar.setExpandedTitleTextAppearance(R.style.actionbar_text_expand);
         ctBar.setCollapsedTitleTextAppearance(R.style.actionbar_text_collapse);
-
+        ctBar.setTitle(getString(R.string.menu_stats));
         binding = FragmentHomeBinding.inflate(inflater, container, false);
 
-        ViewPager2 vp2 = binding.vp2Home;
 
-        vp2.setAdapter(new FragmentStateAdapter(this) {
-            @NonNull
+        ViewPager vp = binding.vpHome;
+
+        vp.setAdapter(new MyFragmentStatePagerAdapter(getChildFragmentManager()));
+        vp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public Fragment createFragment(int position) {
-                if (position == 0) {
-                    ctBar.setTitle(getString(R.string.menu_stats));
-                    return StatsFragment.newInstance();
-                }
-                ctBar.setTitle(getString(R.string.menu_acc));
-                return AccListFragment.newInstance(null, null);
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
-            @Override
-            public int getItemCount() {
-                return 2;
-            }
-        });
-
-        vp2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                if (position == 0) {
-                    ctBar.setTitle(getString(R.string.menu_stats));
+                if (1 == position) {
+                    ctBar.setTitle(getString(R.string.menu_acc));
                     return;
                 }
-                ctBar.setTitle(getString(R.string.menu_acc));
+                ctBar.setTitle(getString(R.string.menu_stats));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
-
-
         return binding.getRoot();
     }
 
@@ -96,4 +86,37 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+
+    /**
+     * ViewPager适配器
+     */
+    private static class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
+
+        StatsFragment statsFragment = StatsFragment.newInstance();
+        AccListFragment accListFragment = AccListFragment.newInstance(null, null);
+
+        public MyFragmentStatePagerAdapter(FragmentManager fm) {
+            super(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        }
+
+        public MyFragmentStatePagerAdapter(@NonNull FragmentManager fm, int behavior) {
+            super(fm, behavior);
+        }
+
+        @NonNull
+        @Override
+        public Fragment getItem(int position) {
+            if (0 == position)
+                return statsFragment;
+            else
+                return accListFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
 }

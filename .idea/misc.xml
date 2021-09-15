@@ -10,6 +10,7 @@
       <map>
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable-v24/ic_launcher_background.xml" value="0.15208333333333332" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.176" />
+        <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable/bg_corner.xml" value="0.23125" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable/ic___.xml" value="0.15208333333333332" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable/ic_add.xml" value="0.23948717948717949" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/drawable/ic_launcher_background.xml" value="0.24322916666666666" />
@@ -42,7 +43,7 @@
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/layout/nav_header_main.xml" value="0.22708333333333333" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/activity_main2_drawer.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/activity_main_drawer.xml" value="0.24114583333333334" />
-        <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/drawer.xml" value="0.24114583333333334" />
+        <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/drawer.xml" value="0.6" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/main.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/menu/main2.xml" value="0.12135416666666667" />
         <entry key="..\:/AndroidStudioProject/XBH_Ledger/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.152" />

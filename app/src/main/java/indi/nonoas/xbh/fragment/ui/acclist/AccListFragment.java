@@ -1,10 +1,12 @@
 package indi.nonoas.xbh.fragment.ui.acclist;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -12,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+
+import java.util.List;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FragmentAccListBinding;
@@ -68,41 +72,51 @@ public class AccListFragment extends Fragment {
         ListView lvAcc = binding.lvAcc;
         lvAcc.setEmptyView(binding.tvEmpty);
 
-        lvAcc.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return 55;
-            }
-
-            @Override
-            public Object getItem(int i) {
-                return i;
-            }
-
-            @Override
-            public long getItemId(int i) {
-                return i;
-            }
-
-            @Override
-            public View getView(int i, View view, ViewGroup viewGroup) {
-                ViewHolder holder;
-                if (null == view) {
-                    view = getLayoutInflater().inflate(R.layout.item_acc, null, false);
-                    holder = new ViewHolder();
-                    holder.textView = view.findViewById(R.id.textView2);
-                    view.setTag(holder);
-                } else {
-                    //复用holder
-                    holder = (ViewHolder) view.getTag();
-                }
-                holder.textView.setText(String.valueOf(i));
-                return view;
-            }
-        });
-
+        lvAcc.setAdapter(new MyAdapter());
 
         return binding.getRoot();
+    }
+
+
+    /**
+     * listView 适配器
+     * // todo 可改用 RecycleView
+     */
+    class MyAdapter extends BaseAdapter {
+
+        private List<String> accList;
+        private Context context;
+
+        @Override
+        public int getCount() {
+            return 20;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return i;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            ViewHolder holder;
+            if (null == view) {
+                view = getLayoutInflater().inflate(R.layout.item_acc, null, false);
+                holder = new ViewHolder();
+                holder.textView = view.findViewById(R.id.textView2);
+                view.setTag(holder);
+            } else {
+                //复用holder
+                holder = (ViewHolder) view.getTag();
+            }
+            holder.textView.setText(String.valueOf(i));
+            return view;
+        }
     }
 
     static class ViewHolder {

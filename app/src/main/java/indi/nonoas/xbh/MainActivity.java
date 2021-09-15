@@ -23,10 +23,12 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfig;
     private ActivityMainBinding binding;
 
+    Toast toast;
+
     /**
      * fragment的id数组
      */
-    private final int[] frgIds = {R.id.nav_home, R.id.nav_stats, R.id.nav_setting, R.id.nav_acc};
+    private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,15 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        Toast toast = Toast.makeText(MainActivity.this, null, Toast.LENGTH_SHORT);
         binding.appBarMain.fab.setOnClickListener(view -> {
+            if (toast != null) {
+                toast.cancel();
+            }
             if (snackBarFlag > 0) {
-                toast.setText("再点" + snackBarFlag + "次可触发事件");
+                toast = Toast.makeText(MainActivity.this, "再点" + snackBarFlag + "次可触发事件", Toast.LENGTH_SHORT);
                 snackBarFlag--;
             } else {
-                toast.setText("行了！别点了，还没开发好呢");
+                toast = Toast.makeText(MainActivity.this, "行啦行啦！别点了！还没开发呢！", Toast.LENGTH_SHORT);
             }
             toast.show();
         });

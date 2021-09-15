@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/common_padding"
     tools:context=".fragment.ui.stats.StatsFragment">
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/bar_chart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="300dp"
+        android:background="@drawable/bg_corner"
+        android:nestedScrollingEnabled="true"
+        android:padding="10dp">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/bar_chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 
-</FrameLayout>
+</LinearLayout>

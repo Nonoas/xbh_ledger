@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -96,8 +95,6 @@ public class StatsFragment extends Fragment {
         data.groupBars(0, 1f, 0);
 
         barChart.setData(data);
-
-
         barChart.invalidate();
 
         return binding.getRoot();

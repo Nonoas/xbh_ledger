@@ -58,6 +58,7 @@
         android:layout_marginBottom="@dimen/fab_margin"
         android:background="@color/purple_700"
         android:foregroundTint="@android:color/white"
+        app:layout_behavior=".behavior.ScaleDownShowBehavior"
         app:srcCompat="@drawable/ic_add"
         tools:ignore="ContentDescription" />
 

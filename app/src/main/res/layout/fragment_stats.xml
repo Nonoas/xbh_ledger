@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/common_padding"
+    android:nestedScrollingEnabled="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
     tools:context=".fragment.ui.stats.StatsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="@drawable/bg_corner"
-        android:nestedScrollingEnabled="true"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/bar_chart"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="900dp"
+            android:layout_margin="@dimen/common_padding"
+            android:background="@drawable/bg_corner"
+            android:nestedScrollingEnabled="true"
+            android:padding="10dp">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/bar_chart"
+                android:layout_width="match_parent"
+                android:layout_height="900dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
     </LinearLayout>
 
 
-</LinearLayout>
+</ScrollView>

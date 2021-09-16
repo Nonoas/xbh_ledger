@@ -2,6 +2,7 @@ package indi.nonoas.xbh;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 

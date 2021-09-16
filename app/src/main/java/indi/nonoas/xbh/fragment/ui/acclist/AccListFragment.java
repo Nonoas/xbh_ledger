@@ -106,7 +106,7 @@ public class AccListFragment extends Fragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
             ViewHolder holder;
             if (null == view) {
-                view = getLayoutInflater().inflate(R.layout.item_acc, null, false);
+                view = LayoutInflater.from(getContext()).inflate(R.layout.item_acc, null);
                 holder = new ViewHolder();
                 holder.textView = view.findViewById(R.id.textView2);
                 view.setTag(holder);

@@ -9,6 +9,7 @@
         android:id="@+id/acc_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="@dimen/common_padding"
         android:layout_marginStart="@dimen/common_padding"
         android:layout_marginTop="@dimen/common_padding"
         android:layout_marginEnd="@dimen/common_padding"

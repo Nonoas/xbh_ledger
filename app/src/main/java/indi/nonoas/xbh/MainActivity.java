@@ -1,8 +1,7 @@
 package indi.nonoas.xbh;
 
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -15,6 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
+import indi.nonoas.xbh.activity.SignUpActivity;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,7 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //代码设置状态栏颜色
+//        判断是否登录
+        if (!isLogin()) {
+            Intent intent = new Intent(this, SignUpActivity.class);
+            startActivity(intent);
+        }
+
         //透明状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //透明导航栏
@@ -60,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private boolean isLogin() {
+        return true;
     }
 
     @Override

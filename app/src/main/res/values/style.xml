@@ -2,7 +2,7 @@
 <resources>
 
     <style name="actionbar_text_expand">
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">25sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

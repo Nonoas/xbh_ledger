@@ -9,9 +9,9 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 public class AnimatorUtil {
 
-    private static LinearOutSlowInInterpolator FAST_OUT_SLOW_IN_INTERPOLATOR = new LinearOutSlowInInterpolator();
+    private static final LinearOutSlowInInterpolator FAST_OUT_SLOW_IN_INTERPOLATOR = new LinearOutSlowInInterpolator();
 
-    private static AccelerateInterpolator LINER_INTERPOLATOR = new AccelerateInterpolator();
+    private static final AccelerateInterpolator LINER_INTERPOLATOR = new AccelerateInterpolator();
 
 
     // 显示view

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListener;
@@ -20,23 +21,26 @@ public class ScaleDownShowBehavior extends FloatingActionButton.Behavior {
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout,
-                                       FloatingActionButton child, View directTargetChild,
-                                       View target, int nestedScrollAxes) {
-        if (nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL){
+    public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout,
+                                       @NonNull FloatingActionButton child,
+                                       @NonNull View directTargetChild,
+                                       @NonNull View target, int axes, int type) {
+
+        if (axes == ViewCompat.SCROLL_AXIS_VERTICAL) {
             return true;
         }
         return super.onStartNestedScroll(coordinatorLayout, child, directTargetChild,
-                target, nestedScrollAxes);
+                target, axes, ViewCompat.SCROLL_AXIS_VERTICAL);
     }
 
     private boolean isAnimateIng = false;   // 是否正在动画
     private boolean isShow = true;  // 是否已经显示
 
-    public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child,
-                               View target, int dxConsumed, int dyConsumed,
-                               int dxUnconsumed, int dyUnconsumed) {
-        if ((dyConsumed > 0 || dyUnconsumed > 0) && !isAnimateIng && isShow) {// 手指上滑，隐藏FAB
+    @Override
+    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull FloatingActionButton child,
+                               @NonNull View target, int dxConsumed, int dyConsumed,
+                               int dxUnconsumed, int dyUnconsumed, int type, @NonNull int[] consumed) {
+        if ((dyConsumed > 0 || dyUnconsumed > 0) && !isAnimateIng && isShow) { // 手指上滑，隐藏FAB
             AnimatorUtil.scaleHide(child, new StateListener() {
                 @Override
                 public void onAnimationStart(View view) {

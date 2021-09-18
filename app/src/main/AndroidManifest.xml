@@ -20,7 +20,8 @@
         </activity>
         <activity
             android:name=".activity.SignUpActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.XBH_Ledger.NoActionBar"/>
     </application>
 
 </manifest>

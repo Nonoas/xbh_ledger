@@ -70,8 +70,6 @@ public class AccListFragment extends Fragment {
         binding = FragmentAccListBinding.inflate(inflater, container, false);
 
         ListView lvAcc = binding.lvAcc;
-        lvAcc.setEmptyView(binding.tvEmpty);
-
         lvAcc.setAdapter(new MyAdapter());
 
         return binding.getRoot();

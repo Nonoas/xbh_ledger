@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">#2A4562</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#19A2E1</item>
+        <item name="colorSecondary">#1E8BBD</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="android:windowTranslucentStatus">true</item>

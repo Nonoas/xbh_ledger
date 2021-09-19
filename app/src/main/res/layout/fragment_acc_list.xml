@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<indi.nonoas.xbh.view.FlexibleScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:nestedScrollingEnabled="true"
-    android:scrollbars="none"
-    android:overScrollMode="never"
     android:orientation="vertical"
+    android:overScrollMode="never"
+    android:scrollbars="none"
     tools:context=".fragment.ui.acclist.AccListFragment">
 
     <LinearLayout
@@ -35,4 +35,4 @@
             android:text="@string/menu_acc" />
     </LinearLayout>
 
-</ScrollView>
+</indi.nonoas.xbh.view.FlexibleScrollView>

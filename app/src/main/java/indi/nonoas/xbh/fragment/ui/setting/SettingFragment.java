@@ -24,11 +24,6 @@ public class SettingFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         settingViewModel = new ViewModelProvider(this).get(SettingViewModel.class);
 
-        CollapsingToolbarLayout collapsingToolbarLayout = requireActivity().findViewById(R.id.collapsing_bar);
-        collapsingToolbarLayout.setTitle(getString(R.string.menu_setting));
-        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.actionbar_text_expand);
-        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.actionbar_text_collapse);
-
         binding = FragmentSettingBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }

@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher_round"/>
+        android:src="@mipmap/ic_launcher_round" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +24,7 @@
             android:text="用户名称" />
 
         <EditText
+            android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

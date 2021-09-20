@@ -1,36 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<indi.nonoas.xbh.view.FlexibleScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:nestedScrollingEnabled="true"
-    android:overScrollMode="always"
-    android:scrollbars="none"
     tools:context=".fragment.ui.stats.StatsFragment">
 
-    <LinearLayout
+    <indi.nonoas.xbh.view.FlexibleScrollView
+        android:id="@+id/fsv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:nestedScrollingEnabled="true"
+        android:overScrollMode="always"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="900dp"
-            android:layout_margin="@dimen/common_padding"
-            android:background="@drawable/bg_corner"
-            android:nestedScrollingEnabled="true"
-            android:padding="10dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/bar_chart"
+            <ImageView
+                android:id="@+id/stats_header_img"
                 android:layout_width="match_parent"
-                android:layout_height="900dp" />
+                android:layout_height="225dp"
+                android:layout_marginBottom="@dimen/common_padding"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img"
+                tools:ignore="ContentDescription" />
+
+            <LinearLayout
+                android:id="@+id/bar_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/common_padding"
+                android:layout_marginTop="@dimen/common_padding"
+                android:layout_marginRight="@dimen/common_padding"
+                android:background="@drawable/bg_corner"
+                android:orientation="vertical"
+                android:padding="@dimen/common_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="柱状图" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/bar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/common_padding"
+                android:layout_marginTop="@dimen/common_padding"
+                android:layout_marginRight="@dimen/common_padding"
+                android:background="@drawable/bg_corner"
+                android:nestedScrollingEnabled="true"
+                android:orientation="vertical"
+                android:padding="@dimen/common_padding">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="饼状图" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
         </LinearLayout>
+    </indi.nonoas.xbh.view.FlexibleScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
-    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:background="@color/purple_700"
+        android:foregroundTint="@android:color/white"
+        app:layout_behavior=".behavior.ScaleDownShowBehavior"
+        app:srcCompat="@drawable/ic_add"
+        tools:ignore="ContentDescription" />
 
 
-</indi.nonoas.xbh.view.FlexibleScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,11 +1,14 @@
 package indi.nonoas.xbh;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,85 +17,112 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.List;
+
 import indi.nonoas.xbh.activity.SignUpActivity;
+import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
+import indi.nonoas.xbh.greendao.DaoSession;
+import indi.nonoas.xbh.greendao.UserDao;
+import indi.nonoas.xbh.pojo.User;
+import indi.nonoas.xbh.utils.GreenDaoUtil;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int snackBarFlag = 10;
+	private int snackBarFlag = 10;
+	private int statusBarHeight = -1;
 
-    private AppBarConfiguration appBarConfig;
-    private ActivityMainBinding binding;
+	private AppBarConfiguration appBarConfig;
+	private ActivityMainBinding binding;
 
-    Toast toast;
+	/**
+	 * fragment的id数组
+	 */
+	private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
 
-    /**
-     * fragment的id数组
-     */
-    private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+		// 判断是否登录
+		if (!isLogin()) {
+			Intent intent = new Intent(this, SignUpActivity.class);
+			startActivity(intent);
+		}
 
-//        判断是否登录
-        if (!isLogin()) {
-            Intent intent = new Intent(this, SignUpActivity.class);
-            startActivity(intent);
-        }
+		Window window = getWindow();
+		AppStore.setCurrWindow(window);
 
-        //透明状态栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //透明导航栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+		WindowInsetsControllerCompat compat = new WindowInsetsControllerCompat(window, window.getDecorView());
+		AppStore.setWinInsetCtrlCompat(compat);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+		window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+		window.setStatusBarColor(Color.TRANSPARENT);
 
-        setSupportActionBar(binding.appBarMain.toolbar);
+		window.requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
-        binding.appBarMain.fab.setOnClickListener(view -> {
-            if (toast != null) {
-                toast.cancel();
-            }
-            if (snackBarFlag > 0) {
-                toast = Toast.makeText(MainActivity.this, "再点" + snackBarFlag + "次可触发事件", Toast.LENGTH_SHORT);
-                snackBarFlag--;
-            } else {
-                toast = Toast.makeText(MainActivity.this, "行啦行啦！别点了！还没开发呢！", Toast.LENGTH_SHORT);
-            }
-            toast.show();
-        });
+		binding = ActivityMainBinding.inflate(getLayoutInflater());
+		setContentView(binding.getRoot());
+
+		setSupportActionBar(binding.appBarMain.toolbar);
+
+		//获取status_bar_height资源的ID
+		int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+		if (resourceId > 0) {
+			//根据资源ID获取响应的尺寸值
+			statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+		}
+		binding.appBarMain.appbar.setPadding(0, statusBarHeight, 0, 0);
 
 
-    }
+	}
 
-    private boolean isLogin() {
-        return true;
-    }
+	/**
+	 * 判断是否已经登录
+	 *
+	 * @return 已登录: true
+	 */
+	private boolean isLogin() {
+		DaoSession session = GreenDaoUtil.getDaoSession(this);
+		UserDao userDao = session.getUserDao();
+		List<User> list = userDao.queryBuilder().list();
+		if (list != null) {
+			AppStore.setUser(list.get(0));
+			return true;
+		}
+		return false;
+	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // 抽屉导航
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navView = binding.navView;
+	@Override
+	protected void onStart() {
+		super.onStart();
+		// 抽屉导航
+		DrawerLayout drawer = binding.drawerLayout;
+		NavigationView navView = binding.navView;
 
-        NavController navController = Navigation.findNavController(this, R.id.fragment_content);
+		TextView tfUser = navView.getHeaderView(0).findViewById(R.id.tf_user);
+		tfUser.setText(AppStore.getUser().getName());
 
-        appBarConfig = new AppBarConfiguration.Builder(frgIds)
-                .setOpenableLayout(drawer).build();
+		navView.setPadding(0, statusBarHeight, 0, 0);
 
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
-        NavigationUI.setupWithNavController(navView, navController);
+		NavController navController = Navigation.findNavController(this, R.id.fragment_content);
 
-    }
+		appBarConfig = new AppBarConfiguration
+				.Builder(frgIds)
+				.setOpenableLayout(drawer)
+				.build();
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.fragment_content);
-        return NavigationUI.navigateUp(navController, appBarConfig)
-                || super.onSupportNavigateUp();
-    }
+		NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
+		NavigationUI.setupWithNavController(navView, navController);
+
+	}
+
+	@Override
+	public boolean onSupportNavigateUp() {
+		NavController navController = Navigation.findNavController(this, R.id.fragment_content);
+		return NavigationUI.navigateUp(navController, appBarConfig)
+				|| super.onSupportNavigateUp();
+	}
 
 }

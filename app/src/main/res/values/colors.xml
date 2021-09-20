@@ -8,4 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="windowBg">#E6E6E6</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- soft色组 -->
+    <color name="soft_green">#99CCCC</color>
+    <color name="soft_white">#FFFFFF</color>
+    <color name="soft_green1">#99CC99</color>
+    <color name="soft_green2">#CCFF99</color>
+    <color name="soft_red">#FF6666</color>
+
 </resources>

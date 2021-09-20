@@ -9,12 +9,10 @@
         android:id="@+id/acc_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/common_padding"
         android:layout_marginTop="@dimen/common_padding"
-        android:layout_marginEnd="@dimen/common_padding"
         android:background="@drawable/bg_corner"
         android:gravity="center"
-        android:padding="@dimen/common_padding">
+        android:padding="@dimen/item_padding">
 
         <ImageView
             android:id="@+id/imageView2"
@@ -23,14 +21,14 @@
             android:contentDescription="图标"
             android:paddingEnd="@dimen/common_padding"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher_round" />
+            android:src="@drawable/ic_zsyh" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/common_padding"
-            android:text="账户名称" />
+            android:text="招商银行" />
 
         <EditText
             android:layout_width="0dp"

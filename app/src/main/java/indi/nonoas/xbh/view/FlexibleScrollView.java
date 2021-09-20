@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.ScrollView;
 
+import androidx.core.widget.NestedScrollView;
+
 
 public class FlexibleScrollView extends ScrollView {
 
@@ -18,7 +20,7 @@ public class FlexibleScrollView extends ScrollView {
 	private static final float MOVE_FACTOR = 0.4f;
 
 	//松开手指后, 界面回到正常位置需要的动画时间
-	private static final int ANIM_TIME = 200;
+	private static final int ANIM_TIME = 100;
 
 	//ScrollView的子View， 也是ScrollView的唯一一个子View
 	private View contentView;

@@ -24,9 +24,10 @@ public class AccountDao extends AbstractDao<Account, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property AccName = new Property(1, String.class, "accName", false, "ACC_NAME");
         public final static Property Acc_type = new Property(2, int.class, "acc_type", false, "ACC_TYPE");
+        public final static Property InitBalance = new Property(3, String.class, "initBalance", false, "INIT_BALANCE");
     }
 
 
@@ -42,9 +43,10 @@ public class AccountDao extends AbstractDao<Account, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ACCOUNT\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ACC_NAME\" TEXT," + // 1: accName
-                "\"ACC_TYPE\" INTEGER NOT NULL );"); // 2: acc_type
+                "\"ACC_TYPE\" INTEGER NOT NULL ," + // 2: acc_type
+                "\"INIT_BALANCE\" TEXT);"); // 3: initBalance
     }
 
     /** Drops the underlying database table. */
@@ -56,47 +58,67 @@ public class AccountDao extends AbstractDao<Account, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, Account entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String accName = entity.getAccName();
         if (accName != null) {
             stmt.bindString(2, accName);
         }
         stmt.bindLong(3, entity.getAcc_type());
+ 
+        String initBalance = entity.getInitBalance();
+        if (initBalance != null) {
+            stmt.bindString(4, initBalance);
+        }
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, Account entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+ 
+        Long id = entity.getId();
+        if (id != null) {
+            stmt.bindLong(1, id);
+        }
  
         String accName = entity.getAccName();
         if (accName != null) {
             stmt.bindString(2, accName);
         }
         stmt.bindLong(3, entity.getAcc_type());
+ 
+        String initBalance = entity.getInitBalance();
+        if (initBalance != null) {
+            stmt.bindString(4, initBalance);
+        }
     }
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public Account readEntity(Cursor cursor, int offset) {
         Account entity = new Account( //
-            cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // accName
-            cursor.getInt(offset + 2) // acc_type
+            cursor.getInt(offset + 2), // acc_type
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // initBalance
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, Account entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setAccName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAcc_type(cursor.getInt(offset + 2));
+        entity.setInitBalance(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     @Override
@@ -116,7 +138,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
 
     @Override
     public boolean hasKey(Account entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.getId() != null;
     }
 
     @Override

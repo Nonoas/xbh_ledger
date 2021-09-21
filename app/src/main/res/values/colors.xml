@@ -7,7 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="windowBg">#E6E6E6</color>
+
+    <!-- 窗体背景色 -->
+    <color name="windowBg">#F1F1F1</color>
     <color name="transparent">#00000000</color>
 
     <!-- soft色组 -->

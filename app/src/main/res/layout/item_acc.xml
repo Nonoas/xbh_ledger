@@ -2,41 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/common_padding"
+    android:layout_marginTop="@dimen/common_padding"
+    android:background="@drawable/slct_list_item"
+    android:descendantFocusability="blocksDescendants"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:padding="@dimen/common_padding">
 
-    <LinearLayout
-        android:id="@+id/acc_item_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/common_padding"
-        android:background="@drawable/bg_corner"
-        android:gravity="center"
-        android:padding="@dimen/item_padding">
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:contentDescription="图标"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_zsyh" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="图标"
-            android:paddingEnd="@dimen/common_padding"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_zsyh" />
+    <TextView
+        android:id="@+id/tv_acc_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/common_padding"
+        android:text="招商银行" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/common_padding"
-            android:text="招商银行" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:editable="false"
-            android:hint="余额" />
-    </LinearLayout>
+    <EditText
+        android:id="@+id/et_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:editable="false"
+        android:hint="余额" />
 
 
 </LinearLayout>

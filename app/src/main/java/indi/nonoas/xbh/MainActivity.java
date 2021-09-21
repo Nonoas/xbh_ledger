@@ -29,7 +29,6 @@ import indi.nonoas.xbh.utils.GreenDaoUtil;
 
 public class MainActivity extends AppCompatActivity {
 
-	private int snackBarFlag = 10;
 	private int statusBarHeight = -1;
 
 	private AppBarConfiguration appBarConfig;
@@ -46,8 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
 		// 判断是否登录
 		if (!isLogin()) {
+			System.out.println("未登录");
 			Intent intent = new Intent(this, SignUpActivity.class);
 			startActivity(intent);
+			finish();
+			return;
 		}
 
 		Window window = getWindow();
@@ -87,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
 		DaoSession session = GreenDaoUtil.getDaoSession(this);
 		UserDao userDao = session.getUserDao();
 		List<User> list = userDao.queryBuilder().list();
-		if (list != null) {
-			AppStore.setUser(list.get(0));
-			return true;
+		if (list == null || list.isEmpty()) {
+			return false;
 		}
-		return false;
+		AppStore.setUser(list.get(0));
+		return true;
 	}
 
 	@Override
@@ -102,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
 		NavigationView navView = binding.navView;
 
 		TextView tfUser = navView.getHeaderView(0).findViewById(R.id.tf_user);
-		tfUser.setText(AppStore.getUser().getName());
+		User user = AppStore.getUser();
+		tfUser.setText(user != null ? user.getName() : "未登录");
 
 		navView.setPadding(0, statusBarHeight, 0, 0);
 

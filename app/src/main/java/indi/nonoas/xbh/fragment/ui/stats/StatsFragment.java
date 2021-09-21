@@ -1,6 +1,7 @@
 package indi.nonoas.xbh.fragment.ui.stats;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,20 +26,28 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.material.appbar.AppBarLayout;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.ColorTemplate;
-import indi.nonoas.xbh.databinding.FragmentStatsBinding;
+import indi.nonoas.xbh.databinding.FrgStatsBinding;
+import indi.nonoas.xbh.greendao.DaoSession;
+import indi.nonoas.xbh.pojo.AccBalance;
+import indi.nonoas.xbh.pojo.Account;
+import indi.nonoas.xbh.utils.GreenDaoUtil;
 import indi.nonoas.xbh.view.FlexibleScrollView;
+import indi.nonoas.xbh.view.chart.DefaultValueFormatter;
 
 
 public class StatsFragment extends Fragment {
 
 	private StatsViewModel statsViewModel;
-	private FragmentStatsBinding binding;
+	private FrgStatsBinding binding;
+	private final List<AccBalance> mBalanceList = new ArrayList<>();
 
 	private int snackBarFlag = 10;
 
@@ -58,7 +66,7 @@ public class StatsFragment extends Fragment {
 
 		statsViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
 
-		binding = FragmentStatsBinding.inflate(inflater, container, false);
+		binding = FrgStatsBinding.inflate(inflater, container, false);
 
 		FlexibleScrollView fsv = binding.fsv;
 		ImageView ivHeader = binding.statsHeaderImg;
@@ -103,7 +111,8 @@ public class StatsFragment extends Fragment {
 	 */
 	@SuppressLint("ResourceType")
 	private void genBarChart() {
-		BarChart barChart = binding.barChart;
+
+		BarChart barChart = binding.barChartContainer.barChart;
 
 		barChart.setDescription(null);
 
@@ -142,8 +151,23 @@ public class StatsFragment extends Fragment {
 	 */
 	private void genPieChart() {
 
+		DaoSession session = GreenDaoUtil.getDaoSession(getContext());
+		Database database = session.getDatabase();
+		Cursor cursor = database.rawQuery("select *,max(_id) from acc_balance group by acc_id", null);
+
+		AccBalance balance;
+		while (cursor.moveToNext()) {
+			balance = new AccBalance();
+			balance.setId(cursor.getLong(cursor.getColumnIndex("_id")));
+			balance.setAccId(cursor.getLong(cursor.getColumnIndex("ACC_ID")));
+			balance.setAccName(cursor.getString(cursor.getColumnIndex("ACC_NAME")));
+			balance.setBalance(cursor.getString(cursor.getColumnIndex("BALANCE")));
+			balance.setTimestamp(cursor.getLong(cursor.getColumnIndex("TIMESTAMP")));
+			mBalanceList.add(balance);
+		}
+
 		PieChart chart = binding.pieChart;
-		chart.setUsePercentValues(true);
+		chart.setUsePercentValues(false);
 		chart.getDescription().setEnabled(false);
 		chart.setExtraOffsets(5, 10, 5, 5);
 
@@ -165,13 +189,12 @@ public class StatsFragment extends Fragment {
 		chart.setRotationEnabled(true);
 		chart.setHighlightPerTapEnabled(true);
 
-
 		PieData pieData = new PieData();
 		List<PieEntry> pieEntries = new ArrayList<>();
-		pieEntries.add(new PieEntry(0.2f, "东方财富"));
-		pieEntries.add(new PieEntry(0.2f, "天天基金"));
-		pieEntries.add(new PieEntry(0.3f, "招商银行"));
-		pieEntries.add(new PieEntry(0.3f, "支付宝"));
+		for (AccBalance b : mBalanceList) {
+			PieEntry entry = new PieEntry(Float.parseFloat(b.getBalance()), b.getAccName());
+			pieEntries.add(entry);
+		}
 
 		PieDataSet set = new PieDataSet(pieEntries, null);
 		set.setColors(ColorTemplate.PIE_CHART_COLORS);
@@ -181,8 +204,8 @@ public class StatsFragment extends Fragment {
 		pieData.setDataSet(set);
 		pieData.setValueTextSize(10f);
 		pieData.setValueTextColor(Color.WHITE);
-		pieData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler)
-				-> DecimalFormat.getInstance().format(value) + "%");
+		// pieData.setValueFormatter((value, entry, dataSetIndex, viewPortHandler)
+		// 		-> DecimalFormat.getInstance().format(value) + "%");
 
 		chart.setData(pieData);
 		chart.setEntryLabelTextSize(10f);

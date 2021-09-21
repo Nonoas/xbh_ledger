@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/common_padding"
+    android:layout_marginTop="@dimen/common_padding"
+    android:layout_marginRight="@dimen/common_padding"
+    android:background="@drawable/bg_corner"
+    android:orientation="vertical"
+    android:padding="@dimen/common_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="柱状图" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:gravity="end">
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/dict_day" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/dict_month" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/dict_year" />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/bar_chart"
+        android:layout_width="match_parent"
+        android:layout_height="250dp" />
+
+</LinearLayout>

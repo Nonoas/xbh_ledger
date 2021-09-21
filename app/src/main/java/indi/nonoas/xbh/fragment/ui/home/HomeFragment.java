@@ -1,33 +1,20 @@
 package indi.nonoas.xbh.fragment.ui.home;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
-
-import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FragmentHomeBinding;
 import indi.nonoas.xbh.fragment.ui.acclist.AccListFragment;
 import indi.nonoas.xbh.fragment.ui.stats.StatsFragment;
-import indi.nonoas.xbh.utils.SystemUtil;
 
 
 public class HomeFragment extends Fragment {

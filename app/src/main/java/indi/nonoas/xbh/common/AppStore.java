@@ -16,6 +16,9 @@ public class AppStore {
 	 */
 	private static User user;
 
+	/**
+	 * 当前程序窗口
+	 */
 	private static Window currWindow;
 
 	private static WindowInsetsControllerCompat winInsetCtrlCompat;

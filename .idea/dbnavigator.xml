@@ -26,7 +26,7 @@
     <show-object-properties value="true" />
     <loaded-nodes>
       <connection connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c">
-        <schema name="main" object-types="table, view" />
+        <schema name="main" object-types="table, view, constraint, index, column, dataset trigger" />
       </connection>
     </loaded-nodes>
   </component>
@@ -43,6 +43,8 @@
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.USER" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.ACC_BALANCE" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.android_metadata" active-filter-id="" />
     <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.ACCOUNT" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">

@@ -8,9 +8,11 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
+import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
 import indi.nonoas.xbh.pojo.User;
 
+import indi.nonoas.xbh.greendao.AccBalanceDao;
 import indi.nonoas.xbh.greendao.AccountDao;
 import indi.nonoas.xbh.greendao.UserDao;
 
@@ -23,9 +25,11 @@ import indi.nonoas.xbh.greendao.UserDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
+    private final DaoConfig accBalanceDaoConfig;
     private final DaoConfig accountDaoConfig;
     private final DaoConfig userDaoConfig;
 
+    private final AccBalanceDao accBalanceDao;
     private final AccountDao accountDao;
     private final UserDao userDao;
 
@@ -33,22 +37,32 @@ public class DaoSession extends AbstractDaoSession {
             daoConfigMap) {
         super(db);
 
+        accBalanceDaoConfig = daoConfigMap.get(AccBalanceDao.class).clone();
+        accBalanceDaoConfig.initIdentityScope(type);
+
         accountDaoConfig = daoConfigMap.get(AccountDao.class).clone();
         accountDaoConfig.initIdentityScope(type);
 
         userDaoConfig = daoConfigMap.get(UserDao.class).clone();
         userDaoConfig.initIdentityScope(type);
 
+        accBalanceDao = new AccBalanceDao(accBalanceDaoConfig, this);
         accountDao = new AccountDao(accountDaoConfig, this);
         userDao = new UserDao(userDaoConfig, this);
 
+        registerDao(AccBalance.class, accBalanceDao);
         registerDao(Account.class, accountDao);
         registerDao(User.class, userDao);
     }
     
     public void clear() {
+        accBalanceDaoConfig.clearIdentityScope();
         accountDaoConfig.clearIdentityScope();
         userDaoConfig.clearIdentityScope();
+    }
+
+    public AccBalanceDao getAccBalanceDao() {
+        return accBalanceDao;
     }
 
     public AccountDao getAccountDao() {

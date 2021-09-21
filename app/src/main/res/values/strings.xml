@@ -17,5 +17,10 @@
     <string name="menu_acc">账户列表</string>
     <string name="menu_home">主页</string>
 
+    <!-- 字典翻译 -->
+    <string name="dict_day">日</string>
+    <string name="dict_month">月</string>
+    <string name="dict_year">年</string>
+
 
 </resources>

@@ -11,7 +11,7 @@
     android:padding="@dimen/common_padding">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/iv_acc_icon"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:contentDescription="图标"

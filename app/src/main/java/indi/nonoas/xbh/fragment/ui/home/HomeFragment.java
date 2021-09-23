@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
+import java.util.Objects;
+
 import indi.nonoas.xbh.databinding.FragmentHomeBinding;
 import indi.nonoas.xbh.fragment.ui.acclist.AccListFragment;
 import indi.nonoas.xbh.fragment.ui.stats.StatsFragment;
@@ -38,7 +40,7 @@ public class HomeFragment extends Fragment {
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater,
 	                         ViewGroup container, Bundle savedInstanceState) {
-		homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+		homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
 		binding = FragmentHomeBinding.inflate(inflater, container, false);
 

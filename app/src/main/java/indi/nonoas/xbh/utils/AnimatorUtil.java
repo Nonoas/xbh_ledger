@@ -7,6 +7,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorListener;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class AnimatorUtil {
 
 	private static final LinearOutSlowInInterpolator FAST_OUT_SLOW_IN_INTERPOLATOR = new LinearOutSlowInInterpolator();
@@ -60,4 +63,5 @@ public class AnimatorUtil {
 				.setListener(viewPropertyAnimatorListener)
 				.start();
 	}
+	
 }

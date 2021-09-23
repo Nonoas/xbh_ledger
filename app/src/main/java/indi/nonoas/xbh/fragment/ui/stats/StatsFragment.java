@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -28,13 +29,18 @@ import com.google.android.material.appbar.AppBarLayout;
 
 import org.greenrobot.greendao.database.Database;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.ColorTemplate;
 import indi.nonoas.xbh.databinding.FrgStatsBinding;
+import indi.nonoas.xbh.fragment.ui.home.HomeFragment;
+import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
@@ -46,6 +52,7 @@ import indi.nonoas.xbh.view.chart.DefaultValueFormatter;
 public class StatsFragment extends Fragment {
 
 	private StatsViewModel statsViewModel;
+	private HomeViewModel mHomeViewModel;
 	private FrgStatsBinding binding;
 	private final List<AccBalance> mBalanceList = new ArrayList<>();
 
@@ -65,6 +72,7 @@ public class StatsFragment extends Fragment {
 	                         ViewGroup container, Bundle savedInstanceState) {
 
 		statsViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
+		mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
 		binding = FrgStatsBinding.inflate(inflater, container, false);
 
@@ -195,6 +203,18 @@ public class StatsFragment extends Fragment {
 			PieEntry entry = new PieEntry(Float.parseFloat(b.getBalance()), b.getAccName());
 			pieEntries.add(entry);
 		}
+
+		mHomeViewModel.setBalanceList(mBalanceList);
+		mHomeViewModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
+			pieEntries.clear();
+			List<AccBalance> balanceList = mHomeViewModel.getBalanceList();
+			for (AccBalance b : balanceList) {
+				PieEntry entry = new PieEntry(Float.parseFloat(b.getBalance()), b.getAccName());
+				pieEntries.add(entry);
+			}
+			chart.notifyDataSetChanged();
+			chart.postInvalidate();
+		});
 
 		PieDataSet set = new PieDataSet(pieEntries, null);
 		set.setColors(ColorTemplate.PIE_CHART_COLORS);

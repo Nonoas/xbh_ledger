@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.greenrobot.greendao.database.Database;
@@ -28,6 +30,7 @@ import java.util.List;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FrgAccListBinding;
+import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
 import indi.nonoas.xbh.greendao.AccBalanceDao;
 import indi.nonoas.xbh.greendao.AccountDao;
 import indi.nonoas.xbh.greendao.DaoSession;
@@ -43,7 +46,7 @@ import indi.nonoas.xbh.utils.GreenDaoUtil;
  */
 public class AccListFragment extends Fragment {
 
-	private AccListViewModel mViewModel;
+	private HomeViewModel mHomeViewModel;
 
 	private FrgAccListBinding binding;
 	private final List<AccBalance> mBalanceList = new ArrayList<>();
@@ -60,7 +63,7 @@ public class AccListFragment extends Fragment {
 		return fragment;
 	}
 
-	// ==========================================   生命周期 ===================================================
+	// ==========================================   生命周期  ===================================================
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -72,8 +75,8 @@ public class AccListFragment extends Fragment {
 	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 	                         Bundle savedInstanceState) {
 
-		mViewModel = new ViewModelProvider(this).get(AccListViewModel.class);
-		mViewModel.getBalanceData()
+		mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+		mHomeViewModel.getBalanceData()
 				.observe(getViewLifecycleOwner(), str -> binding.tvBalance.setText(str));
 
 		binding = FrgAccListBinding.inflate(inflater, container, false);
@@ -131,6 +134,9 @@ public class AccListFragment extends Fragment {
 	 * 从数据库查询账户余额
 	 */
 	private void initAccList() {
+		MyAdapter adapter = new MyAdapter(getContext(), mBalanceList);
+		adapter.clear();
+
 		DaoSession session = GreenDaoUtil.getDaoSession(getContext());
 		Database database = session.getDatabase();
 		Cursor cursor = database.rawQuery("select *,max(_id) from acc_balance group by acc_id", null);
@@ -145,8 +151,11 @@ public class AccListFragment extends Fragment {
 			mBalanceList.add(balance);
 		}
 
-		BaseAdapter adapter = new MyAdapter(getContext(), mBalanceList);
 		lvAcc.setAdapter(adapter);
+
+		mHomeViewModel.setBalanceList(mBalanceList);
+		mHomeViewModel.getBalanceListData()
+				.observe(getViewLifecycleOwner(), accBalances -> adapter.notifyDataSetChanged());
 	}
 
 	private void initBalance() {
@@ -154,7 +163,7 @@ public class AccListFragment extends Fragment {
 		for (AccBalance acc : mBalanceList) {
 			decimal = decimal.add(new BigDecimal(acc.getBalance()));
 		}
-		mViewModel.setBalance(decimal.toString());
+		mHomeViewModel.setBalance(decimal.toString());
 	}
 
 	/**
@@ -166,7 +175,7 @@ public class AccListFragment extends Fragment {
 		DaoSession session = GreenDaoUtil.getDaoSession(getContext());
 		AccountDao accDao = session.getAccountDao();
 		accDao.insert(account);
-		this.notifyAccListChanged();
+
 		// 添加到余额记录
 		AccBalance accBalance = new AccBalance();
 		accBalance.setBalance(account.getInitBalance());
@@ -175,6 +184,7 @@ public class AccListFragment extends Fragment {
 		accBalance.setTimestamp(System.currentTimeMillis());
 
 		mBalanceList.add(accBalance);
+		mHomeViewModel.setBalanceList(mBalanceList);
 		// 插入到余额记录表
 		AccBalanceDao accBalanceDao = session.getAccBalanceDao();
 		accBalanceDao.insert(accBalance);
@@ -182,9 +192,9 @@ public class AccListFragment extends Fragment {
 		session.clear();
 
 		// 更新余额
-		BigDecimal oldBalance = new BigDecimal(mViewModel.getBalance());
+		BigDecimal oldBalance = new BigDecimal(mHomeViewModel.getBalance());
 		BigDecimal newBalance = oldBalance.add(new BigDecimal(account.getInitBalance()));
-		mViewModel.setBalance(newBalance.toString());
+		mHomeViewModel.setBalance(newBalance.toString());
 
 	}
 
@@ -201,10 +211,18 @@ public class AccListFragment extends Fragment {
 
 		private final List<AccBalance> mList;
 		private final Context context;
+		private final int[] icons = {R.drawable.ic_alipay,
+				R.drawable.ic_dfcf, R.drawable.ic_zgyh,
+				R.drawable.ic_zsyh, R.drawable.ic_yzyh};
 
 		MyAdapter(Context context, List<AccBalance> list) {
 			this.context = context;
 			this.mList = list;
+		}
+
+		public void clear() {
+			mList.clear();
+			notifyDataSetChanged();
 		}
 
 		@Override
@@ -228,6 +246,7 @@ public class AccListFragment extends Fragment {
 			if (null == view) {
 				view = LayoutInflater.from(context).inflate(R.layout.item_acc, null);
 				holder = new ViewHolder();
+				holder.mImageView = view.findViewById(R.id.iv_acc_icon);
 				holder.tvAccName = view.findViewById(R.id.tv_acc_name);
 				holder.mEditText = view.findViewById(R.id.et_balance);
 				view.setTag(holder);
@@ -236,6 +255,7 @@ public class AccListFragment extends Fragment {
 				holder = (ViewHolder) view.getTag();
 			}
 			AccBalance account = mList.get(i);
+			holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, icons[(int) (Math.random() * 4 + 1)]));
 			holder.tvAccName.setText(account.getAccName());
 			holder.mEditText.setText(account.getBalance());
 			return view;

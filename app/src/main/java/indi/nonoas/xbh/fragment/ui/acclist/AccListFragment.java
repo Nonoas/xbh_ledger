@@ -5,13 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,35 +96,8 @@ public class AccListFragment extends Fragment {
 		this.initBalance();
 
 		binding.fab.setOnClickListener(view -> {
-			View contentView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_acc, null);
-			EditText etName = contentView.findViewById(R.id.et_name);
-			EditText etBalance = contentView.findViewById(R.id.et_balance);
-			AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-			builder.setView(contentView)
-					.setPositiveButton("添加",
-							(dialog, which) -> {
-								if ("".equals(etName.getText().toString())) {
-									Toast.makeText(getContext(), "添加失败，账户名称为空", Toast.LENGTH_SHORT)
-											.show();
-									return;
-								}
-								String sBalance = etBalance.getText().toString();
-								Account account = new Account();
-
-								account.setAccName(etName.getText().toString());
-								account.setInitBalance(DefaultValueUtil.getValOrZero(sBalance));
-								AccListFragment.this.addAcc(account);
-
-								Toast.makeText(getContext(),
-										String.format("添加%s\n余额：%s", etName.getText(), etBalance.getText()),
-										Toast.LENGTH_SHORT).show();
-							});
-			builder.setNegativeButton("取消", null);
-			AlertDialog alertDialog = builder.create();
-			alertDialog.show();
-			alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor(getString(R.color.soft_red)));
-			alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor(getString(R.color.soft_green1)));
-			AccListFragment.this.notifyAccListChanged();
+			AccItemPopWindow pw = new AccItemPopWindow(getContext());
+			pw.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
 		});
 
 		lvAcc.setOnItemLongClickListener((parent, view, position, id) -> {

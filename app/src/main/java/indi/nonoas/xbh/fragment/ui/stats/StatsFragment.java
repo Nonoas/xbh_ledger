@@ -15,13 +15,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -120,15 +125,18 @@ public class StatsFragment extends Fragment {
 	@SuppressLint("ResourceType")
 	private void genBarChart() {
 
-		BarChart barChart = binding.barChartContainer.barChart;
+		LineChart barChart = binding.barChartContainer.barChart;
 
 		barChart.setDescription(null);
 
-		List<BarEntry> list = new ArrayList<>();
-		list.add(new BarEntry(1, 3));
-		list.add(new BarEntry(2, 8));
-		list.add(new BarEntry(3, 6));
-		list.add(new BarEntry(4, 9));
+		List<Entry> list = new ArrayList<>();
+		list.add(new Entry(1, 3));
+		list.add(new Entry(2, 8));
+		list.add(new Entry(3, 6));
+		list.add(new Entry(4, 9));
+		list.add(new Entry(5, 1));
+		list.add(new Entry(6, 6));
+		list.add(new Entry(7, 8));
 
 		XAxis xAxis = barChart.getXAxis();
 		xAxis.setAxisMaximum(7);
@@ -142,14 +150,17 @@ public class StatsFragment extends Fragment {
 		YAxis lAxis = barChart.getAxisLeft();
 		lAxis.setDrawGridLines(false);
 
-		BarData data = new BarData();
+		LineData data = new LineData();
 
-		BarDataSet dataSet = new BarDataSet(list, "每日余额");
+		LineDataSet dataSet = new LineDataSet(list, "每日余额");
+
 		dataSet.setColor(Color.parseColor(getString(R.color.soft_red)));
+		dataSet.setDrawCircles(false);
+
 		data.addDataSet(dataSet);
 
-		data.setBarWidth(0.3f);
 		barChart.setData(data);
+		barChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
 		barChart.invalidate();
 	}
@@ -229,6 +240,8 @@ public class StatsFragment extends Fragment {
 
 		chart.setData(pieData);
 		chart.setEntryLabelTextSize(10f);
+
+		chart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
 
 		chart.invalidate();
 	}

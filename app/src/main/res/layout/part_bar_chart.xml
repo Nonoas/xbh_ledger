@@ -18,13 +18,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="柱状图" />
+            android:text="余额走势" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:gravity="end">
+            android:gravity="end"
+            android:visibility="gone">
 
             <com.google.android.material.button.MaterialButton
                 android:layout_width="50dp"
@@ -45,7 +45,7 @@
 
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.BarChart
+    <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/bar_chart"
         android:layout_width="match_parent"
         android:layout_height="250dp" />

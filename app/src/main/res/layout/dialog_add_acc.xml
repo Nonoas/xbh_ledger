@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#55000000"
     android:gravity="bottom"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_l">
+    android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/et_name"
+    <View
+        android:id="@+id/v_empty"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="账户名称"
-        android:inputType="text"
-        android:minHeight="48dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-    <EditText
-        android:id="@+id/et_balance"
+    <LinearLayout
+        android:id="@+id/ll_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="初始余额"
-        android:inputType="numberDecimal"
-        android:minHeight="48dp" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/bg_corner"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/line_list_divide"
+            android:dividerHeight="1px"
+            android:paddingTop="@dimen/common_padding"
+            android:paddingBottom="@dimen/common_padding"
+            android:scrollbars="none" />
+    </LinearLayout>
 
 </LinearLayout>

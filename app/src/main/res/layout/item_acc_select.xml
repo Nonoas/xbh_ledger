@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/common_padding"
     android:layout_marginTop="@dimen/common_padding"
-    android:background="@drawable/slct_list_item"
     android:descendantFocusability="blocksDescendants"
     android:gravity="center"
     android:orientation="horizontal"
@@ -12,28 +11,20 @@
 
     <ImageView
         android:id="@+id/iv_acc_icon"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
         android:contentDescription="图标"
-        android:layout_marginEnd="@dimen/common_padding"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_zsyh" />
 
     <TextView
         android:id="@+id/tv_acc_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingStart="0dp"
-        android:paddingEnd="@dimen/common_padding"
-        android:text="招商银行" />
-
-    <EditText
-        android:id="@+id/et_balance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="余额"
-        android:textAlignment="textEnd" />
-
+        android:layout_weight="@integer/material_motion_duration_long_1"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/common_padding"
+        android:text="招商银行"
+        android:textColor="@color/black" />
 
 </LinearLayout>

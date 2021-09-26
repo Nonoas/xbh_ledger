@@ -2,6 +2,7 @@ package indi.nonoas.xbh.fragment.ui.acclist;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +19,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -30,8 +36,10 @@ import org.greenrobot.greendao.database.Database;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import indi.nonoas.xbh.R;
+import indi.nonoas.xbh.activity.AccAddActivity;
 import indi.nonoas.xbh.databinding.FrgAccListBinding;
 import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
 import indi.nonoas.xbh.greendao.AccBalanceDao;
@@ -55,6 +63,8 @@ public class AccListFragment extends Fragment {
 	private final List<AccBalance> mBalanceList = new ArrayList<>();
 	private ListView lvAcc;
 
+	private ActivityResultLauncher<Intent> intentLauncher;
+
 	public AccListFragment() {
 	}
 
@@ -71,6 +81,17 @@ public class AccListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		intentLauncher = registerForActivityResult(
+				new ActivityResultContracts.StartActivityForResult(),
+				new ActivityResultCallback<ActivityResult>() {
+					@Override
+					public void onActivityResult(ActivityResult result) {
+						setData(result);
+					}
+				}
+		);
+
 	}
 
 	@SuppressLint("ResourceType")
@@ -97,6 +118,20 @@ public class AccListFragment extends Fragment {
 
 		binding.fab.setOnClickListener(view -> {
 			AccItemPopWindow pw = new AccItemPopWindow(getContext());
+			pw.setOnSelectedListener((v, item) -> {
+				String typeName = (String) item.get(AccItemPopWindow.K_NAME);
+				Toast.makeText(getContext(), typeName + "被点击了", Toast.LENGTH_SHORT).show();
+
+				// 跳转至 账户添加设置 界面
+				Intent intent = new Intent(requireActivity(), AccAddActivity.class);
+				intent.putExtra(AccItemPopWindow.K_IMG, (Integer) item.get(AccItemPopWindow.K_IMG));
+				intent.putExtra(AccItemPopWindow.K_NAME, (String) item.get(AccItemPopWindow.K_NAME));
+
+				intentLauncher.launch(intent);
+
+
+				pw.dismiss();
+			});
 			pw.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
 		});
 
@@ -104,6 +139,15 @@ public class AccListFragment extends Fragment {
 			Toast.makeText(getContext(), "点击了" + id, Toast.LENGTH_SHORT).show();
 			return false;
 		});
+	}
+
+	/**
+	 * 设置数据
+	 *
+	 * @param result 从其他activity接收的数据
+	 */
+	private void setData(ActivityResult result) {
+		Intent data = result.getData();
 	}
 
 	/**

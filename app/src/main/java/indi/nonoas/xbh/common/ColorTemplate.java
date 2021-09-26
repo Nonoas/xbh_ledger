@@ -2,6 +2,8 @@ package indi.nonoas.xbh.common;
 
 import android.graphics.Color;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 public class ColorTemplate {
 
 	/**
@@ -13,5 +15,7 @@ public class ColorTemplate {
 			Color.parseColor("#CCFF99"),
 			Color.parseColor("#99CCFF")
 	};
+
+	public static final int GREEN_SOFT = Color.parseColor("#99CCCC");
 
 }

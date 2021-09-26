@@ -125,9 +125,9 @@ public class StatsFragment extends Fragment {
 	@SuppressLint("ResourceType")
 	private void genBarChart() {
 
-		LineChart barChart = binding.barChartContainer.barChart;
+		LineChart lineChart = binding.barChartContainer.barChart;
 
-		barChart.setDescription(null);
+		lineChart.setDescription(null);
 
 		List<Entry> list = new ArrayList<>();
 		list.add(new Entry(1, 3));
@@ -138,16 +138,16 @@ public class StatsFragment extends Fragment {
 		list.add(new Entry(6, 6));
 		list.add(new Entry(7, 8));
 
-		XAxis xAxis = barChart.getXAxis();
+		XAxis xAxis = lineChart.getXAxis();
 		xAxis.setAxisMaximum(7);
 		xAxis.setDrawGridLines(false);
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
-		YAxis rAxis = barChart.getAxisRight();
+		YAxis rAxis = lineChart.getAxisRight();
 		rAxis.setEnabled(false);
 		rAxis.setDrawGridLines(false);
 
-		YAxis lAxis = barChart.getAxisLeft();
+		YAxis lAxis = lineChart.getAxisLeft();
 		lAxis.setDrawGridLines(false);
 
 		LineData data = new LineData();
@@ -159,10 +159,10 @@ public class StatsFragment extends Fragment {
 
 		data.addDataSet(dataSet);
 
-		barChart.setData(data);
-		barChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
+		lineChart.setData(data);
+		lineChart.animateY(400, Easing.EasingOption.EaseInOutQuad);
 
-		barChart.invalidate();
+		lineChart.invalidate();
 	}
 
 	/**

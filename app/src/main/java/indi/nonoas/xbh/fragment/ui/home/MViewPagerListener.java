@@ -29,16 +29,17 @@ class MViewPagerListener {
 
 		private final AppBarLayout barLayout;
 		private final Toolbar toolbar;
+		private final Activity activity;
 
 		OnPageChangeListener(Context context) {
-			Activity activity = (Activity) context;
+			this.activity = (Activity) context;
 			barLayout = activity.findViewById(R.id.appbar);
 			toolbar = activity.findViewById(R.id.toolbar);
 		}
 
 		@Override
 		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-			SystemUtil.toggleStatusBarColor(SystemUtil.StatusBarType.DARK);
+			SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.DARK);
 		}
 
 		@SuppressLint("ResourceType")
@@ -73,9 +74,9 @@ class MViewPagerListener {
 		public void onPageScrollStateChanged(int state) {
 			if (state != ViewPager.SCROLL_STATE_IDLE) return;
 			if (0 == currPos) {
-				SystemUtil.toggleStatusBarColor(SystemUtil.StatusBarType.DARK);
+				SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.DARK);
 			} else {
-				SystemUtil.toggleStatusBarColor(SystemUtil.StatusBarType.LIGHT);
+				SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.LIGHT);
 			}
 		}
 	}

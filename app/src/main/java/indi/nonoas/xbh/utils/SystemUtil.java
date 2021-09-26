@@ -1,11 +1,15 @@
 package indi.nonoas.xbh.utils;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Color;
 import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.core.view.WindowInsetsControllerCompat;
 
-import indi.nonoas.xbh.common.AppStore;
+import indi.nonoas.xbh.R;
+import indi.nonoas.xbh.common.ColorTemplate;
 
 /**
  * @author Nonoas
@@ -17,24 +21,36 @@ public class SystemUtil {
 
 	}
 
-	public static void toggleStatusBarColor(StatusBarType type) {
-		WindowInsetsControllerCompat winInsetCtrlCompat = AppStore.getWinInsetCtrlCompat();
-		Window currWindow = AppStore.getCurrWindow();
-		if (null == winInsetCtrlCompat || null == currWindow) {
-			return;
-		}
-		if (StatusBarType.DARK == type) {
-			AppStore.getWinInsetCtrlCompat().setAppearanceLightStatusBars(false);
-			AppStore.getCurrWindow().setStatusBarColor(Color.TRANSPARENT);
-		} else {
-			AppStore.getWinInsetCtrlCompat().setAppearanceLightStatusBars(true);
-			AppStore.getCurrWindow().setStatusBarColor(Color.WHITE);
+	/**
+	 * 切换状态栏样式
+	 *
+	 * @param type 状态栏样式枚举
+	 */
+	@SuppressLint("ResourceType")
+	public static void toggleStatusBarColor(Activity activity, StatusBarType type) {
+		Window window = activity.getWindow();
+		WindowInsetsControllerCompat winInsetCtrlCompat = new WindowInsetsControllerCompat(window, window.getDecorView());
+		window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+		window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+		switch (type) {
+			case DARK:
+				winInsetCtrlCompat.setAppearanceLightStatusBars(false);
+				window.setStatusBarColor(Color.TRANSPARENT);
+				break;
+			case GREEN:
+				winInsetCtrlCompat.setAppearanceLightStatusBars(false);
+				window.setStatusBarColor(ColorTemplate.GREEN_SOFT);
+				break;
+			default:
+				winInsetCtrlCompat.setAppearanceLightStatusBars(true);
+				window.setStatusBarColor(Color.WHITE);
+				break;
 		}
 	}
 
 
 	public enum StatusBarType {
-		DARK, LIGHT
+		DARK, LIGHT, GREEN
 	}
 
 }

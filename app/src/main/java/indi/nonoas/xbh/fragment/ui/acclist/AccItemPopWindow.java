@@ -2,31 +2,20 @@ package indi.nonoas.xbh.fragment.ui.acclist;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.Interpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.view.ViewCompat;
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import indi.nonoas.xbh.R;
+import indi.nonoas.xbh.activity.AccAddActivity;
 import indi.nonoas.xbh.databinding.DialogAddAccBinding;
-import indi.nonoas.xbh.pojo.AccItem;
+import indi.nonoas.xbh.pojo.AccBalance;
 
 /**
  * 底部弹窗，用于 账户选择
@@ -45,13 +35,18 @@ import indi.nonoas.xbh.pojo.AccItem;
  */
 public class AccItemPopWindow extends PopupWindow {
 
+	public static final String K_IMG = "img";
+	public static final String K_NAME = "name";
+
 	private static boolean isShow = false;
 
 	private final DialogAddAccBinding mBinding;
 
 	private final Context mContext;
 
-	@SuppressLint("InflateParams")
+	private OnSelectedListener mOnSelectedListener;
+
+	@SuppressWarnings("all")
 	public AccItemPopWindow(Context context) {
 		this.mContext = context;
 		mBinding = DialogAddAccBinding.inflate(LayoutInflater.from(context));
@@ -62,21 +57,18 @@ public class AccItemPopWindow extends PopupWindow {
 				context,
 				getData(),
 				R.layout.item_acc_select,
-				new String[]{"img", "name"},
+				new String[]{K_IMG, K_NAME},
 				new int[]{R.id.iv_acc_icon, R.id.tv_acc_name}
 		);
 		mBinding.lv.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
 		mBinding.lv.setOnItemClickListener((parent, view, position, id) -> {
-			TextView tv = view.findViewById(R.id.tv_acc_name);
-			Toast.makeText(context, "你想添加" + tv.getText(), Toast.LENGTH_SHORT).show();
-			this.dismiss();
+			Map item = (Map) adapter.getItem(position);
+			mOnSelectedListener.onSelected(view, item);
 		});
 
-		mBinding.vEmpty.setOnClickListener(e -> {
-			this.dismiss();
-		});
+		mBinding.vEmpty.setOnClickListener(e -> this.dismiss());
 
 		setWidth(LinearLayout.LayoutParams.MATCH_PARENT);
 		setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -86,52 +78,53 @@ public class AccItemPopWindow extends PopupWindow {
 	/**
 	 * 设置 listview 的数据
 	 */
+	@NonNull
 	private List<Map<String, Object>> getData() {
 		List<Map<String, Object>> list = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>(4);
 
-		map.put("img", R.drawable.ic_alipay);
-		map.put("name", "支付宝");
+		map.put(K_IMG, R.drawable.ic_alipay);
+		map.put(K_NAME, "支付宝");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_weixin);
-		map.put("name", "微信");
+		map.put(K_IMG, R.drawable.ic_weixin);
+		map.put(K_NAME, "微信");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_dfcf);
-		map.put("name", "东方财富");
+		map.put(K_IMG, R.drawable.ic_dfcf);
+		map.put(K_NAME, "东方财富");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_zgyh);
-		map.put("name", "中国银行");
+		map.put(K_IMG, R.drawable.ic_zgyh);
+		map.put(K_NAME, "中国银行");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_yzyh);
-		map.put("name", "邮政银行");
+		map.put(K_IMG, R.drawable.ic_yzyh);
+		map.put(K_NAME, "邮政银行");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_zsyh);
-		map.put("name", "招商银行");
+		map.put(K_IMG, R.drawable.ic_zsyh);
+		map.put(K_NAME, "招商银行");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_jiangsuyh);
-		map.put("name", "江苏银行");
+		map.put(K_IMG, R.drawable.ic_jiangsuyh);
+		map.put(K_NAME, "江苏银行");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_jsyh);
-		map.put("name", "建设银行");
+		map.put(K_IMG, R.drawable.ic_jsyh);
+		map.put(K_NAME, "建设银行");
 		list.add(map);
 
 		map = new HashMap<>(4);
-		map.put("img", R.drawable.ic_other_acc);
-		map.put("name", "其他账户");
+		map.put(K_IMG, R.drawable.ic_other_acc);
+		map.put(K_NAME, "其他账户");
 		list.add(map);
 
 		return list;
@@ -149,12 +142,12 @@ public class AccItemPopWindow extends PopupWindow {
 		super.showAtLocation(parent, gravity, x, y);
 
 		DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-		Animation anim = new TranslateAnimation(0, 0, dm.heightPixels, 0);
-		Animation anim2 = new AlphaAnimation(0, 1);
-		anim.setDuration(400);
-		anim2.setDuration(400);
-		mBinding.getRoot().startAnimation(anim2);
-		mBinding.llContent.startAnimation(anim);
+		Animation animT = new TranslateAnimation(0, 0, dm.heightPixels, 0);
+		Animation animA = new AlphaAnimation(0, 1);
+		animT.setDuration(400);
+		animA.setDuration(400);
+		mBinding.getRoot().startAnimation(animA);
+		mBinding.llContent.startAnimation(animT);
 		mBinding.getRoot().setVisibility(View.VISIBLE);
 
 	}
@@ -169,12 +162,12 @@ public class AccItemPopWindow extends PopupWindow {
 		isShow = false;
 
 		DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-		Animation anim = new TranslateAnimation(0, 0, 0, dm.heightPixels);
-		Animation anim2 = new AlphaAnimation(1, 0);
-		anim.setDuration(350);
-		anim2.setDuration(350);
+		Animation animT = new TranslateAnimation(0, 0, 0, dm.heightPixels);
+		Animation animA = new AlphaAnimation(1, 0);
+		animT.setDuration(350);
+		animA.setDuration(350);
 
-		anim2.setAnimationListener(new Animation.AnimationListener() {
+		animA.setAnimationListener(new Animation.AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation animation) {
 			}
@@ -191,9 +184,27 @@ public class AccItemPopWindow extends PopupWindow {
 			}
 		});
 
-		mBinding.llContent.startAnimation(anim);
-		mBinding.getRoot().startAnimation(anim2);
+		mBinding.llContent.startAnimation(animT);
+		mBinding.getRoot().startAnimation(animA);
 		mBinding.getRoot().setVisibility(View.INVISIBLE);
 
+	}
+
+	public void setOnSelectedListener(OnSelectedListener onSelectedListener) {
+		mOnSelectedListener = onSelectedListener;
+	}
+
+	/**
+	 * 选中监听，提供外部调用
+	 */
+	public interface OnSelectedListener {
+
+		/**
+		 * 选中时调用的方法
+		 *
+		 * @param view 被点击的view
+		 * @param item 选中的item数据
+		 */
+		void onSelected(View view, Map<String, Object> item);
 	}
 }

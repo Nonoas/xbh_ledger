@@ -21,6 +21,9 @@
     <string name="dict_day">日</string>
     <string name="dict_month">月</string>
     <string name="dict_year">年</string>
+    <string name="dict_acc_type">账户类型</string>
+    <string name="dict_acc_name">账户名称</string>
+    <string name="dict_acc_balance">账户余额</string>
 
 
 </resources>

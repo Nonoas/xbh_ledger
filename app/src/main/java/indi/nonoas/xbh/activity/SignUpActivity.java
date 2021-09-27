@@ -2,15 +2,12 @@ package indi.nonoas.xbh.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import indi.nonoas.xbh.MainActivity;
-import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.ActivitySignUpBinding;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
@@ -32,6 +29,7 @@ public class SignUpActivity extends AppCompatActivity {
 		binding.btnAdd.setOnClickListener(v -> {
 			addUser();
 			startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+			finish();
 		});
 
 	}

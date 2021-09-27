@@ -144,8 +144,8 @@ public class AccItemPopWindow extends PopupWindow {
 		DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
 		Animation animT = new TranslateAnimation(0, 0, dm.heightPixels, 0);
 		Animation animA = new AlphaAnimation(0, 1);
-		animT.setDuration(400);
-		animA.setDuration(400);
+		animT.setDuration(350);
+		animA.setDuration(350);
 		mBinding.getRoot().startAnimation(animA);
 		mBinding.llContent.startAnimation(animT);
 		mBinding.getRoot().setVisibility(View.VISIBLE);

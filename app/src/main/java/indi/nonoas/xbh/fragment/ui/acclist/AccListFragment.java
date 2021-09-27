@@ -1,6 +1,7 @@
 package indi.nonoas.xbh.fragment.ui.acclist;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.greenrobot.greendao.database.Database;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +86,8 @@ public class AccListFragment extends Fragment {
 
 		intentLauncher = registerForActivityResult(
 				new ActivityResultContracts.StartActivityForResult(),
-				new ActivityResultCallback<ActivityResult>() {
-					@Override
-					public void onActivityResult(ActivityResult result) {
+				result -> {
+					if (result.getResultCode() == Activity.RESULT_OK) {
 						setData(result);
 					}
 				}
@@ -148,6 +149,15 @@ public class AccListFragment extends Fragment {
 	 */
 	private void setData(ActivityResult result) {
 		Intent data = result.getData();
+		if (null == data) {
+			return;
+		}
+		Account account = new Account();
+		account.setAccName(data.getStringExtra(AccItemPopWindow.K_NAME));
+		account.setInitBalance(data.getStringExtra("balance"));
+
+		addAcc(account);
+
 	}
 
 	/**

@@ -28,6 +28,8 @@ public class AccountDao extends AbstractDao<Account, Long> {
         public final static Property AccName = new Property(1, String.class, "accName", false, "ACC_NAME");
         public final static Property Acc_type = new Property(2, int.class, "acc_type", false, "ACC_TYPE");
         public final static Property InitBalance = new Property(3, String.class, "initBalance", false, "INIT_BALANCE");
+        public final static Property IconId = new Property(4, int.class, "iconId", false, "ICON_ID");
+        public final static Property IconUrl = new Property(5, String.class, "iconUrl", false, "ICON_URL");
     }
 
 
@@ -46,7 +48,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ACC_NAME\" TEXT," + // 1: accName
                 "\"ACC_TYPE\" INTEGER NOT NULL ," + // 2: acc_type
-                "\"INIT_BALANCE\" TEXT);"); // 3: initBalance
+                "\"INIT_BALANCE\" TEXT," + // 3: initBalance
+                "\"ICON_ID\" INTEGER NOT NULL ," + // 4: iconId
+                "\"ICON_URL\" TEXT);"); // 5: iconUrl
     }
 
     /** Drops the underlying database table. */
@@ -74,6 +78,12 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (initBalance != null) {
             stmt.bindString(4, initBalance);
         }
+        stmt.bindLong(5, entity.getIconId());
+ 
+        String iconUrl = entity.getIconUrl();
+        if (iconUrl != null) {
+            stmt.bindString(6, iconUrl);
+        }
     }
 
     @Override
@@ -95,6 +105,12 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (initBalance != null) {
             stmt.bindString(4, initBalance);
         }
+        stmt.bindLong(5, entity.getIconId());
+ 
+        String iconUrl = entity.getIconUrl();
+        if (iconUrl != null) {
+            stmt.bindString(6, iconUrl);
+        }
     }
 
     @Override
@@ -108,7 +124,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // accName
             cursor.getInt(offset + 2), // acc_type
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // initBalance
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // initBalance
+            cursor.getInt(offset + 4), // iconId
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // iconUrl
         );
         return entity;
     }
@@ -119,6 +137,8 @@ public class AccountDao extends AbstractDao<Account, Long> {
         entity.setAccName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAcc_type(cursor.getInt(offset + 2));
         entity.setInitBalance(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setIconId(cursor.getInt(offset + 4));
+        entity.setIconUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     @Override

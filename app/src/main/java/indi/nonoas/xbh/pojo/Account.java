@@ -11,13 +11,18 @@ public class Account {
 	private String accName;
 	private int acc_type;
 	private String initBalance = "0";
+	private int iconId;
+	private String iconUrl;
 
-	@Generated(hash = 1463076452)
-	public Account(Long id, String accName, int acc_type, String initBalance) {
+	@Generated(hash = 279537611)
+	public Account(Long id, String accName, int acc_type, String initBalance,
+			int iconId, String iconUrl) {
 		this.id = id;
 		this.accName = accName;
 		this.acc_type = acc_type;
 		this.initBalance = initBalance;
+		this.iconId = iconId;
+		this.iconUrl = iconUrl;
 	}
 
 	@Generated(hash = 882125521)
@@ -54,5 +59,21 @@ public class Account {
 
 	public void setInitBalance(String initBalance) {
 		this.initBalance = initBalance;
+	}
+
+	public int getIconId() {
+		return this.iconId;
+	}
+
+	public void setIconId(int iconId) {
+		this.iconId = iconId;
+	}
+
+	public String getIconUrl() {
+		return this.iconUrl;
+	}
+
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
 	}
 }

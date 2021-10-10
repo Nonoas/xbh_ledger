@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityAccAddBinding;
 import indi.nonoas.xbh.fragment.ui.acclist.AccItemPopWindow;
@@ -41,9 +42,10 @@ public class AccAddActivity extends AppCompatActivity {
 			actionBar.setDisplayHomeAsUpEnabled(true);
 		}
 
+		// 接收 Intent 数据
 		Intent intent = getIntent();
 		String typeName = intent.getStringExtra(AccItemPopWindow.K_NAME);
-		int iconId = intent.getIntExtra(AccItemPopWindow.K_IMG, 0);
+		int iconId = intent.getIntExtra(AccItemPopWindow.K_IMG, R.drawable.ic_other_acc);
 
 		mBinding.tvAccType.setText(typeName);
 		mBinding.ivAccIcon.setImageDrawable(AppCompatResources.getDrawable(this, iconId));
@@ -58,6 +60,7 @@ public class AccAddActivity extends AppCompatActivity {
 			String accBalance = mBinding.etAccBalance.getText().toString().trim();
 
 			Intent resultIntent = new Intent();
+			resultIntent.putExtra(AccItemPopWindow.K_IMG, iconId);
 			resultIntent.putExtra(AccItemPopWindow.K_NAME, accName);
 			resultIntent.putExtra("balance", accBalance);
 			setResult(RESULT_OK, resultIntent);

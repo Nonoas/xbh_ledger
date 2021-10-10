@@ -24,11 +24,21 @@
     <autoscroll-to-editor value="false" />
     <autoscroll-from-editor value="true" />
     <show-object-properties value="true" />
-    <loaded-nodes />
+    <loaded-nodes>
+      <connection connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c">
+        <schema name="main" object-types="table, view" />
+      </connection>
+    </loaded-nodes>
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c">
-      <console name="Connection" type="STANDARD" schema="" session="Main" />
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select 
+    bal.*, 
+    max(bal._id),
+    acc.ICON_ID
+from acc_balance bal 
+left join account acc on acc._id = bal.acc_id 
+group by acc_id]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
@@ -38,9 +48,10 @@
     <connection id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.sqlite_sequence" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.USER" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.ACC_BALANCE" active-filter-id="EMPTY_FILTER" />
-    <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.android_metadata" active-filter-id="" />
+    <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.android_metadata" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="57e7c239-a4ba-4276-81b0-9fe53a33ae7c" dataset="main.ACCOUNT" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">

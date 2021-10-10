@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/common_padding"
+    android:padding="@dimen/padding_l"
     tools:context=".activity.SignUpActivity">
 
     <ImageView
@@ -26,7 +26,9 @@
         <EditText
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:singleLine="true" />
     </LinearLayout>
 
     <LinearLayout

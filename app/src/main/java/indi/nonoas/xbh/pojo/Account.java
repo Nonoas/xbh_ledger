@@ -9,17 +9,17 @@ public class Account {
 	@Id(autoincrement = true)
 	private Long id;
 	private String accName;
-	private int acc_type;
+	private int accType;
 	private String initBalance = "0";
 	private int iconId;
 	private String iconUrl;
 
-	@Generated(hash = 279537611)
-	public Account(Long id, String accName, int acc_type, String initBalance,
-			int iconId, String iconUrl) {
+	@Generated(hash = 106978072)
+	public Account(Long id, String accName, int accType, String initBalance,
+	               int iconId, String iconUrl) {
 		this.id = id;
 		this.accName = accName;
-		this.acc_type = acc_type;
+		this.accType = accType;
 		this.initBalance = initBalance;
 		this.iconId = iconId;
 		this.iconUrl = iconUrl;
@@ -45,12 +45,12 @@ public class Account {
 		this.accName = accName;
 	}
 
-	public int getAcc_type() {
-		return this.acc_type;
+	public int getAccType() {
+		return this.accType;
 	}
 
-	public void setAcc_type(int acc_type) {
-		this.acc_type = acc_type;
+	public void setAccType(int accType) {
+		this.accType = accType;
 	}
 
 	public String getInitBalance() {

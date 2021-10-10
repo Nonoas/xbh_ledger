@@ -13,7 +13,9 @@ public class ColorTemplate {
 			Color.parseColor("#FFCC99"),
 			Color.parseColor("#CCCCFF"),
 			Color.parseColor("#CCFF99"),
-			Color.parseColor("#99CCFF")
+			Color.parseColor("#99CCFF"),
+			Color.parseColor("#FFFFCC"),
+			Color.parseColor("#666699")
 	};
 
 	public static final int GREEN_SOFT = Color.parseColor("#99CCCC");

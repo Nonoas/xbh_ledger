@@ -5,7 +5,7 @@
     android:layout_margin="@dimen/common_padding"
     android:layout_marginTop="@dimen/common_padding"
     android:background="@drawable/slct_list_item"
-    android:descendantFocusability="blocksDescendants"
+    android:descendantFocusability="afterDescendants"
     android:gravity="center"
     android:orientation="horizontal"
     android:padding="@dimen/common_padding">
@@ -14,8 +14,8 @@
         android:id="@+id/iv_acc_icon"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:contentDescription="图标"
         android:layout_marginEnd="@dimen/common_padding"
+        android:contentDescription="图标"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_zsyh" />
 
@@ -27,12 +27,11 @@
         android:paddingEnd="@dimen/common_padding"
         android:text="招商银行" />
 
-    <EditText
-        android:id="@+id/et_balance"
+    <TextView
+        android:id="@+id/tv_balance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:hint="余额"
         android:textAlignment="textEnd" />
 
 

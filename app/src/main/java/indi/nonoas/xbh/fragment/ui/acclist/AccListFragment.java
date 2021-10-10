@@ -2,43 +2,39 @@ package indi.nonoas.xbh.fragment.ui.acclist;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.greenrobot.greendao.database.Database;
 
 import java.math.BigDecimal;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.activity.AccAddActivity;
@@ -49,7 +45,6 @@ import indi.nonoas.xbh.greendao.AccountDao;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
-import indi.nonoas.xbh.utils.DefaultValueUtil;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
 
 /**
@@ -112,38 +107,44 @@ public class AccListFragment extends Fragment {
 	@SuppressLint("ResourceType")
 	@Override
 	public void onStart() {
+
 		super.onStart();
 		lvAcc = binding.lvAcc;
+		registerForContextMenu(lvAcc);
+
+		lvAcc.setEmptyView(binding.tvEmpty);
+
 		this.initAccList();
 		this.initBalance();
 
 		binding.fab.setOnClickListener(view -> {
 			AccItemPopWindow pw = new AccItemPopWindow(getContext());
 			pw.setOnSelectedListener((v, item) -> {
-				String typeName = (String) item.get(AccItemPopWindow.K_NAME);
-				Toast.makeText(getContext(), typeName + "被点击了", Toast.LENGTH_SHORT).show();
-
 				// 跳转至 账户添加设置 界面
 				Intent intent = new Intent(requireActivity(), AccAddActivity.class);
 				intent.putExtra(AccItemPopWindow.K_IMG, (Integer) item.get(AccItemPopWindow.K_IMG));
 				intent.putExtra(AccItemPopWindow.K_NAME, (String) item.get(AccItemPopWindow.K_NAME));
-
 				intentLauncher.launch(intent);
-
-
 				pw.dismiss();
 			});
 			pw.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
 		});
 
-		lvAcc.setOnItemLongClickListener((parent, view, position, id) -> {
-			Toast.makeText(getContext(), "点击了" + id, Toast.LENGTH_SHORT).show();
-			return false;
+		lvAcc.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+			menu.add(0, 1, 0, "修改");
+			menu.add(0, 2, 0, "删除");
 		});
+
+	}
+
+	@Override
+	public boolean onContextItemSelected(@NonNull MenuItem item) {
+		Toast.makeText(getContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+		return super.onContextItemSelected(item);
 	}
 
 	/**
-	 * 设置数据
+	 * 设置数据并添加数据
 	 *
 	 * @param result 从其他activity接收的数据
 	 */
@@ -153,6 +154,7 @@ public class AccListFragment extends Fragment {
 			return;
 		}
 		Account account = new Account();
+		account.setIconId(data.getIntExtra(AccItemPopWindow.K_IMG, R.drawable.ic_other_acc));
 		account.setAccName(data.getStringExtra(AccItemPopWindow.K_NAME));
 		account.setInitBalance(data.getStringExtra("balance"));
 
@@ -169,12 +171,21 @@ public class AccListFragment extends Fragment {
 
 		DaoSession session = GreenDaoUtil.getDaoSession(getContext());
 		Database database = session.getDatabase();
-		Cursor cursor = database.rawQuery("select *,max(_id) from acc_balance group by acc_id", null);
+		StringBuilder sql = new StringBuilder();
+		sql.append("select ");
+		sql.append("    bal.*, ");
+		sql.append("    max(bal._id),");
+		sql.append("    acc.icon_id ");
+		sql.append("from acc_balance bal ");
+		sql.append("left join account acc on acc._id = bal.acc_id ");
+		sql.append("group by acc_id");
+		Cursor cursor = database.rawQuery(sql.toString(), null);
 		AccBalance balance;
 		while (cursor.moveToNext()) {
 			balance = new AccBalance();
 			balance.setId(cursor.getLong(cursor.getColumnIndex("_id")));
 			balance.setAccId(cursor.getLong(cursor.getColumnIndex("ACC_ID")));
+			balance.setIconId(cursor.getInt(cursor.getColumnIndex("ICON_ID")));
 			balance.setAccName(cursor.getString(cursor.getColumnIndex("ACC_NAME")));
 			balance.setBalance(cursor.getString(cursor.getColumnIndex("BALANCE")));
 			balance.setTimestamp(cursor.getLong(cursor.getColumnIndex("TIMESTAMP")));
@@ -186,6 +197,10 @@ public class AccListFragment extends Fragment {
 		mHomeViewModel.setBalanceList(mBalanceList);
 		mHomeViewModel.getBalanceListData()
 				.observe(getViewLifecycleOwner(), accBalances -> adapter.notifyDataSetChanged());
+
+		cursor.close();
+		database.close();
+		session.clear();
 	}
 
 	private void initBalance() {
@@ -208,6 +223,7 @@ public class AccListFragment extends Fragment {
 
 		// 添加到余额记录
 		AccBalance accBalance = new AccBalance();
+		accBalance.setIconId(account.getIconId());
 		accBalance.setBalance(account.getInitBalance());
 		accBalance.setAccName(account.getAccName());
 		accBalance.setAccId(account.getId());
@@ -241,9 +257,6 @@ public class AccListFragment extends Fragment {
 
 		private final List<AccBalance> mList;
 		private final Context context;
-		private final int[] icons = {R.drawable.ic_alipay,
-				R.drawable.ic_dfcf, R.drawable.ic_zgyh,
-				R.drawable.ic_zsyh, R.drawable.ic_yzyh};
 
 		MyAdapter(Context context, List<AccBalance> list) {
 			this.context = context;
@@ -278,14 +291,19 @@ public class AccListFragment extends Fragment {
 				holder = new ViewHolder();
 				holder.mImageView = view.findViewById(R.id.iv_acc_icon);
 				holder.tvAccName = view.findViewById(R.id.tv_acc_name);
-				holder.mEditText = view.findViewById(R.id.et_balance);
+				holder.mEditText = view.findViewById(R.id.tv_balance);
 				view.setTag(holder);
 			} else {
 				//复用holder
 				holder = (ViewHolder) view.getTag();
 			}
 			AccBalance account = mList.get(i);
-			holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, icons[(int) (Math.random() * 4 + 1)]));
+			int iconId = account.getIconId();
+			if (iconId != 0) {
+				holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, iconId));
+			} else {
+				holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_other_acc));
+			}
 			holder.tvAccName.setText(account.getAccName());
 			holder.mEditText.setText(account.getBalance());
 			return view;
@@ -295,6 +313,6 @@ public class AccListFragment extends Fragment {
 	static class ViewHolder {
 		ImageView mImageView;
 		TextView tvAccName;
-		EditText mEditText;
+		TextView mEditText;
 	}
 }

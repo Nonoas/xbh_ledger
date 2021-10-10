@@ -26,7 +26,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property AccName = new Property(1, String.class, "accName", false, "ACC_NAME");
-        public final static Property Acc_type = new Property(2, int.class, "acc_type", false, "ACC_TYPE");
+        public final static Property AccType = new Property(2, int.class, "accType", false, "ACC_TYPE");
         public final static Property InitBalance = new Property(3, String.class, "initBalance", false, "INIT_BALANCE");
         public final static Property IconId = new Property(4, int.class, "iconId", false, "ICON_ID");
         public final static Property IconUrl = new Property(5, String.class, "iconUrl", false, "ICON_URL");
@@ -47,7 +47,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"ACCOUNT\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"ACC_NAME\" TEXT," + // 1: accName
-                "\"ACC_TYPE\" INTEGER NOT NULL ," + // 2: acc_type
+                "\"ACC_TYPE\" INTEGER NOT NULL ," + // 2: accType
                 "\"INIT_BALANCE\" TEXT," + // 3: initBalance
                 "\"ICON_ID\" INTEGER NOT NULL ," + // 4: iconId
                 "\"ICON_URL\" TEXT);"); // 5: iconUrl
@@ -72,7 +72,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (accName != null) {
             stmt.bindString(2, accName);
         }
-        stmt.bindLong(3, entity.getAcc_type());
+        stmt.bindLong(3, entity.getAccType());
  
         String initBalance = entity.getInitBalance();
         if (initBalance != null) {
@@ -99,7 +99,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         if (accName != null) {
             stmt.bindString(2, accName);
         }
-        stmt.bindLong(3, entity.getAcc_type());
+        stmt.bindLong(3, entity.getAccType());
  
         String initBalance = entity.getInitBalance();
         if (initBalance != null) {
@@ -123,7 +123,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
         Account entity = new Account( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // accName
-            cursor.getInt(offset + 2), // acc_type
+            cursor.getInt(offset + 2), // accType
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // initBalance
             cursor.getInt(offset + 4), // iconId
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // iconUrl
@@ -135,7 +135,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
     public void readEntity(Cursor cursor, Account entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setAccName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setAcc_type(cursor.getInt(offset + 2));
+        entity.setAccType(cursor.getInt(offset + 2));
         entity.setInitBalance(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setIconId(cursor.getInt(offset + 4));
         entity.setIconUrl(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));

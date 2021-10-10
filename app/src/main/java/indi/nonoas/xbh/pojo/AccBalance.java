@@ -4,6 +4,7 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
 
 import java.math.BigDecimal;
 
@@ -21,6 +22,11 @@ public class AccBalance {
 	private Long timestamp;
 	private String accName;
 	private String balance;
+
+	@Transient
+	private int iconId;
+	@Transient
+	private String iconUrl;
 
 	@Generated(hash = 2116256628)
 	public AccBalance(Long id, Long accId, Long timestamp, String accName,
@@ -76,4 +82,19 @@ public class AccBalance {
 		this.balance = balance;
 	}
 
+	public int getIconId() {
+		return iconId;
+	}
+
+	public void setIconId(int iconId) {
+		this.iconId = iconId;
+	}
+
+	public String getIconUrl() {
+		return iconUrl;
+	}
+
+	public void setIconUrl(String iconUrl) {
+		this.iconUrl = iconUrl;
+	}
 }

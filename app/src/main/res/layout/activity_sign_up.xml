@@ -24,7 +24,7 @@
             android:text="用户名称" />
 
         <EditText
-            android:id="@+id/tv_name"
+            android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
@@ -39,16 +39,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="和本人关系" />
+            android:text="用户密码" />
 
         <EditText
+            android:id="@+id/et_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="创建" />
+        android:text="登录" />
 </LinearLayout>

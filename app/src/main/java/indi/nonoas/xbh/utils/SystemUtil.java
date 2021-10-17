@@ -48,7 +48,6 @@ public class SystemUtil {
 		}
 	}
 
-
 	public enum StatusBarType {
 		DARK, LIGHT, GREEN
 	}

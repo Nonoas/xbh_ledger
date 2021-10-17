@@ -4,5 +4,5 @@ public interface ILogTag {
     /**
      * 开发模式
      */
-    String DEV = "dev";
+    String DEV = "xbh_dev";
 }

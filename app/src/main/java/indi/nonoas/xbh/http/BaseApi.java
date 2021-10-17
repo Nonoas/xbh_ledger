@@ -6,7 +6,7 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "fpna9d.natappfree.cc";
+    private static final String BASE_ADDRESS = "yayuxm.natappfree.cc";
 
     public static String fullURL(String url) {
         return PROTOCOL_HTTP + "://" + BASE_ADDRESS + "/" + url;

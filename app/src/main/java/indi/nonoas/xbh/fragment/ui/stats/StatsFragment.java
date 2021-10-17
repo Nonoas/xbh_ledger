@@ -3,9 +3,7 @@ package indi.nonoas.xbh.fragment.ui.stats;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.icu.util.TimeUnit;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,19 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -37,27 +29,19 @@ import com.google.android.material.appbar.AppBarLayout;
 
 import org.greenrobot.greendao.database.Database;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.ColorTemplate;
 import indi.nonoas.xbh.databinding.FrgStatsBinding;
-import indi.nonoas.xbh.fragment.ui.home.HomeFragment;
 import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.pojo.AccBalance;
-import indi.nonoas.xbh.pojo.Account;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
 import indi.nonoas.xbh.utils.TimeUtil;
 import indi.nonoas.xbh.view.FlexibleScrollView;
 import indi.nonoas.xbh.view.chart.DateValueFormatter;
-import indi.nonoas.xbh.view.chart.DefaultValueFormatter;
 
 
 public class StatsFragment extends Fragment {
@@ -189,11 +173,11 @@ public class StatsFragment extends Fragment {
         AccBalance balance;
         while (cursor.moveToNext()) {
             balance = new AccBalance();
-            balance.setId(cursor.getLong(cursor.getColumnIndex("_id")));
-            balance.setAccId(cursor.getLong(cursor.getColumnIndex("ACC_ID")));
+            balance.setSerialNo(cursor.getLong(cursor.getColumnIndex("_id")));
+            balance.setAccNo(cursor.getLong(cursor.getColumnIndex("ACC_ID")));
             balance.setAccName(cursor.getString(cursor.getColumnIndex("ACC_NAME")));
             balance.setBalance(cursor.getString(cursor.getColumnIndex("BALANCE")));
-            balance.setTimestamp(cursor.getLong(cursor.getColumnIndex("TIMESTAMP")));
+            balance.setDate(cursor.getLong(cursor.getColumnIndex("TIMESTAMP")));
             mBalanceList.add(balance);
         }
 

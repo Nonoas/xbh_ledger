@@ -6,20 +6,19 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Transient;
 
-import java.math.BigDecimal;
-
 /**
  * @author Nonoas
  * @date 2021-09-20 23:27
  */
 @Entity(indexes = {@Index(
-		value = "accId DESC, timestamp DESC", unique = true
+		value = "accNo DESC, date DESC", unique = true
 )})
 public class AccBalance {
 	@Id(autoincrement = true)
-	private Long id;
-	private Long accId;
-	private Long timestamp;
+	private Long serialNo;
+	private Long accNo;
+	private Long date;
+	private String userId;
 	private String accName;
 	private String balance;
 
@@ -28,12 +27,13 @@ public class AccBalance {
 	@Transient
 	private String iconUrl;
 
-	@Generated(hash = 2116256628)
-	public AccBalance(Long id, Long accId, Long timestamp, String accName,
-	                  String balance) {
-		this.id = id;
-		this.accId = accId;
-		this.timestamp = timestamp;
+	@Generated(hash = 437533101)
+	public AccBalance(Long serialNo, Long accNo, Long date, String userId, String accName,
+			String balance) {
+		this.serialNo = serialNo;
+		this.accNo = accNo;
+		this.date = date;
+		this.userId = userId;
 		this.accName = accName;
 		this.balance = balance;
 	}
@@ -42,28 +42,28 @@ public class AccBalance {
 	public AccBalance() {
 	}
 
-	public Long getId() {
-		return this.id;
+	public Long getSerialNo() {
+		return this.serialNo;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setSerialNo(Long serialNo) {
+		this.serialNo = serialNo;
 	}
 
-	public Long getAccId() {
-		return this.accId;
+	public Long getAccNo() {
+		return this.accNo;
 	}
 
-	public void setAccId(Long accId) {
-		this.accId = accId;
+	public void setAccNo(Long accNo) {
+		this.accNo = accNo;
 	}
 
-	public Long getTimestamp() {
-		return this.timestamp;
+	public Long getDate() {
+		return this.date;
 	}
 
-	public void setTimestamp(Long timestamp) {
-		this.timestamp = timestamp;
+	public void setDate(Long date) {
+		this.date = date;
 	}
 
 	public String getAccName() {
@@ -96,5 +96,13 @@ public class AccBalance {
 
 	public void setIconUrl(String iconUrl) {
 		this.iconUrl = iconUrl;
+	}
+
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

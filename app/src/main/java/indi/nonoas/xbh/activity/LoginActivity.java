@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,17 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.fastjson.JSONObject;
 
 import indi.nonoas.xbh.MainActivity;
-import indi.nonoas.xbh.databinding.ActivitySignUpBinding;
+import indi.nonoas.xbh.databinding.ActivityLoginBinding;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
 import indi.nonoas.xbh.http.LoginInfoApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
+import indi.nonoas.xbh.utils.SystemUtil;
 import indi.nonoas.xbh.view.CoverableToast;
 
-public class SignUpActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    private ActivitySignUpBinding binding;
+    private ActivityLoginBinding binding;
 
     private User user;
 
@@ -35,20 +36,20 @@ public class SignUpActivity extends AppCompatActivity {
         switch (msg.what) {
             case LoginInfoApi.REQUEST_FAIL:
                 changeLoginBtnStatus(true);
-                CoverableToast.showToast(SignUpActivity.this, "登录失败，请求数据失败！", Toast.LENGTH_LONG);
+                CoverableToast.showToast(LoginActivity.this, "登录失败，请求数据失败！", Toast.LENGTH_LONG);
                 break;
             // 密码错误
             case LoginInfoApi.WRONG_LOGIN_INFO:
                 changeLoginBtnStatus(true);
                 json = (JSONObject) msg.obj;
-                CoverableToast.showToast(SignUpActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
+                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
                 break;
             // 登陆成功
             case LoginInfoApi.LOGIN_SUCCESS:
                 addUser();
                 json = (JSONObject) msg.obj;
-                CoverableToast.showToast(SignUpActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
-                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
                 break;
             default:
@@ -62,16 +63,25 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        binding = ActivitySignUpBinding.inflate(getLayoutInflater());
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        binding.btnAdd.setOnClickListener(v -> {
+        SystemUtil.toggleStatusBarColor(this, SystemUtil.StatusBarType.LIGHT);
+
+        // 按钮监听 beg
+        // 登录按钮
+        binding.btnLogin.setOnClickListener(v -> {
             String userId = binding.etName.getText().toString();
             String password = binding.etPassword.getText().toString();
             user = new User(userId, "测试用户", password);
             changeLoginBtnStatus(false);
             LoginInfoApi.login(handler, user);
         });
+        // 注册按钮
+        binding.tvRegister.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegistryActivity.class));
+        });
+        // 按钮监听 end
 
     }
 
@@ -89,12 +99,12 @@ public class SignUpActivity extends AppCompatActivity {
         if (enable) {
             binding.etName.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
             binding.etPassword.setInputType(129);
-            binding.btnAdd.setText("登录");
+            binding.btnLogin.setText("登录");
         } else {
             binding.etName.setInputType(InputType.TYPE_NULL);
             binding.etPassword.setInputType(InputType.TYPE_NULL);
-            binding.btnAdd.setText("登录中...");
+            binding.btnLogin.setText("登录中...");
         }
-        binding.btnAdd.setEnabled(enable);
+        binding.btnLogin.setEnabled(enable);
     }
 }

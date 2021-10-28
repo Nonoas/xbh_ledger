@@ -1,7 +1,6 @@
 package indi.nonoas.xbh.fragment.ui.stats;
 
 import android.annotation.SuppressLint;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,8 +26,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.material.appbar.AppBarLayout;
 
-import org.greenrobot.greendao.database.Database;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +33,8 @@ import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.ColorTemplate;
 import indi.nonoas.xbh.databinding.FrgStatsBinding;
 import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
-import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.pojo.AccBalance;
-import indi.nonoas.xbh.utils.GreenDaoUtil;
-import indi.nonoas.xbh.utils.TimeUtil;
+import indi.nonoas.xbh.utils.DateTimeUtil;
 import indi.nonoas.xbh.view.FlexibleScrollView;
 import indi.nonoas.xbh.view.chart.DateValueFormatter;
 
@@ -120,7 +115,7 @@ public class StatsFragment extends Fragment {
         lineChart.setDescription(null);
         lineChart.setScaleEnabled(false);
 
-        long startTimeStamp = TimeUtil.add(System.currentTimeMillis(), TimeUtil.TimeMilliEnum.DAY, -6);
+        long startTimeStamp = DateTimeUtil.add(System.currentTimeMillis(), DateTimeUtil.TimeMilliEnum.DAY, -6);
 
         List<Entry> list = new ArrayList<>();
 
@@ -166,21 +161,6 @@ public class StatsFragment extends Fragment {
      */
     private void genPieChart() {
 
-        DaoSession session = GreenDaoUtil.getDaoSession(getContext());
-        Database database = session.getDatabase();
-        Cursor cursor = database.rawQuery("select *,max(_id) from acc_balance group by acc_id", null);
-
-        AccBalance balance;
-        while (cursor.moveToNext()) {
-            balance = new AccBalance();
-            balance.setSerialNo(cursor.getLong(cursor.getColumnIndex("_id")));
-            balance.setAccNo(cursor.getLong(cursor.getColumnIndex("ACC_ID")));
-            balance.setAccName(cursor.getString(cursor.getColumnIndex("ACC_NAME")));
-            balance.setBalance(cursor.getString(cursor.getColumnIndex("BALANCE")));
-            balance.setDate(cursor.getLong(cursor.getColumnIndex("TIMESTAMP")));
-            mBalanceList.add(balance);
-        }
-
         PieChart chart = binding.pieChart;
         chart.setUsePercentValues(false);
         chart.getDescription().setEnabled(false);
@@ -206,10 +186,6 @@ public class StatsFragment extends Fragment {
 
         PieData pieData = new PieData();
         List<PieEntry> pieEntries = new ArrayList<>();
-        for (AccBalance b : mBalanceList) {
-            PieEntry entry = new PieEntry(Float.parseFloat(b.getBalance()), b.getAccName());
-            pieEntries.add(entry);
-        }
 
         mHomeViewModel.setBalanceList(mBalanceList);
         mHomeViewModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {

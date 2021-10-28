@@ -17,11 +17,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
-import org.greenrobot.greendao.query.Query;
-
 import java.util.List;
 
-import indi.nonoas.xbh.activity.SignUpActivity;
+import indi.nonoas.xbh.activity.LoginActivity;
 import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
 import indi.nonoas.xbh.greendao.DaoSession;
@@ -49,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         // 判断是否登录
         if (!isLogin()) {
             System.out.println("未登录");
-            Intent intent = new Intent(this, SignUpActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;

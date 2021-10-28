@@ -1,6 +1,7 @@
 package indi.nonoas.xbh;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -19,8 +20,14 @@ import static org.junit.Assert.*;
 public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
+        Log.d("resId","asdadsad");
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("indi.nonoas.xbh", appContext.getPackageName());
+//        assertEquals("indi.nonoas.xbh", appContext.getPackageName());
+
+        int resId = appContext.getResources().getIdentifier("ic_add", "drawable", appContext.getPackageName());
+        System.out.println(resId);
+
+
     }
 }

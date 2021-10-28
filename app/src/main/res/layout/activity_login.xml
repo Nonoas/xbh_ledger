@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/padding_l"
-    tools:context=".activity.SignUpActivity">
+    tools:context=".activity.LoginActivity">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -49,8 +49,16 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_add"
+        android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="登录" />
+
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#0000ff"
+        android:gravity="center"
+        android:text="注册" />
 </LinearLayout>

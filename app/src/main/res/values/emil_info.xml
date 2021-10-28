@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="emailInfo" >
+        <item>\@qq.com</item>
+        <item>\@sina.com</item>
+        <item>\@sina.cn</item>
+        <item>\@gmail.com</item>
+        <item>\@163.com</item>
+    </string-array>
+</resources>

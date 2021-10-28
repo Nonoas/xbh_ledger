@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -41,6 +42,7 @@ import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
 import indi.nonoas.xbh.http.AccBalanceApi;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
+import indi.nonoas.xbh.utils.DateTimeUtil;
 import indi.nonoas.xbh.view.CoverableToast;
 
 /**
@@ -58,28 +60,10 @@ public class AccListFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> intentLauncher;
 
-    /**
-     * 处理api结果
-     */
-    private final Handler handler = new Handler(msg -> {
-        switch (msg.what) {
-            case AccBalanceApi.ADD_SUCCESS:
-                CoverableToast.showToast(getContext(), "添加账户成功", Toast.LENGTH_SHORT);
-                break;
-            case AccBalanceApi.ADD_FAIL:
-                JSONObject json = (JSONObject) msg.obj;
-                CoverableToast.showToast(getContext(),
-                        json.getString("errorCode") + "," + json.getString("errorMsg"),
-                        Toast.LENGTH_SHORT);
-                break;
-            case AccBalanceApi.REQUEST_FAIL:
-                CoverableToast.showToast(getContext(), "添加失败，访问服务器失败", Toast.LENGTH_SHORT);
-                break;
-            default:
-                break;
-        }
-        return false;
-    });
+    /**上下文菜单：修改*/
+    private final int CMENU_ID_MODIFY = 1;
+    /**上下文菜单：删除*/
+    private final int CMENU_ID_DELETE = 2;
 
     public AccListFragment() {
     }
@@ -125,16 +109,19 @@ public class AccListFragment extends Fragment {
     @SuppressLint("ResourceType")
     @Override
     public void onStart() {
-
         super.onStart();
         lvAcc = binding.lvAcc;
-        registerForContextMenu(lvAcc);
-
         lvAcc.setEmptyView(binding.tvEmpty);
-
+        // 为账户列表注册上下文菜单
+        registerForContextMenu(lvAcc);
         MyAdapter adapter = new MyAdapter(getContext(), mBalanceList);
         adapter.clear();
         lvAcc.setAdapter(adapter);
+        lvAcc.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+            menu.add(0, CMENU_ID_MODIFY, 0, "修改");
+            menu.add(0, CMENU_ID_DELETE, 1, "删除");
+        });
+
         mHomeViewModel.getBalanceListData()
                 .observe(getViewLifecycleOwner(), accBalances -> adapter.notifyDataSetChanged());
 
@@ -146,6 +133,7 @@ public class AccListFragment extends Fragment {
             pw.setOnSelectedListener((v, item) -> {
                 // 跳转至 账户添加设置 界面
                 Intent intent = new Intent(requireActivity(), AccAddActivity.class);
+                System.out.println(item.get(AccItemPopWindow.K_IMG));
                 intent.putExtra(AccItemPopWindow.K_IMG, (Integer) item.get(AccItemPopWindow.K_IMG));
                 intent.putExtra(AccItemPopWindow.K_NAME, (String) item.get(AccItemPopWindow.K_NAME));
                 intentLauncher.launch(intent);
@@ -154,16 +142,25 @@ public class AccListFragment extends Fragment {
             pw.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
         });
 
-        lvAcc.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-            menu.add(0, 1, 0, "修改");
-            menu.add(0, 2, 0, "删除");
-        });
+
 
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(getContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        CoverableToast.showToast(getContext(), info.position + "", Toast.LENGTH_SHORT);
+        switch (item.getItemId()) {
+            // 修改
+            case CMENU_ID_MODIFY:
+                break;
+            // 删除
+            case CMENU_ID_DELETE:
+                mBalanceList.remove(info.position);
+                mHomeViewModel.setBalanceList(mBalanceList);
+            default:
+                break;
+        }
         return super.onContextItemSelected(item);
     }
 
@@ -195,7 +192,7 @@ public class AccListFragment extends Fragment {
                 mBalanceList.clear();
                 mBalanceList.addAll(JSONObject.parseArray(json.getString("data"), AccBalance.class));
                 mHomeViewModel.setBalanceList(mBalanceList);
-                Log.d(ILogTag.DEV, "查询账户列表成功");
+                Log.d(ILogTag.DEV, "查询账户列表成功:" + json.toJSONString());
                 break;
             case AccBalanceApi.REQUEST_FAIL:
                 CoverableToast.showToast(getContext(), "服务器请求异常", Toast.LENGTH_LONG);
@@ -208,7 +205,7 @@ public class AccListFragment extends Fragment {
      * 从数据库查询账户余额
      */
     private void initAccList() {
-        AccBalanceApi.qryBalance(AppStore.getUser().getUserId(), 20211017, qryHandler);
+        AccBalanceApi.qryBalance(AppStore.getUser().getUserId(), DateTimeUtil.getCurrDate(), qryHandler);
     }
 
     private void initBalance() {
@@ -218,6 +215,32 @@ public class AccListFragment extends Fragment {
         }
         mHomeViewModel.setBalance(decimal.toString());
     }
+
+    /**
+     * 处添加账户api处理器
+     */
+    private final Handler addAccHandler = new Handler(msg -> {
+        switch (msg.what) {
+            case AccBalanceApi.ADD_SUCCESS:
+                CoverableToast.showToast(getContext(), "添加账户成功", Toast.LENGTH_SHORT);
+                initAccList();
+                break;
+            case AccBalanceApi.ADD_FAIL:
+                JSONObject json = (JSONObject) msg.obj;
+                CoverableToast.showToast(
+                        getContext(),
+                        String.format("%s,%s", json.getString("errorCode"), json.getString("errorMsg")),
+                        Toast.LENGTH_SHORT
+                );
+                break;
+            case AccBalanceApi.REQUEST_FAIL:
+                CoverableToast.showToast(getContext(), "添加失败，访问服务器异常", Toast.LENGTH_SHORT);
+                break;
+            default:
+                break;
+        }
+        return false;
+    });
 
     /**
      * 添加账户到数据库
@@ -233,11 +256,9 @@ public class AccListFragment extends Fragment {
         accBalance.setUserId(AppStore.getUser().getUserId());
         accBalance.setAccName(account.getAccName());
         accBalance.setAccNo(account.getId());
-        //  TODO 获取的当天日期
-        accBalance.setDate(20211017L);
-
+        accBalance.setDate((long) DateTimeUtil.getCurrDate());
         // 调用 api
-        AccBalanceApi.addAccBalance(accBalance, handler);
+        AccBalanceApi.addAccBalance(accBalance, addAccHandler);
 
     }
 

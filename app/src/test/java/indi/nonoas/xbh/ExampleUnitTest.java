@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import indi.nonoas.xbh.common.log.ILogTag;
+import indi.nonoas.xbh.utils.DateTimeUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -46,5 +47,10 @@ public class ExampleUnitTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testUtil(){
+        System.out.println("当前日期" + DateTimeUtil.getCurrDate());
     }
 }

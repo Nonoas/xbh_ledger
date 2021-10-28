@@ -1,10 +1,25 @@
 package indi.nonoas.xbh.utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-public class TimeUtil {
+public class DateTimeUtil {
 
-    private TimeUtil() {
+    private DateTimeUtil() {
+    }
+
+    /**
+     * 获取当前系统日期
+     *
+     * @return yyyyMMdd
+     */
+    public static int getCurrDate() {
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd",Locale.getDefault());
+        return Integer.parseInt(dateFormat.format(date));
     }
 
     /**

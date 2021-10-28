@@ -4,14 +4,12 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 import indi.nonoas.xbh.common.log.ILogTag;
-import indi.nonoas.xbh.utils.TimeUtil;
+import indi.nonoas.xbh.utils.DateTimeUtil;
 
 
 /**
@@ -31,7 +29,7 @@ public class DateValueFormatter extends ValueFormatter {
     @SuppressLint("SimpleDateFormat")
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
-        long time = TimeUtil.add(currTime, TimeUtil.TimeMilliEnum.DAY, (int) value);
+        long time = DateTimeUtil.add(currTime, DateTimeUtil.TimeMilliEnum.DAY, (int) value);
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         Log.d(ILogTag.DEV, "格式化：" + format.format(time));
         return format.format(time);

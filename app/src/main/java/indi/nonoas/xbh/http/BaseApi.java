@@ -12,8 +12,13 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "u6c9db.natappfree.cc";
+    private static final String BASE_ADDRESS = "txq63h.natappfree.cc";
 //    private static final String BASE_ADDRESS = "115.29.202.83:8090";
+
+    /**
+     * 用于存放 cookies
+     */
+    private static final String cookies = "";
 
 
     // 请求返回码 beg
@@ -33,8 +38,8 @@ public class BaseApi {
      */
     public static void asyncGet(String url, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
         Request request = new Request.Builder()
                 .get()
@@ -52,8 +57,8 @@ public class BaseApi {
      */
     public static void asyncPost(String url, RequestBody body, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(20, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .build();
         Request request = new Request.Builder()
                 .post(body)

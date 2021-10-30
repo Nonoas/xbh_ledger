@@ -16,14 +16,15 @@
     <string name="close">关闭</string>
     <string name="menu_acc">账户列表</string>
     <string name="menu_home">主页</string>
+    <string name="login">登录</string>
+    <string name="registry">注册</string>
 
-    <!-- 字典翻译 -->
+    <!-- 字典翻译 beg -->
     <string name="dict_day">日</string>
     <string name="dict_month">月</string>
     <string name="dict_year">年</string>
     <string name="dict_acc_type">账户类型</string>
     <string name="dict_acc_name">账户名称</string>
     <string name="dict_acc_balance">账户余额</string>
-
 
 </resources>

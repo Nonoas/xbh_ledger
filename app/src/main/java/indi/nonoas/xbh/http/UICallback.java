@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import indi.nonoas.xbh.common.log.ILogTag;
 import okhttp3.Call;

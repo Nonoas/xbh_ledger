@@ -7,8 +7,9 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="common_padding">12dp</dimen>
-    <dimen name="padding_m">5dp</dimen>
-    <dimen name="padding_l">20dp</dimen>
+    <dimen name="padding_m">6dp</dimen>
+    <dimen name="padding_l">12dp</dimen>
+    <dimen name="padding_xl">18dp</dimen>
     <dimen name="item_padding">10dp</dimen>
 
     <dimen name="common_radius">10dp</dimen>

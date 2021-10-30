@@ -19,17 +19,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户名称" />
-
         <EditText
             android:id="@+id/email_prefix"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textPersonName"
+            android:hint="邮箱"
+            android:inputType="textEmailAddress"
+            android:padding="@dimen/padding_xl"
             android:singleLine="true" />
 
         <Spinner
@@ -45,33 +42,27 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户密码" />
-
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:padding="@dimen/padding_xl" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="确认密码" />
 
         <EditText
             android:id="@+id/et_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:hint="确认密码"
+            android:inputType="textPassword"
+            android:padding="@dimen/padding_xl" />
     </LinearLayout>
 
     <LinearLayout
@@ -79,17 +70,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="验证码　" />
-
-            <EditText
+        <EditText
             android:id="@+id/et_verify_code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textPassword" />
+            android:hint="验证码"
+            android:inputType="number"
+            android:padding="@dimen/padding_xl" />
 
         <indi.nonoas.xbh.view.button.VerifyCodeSendButton
             android:id="@+id/btn_send_verify_code"
@@ -102,6 +90,7 @@
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/padding_xl"
         android:text="注册" />
 
 </LinearLayout>

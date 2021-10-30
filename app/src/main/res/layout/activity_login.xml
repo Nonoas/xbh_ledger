@@ -18,16 +18,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户名称" />
-
         <EditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="用户名 / 邮箱"
             android:inputType="textPersonName"
+            android:padding="@dimen/padding_xl"
             android:singleLine="true" />
     </LinearLayout>
 
@@ -36,29 +33,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户密码" />
-
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:padding="@dimen/padding_xl" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="登录" />
+        android:padding="@dimen/padding_xl"
+        android:text="@string/login" />
 
     <TextView
         android:id="@+id/tv_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#0000ff"
         android:gravity="center"
-        android:text="注册" />
+        android:padding="@dimen/padding_xl"
+        android:text="@string/registry"
+        android:textColor="#0000ff" />
 </LinearLayout>

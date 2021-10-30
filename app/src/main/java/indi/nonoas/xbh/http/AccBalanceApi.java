@@ -46,35 +46,12 @@ public class AccBalanceApi extends BaseApi {
      */
     public static void qryBalance(String userId, long date, Handler handler) {
         String url = String.format(Locale.CHINA, "/acc/qryBalance?userId=%s&date=%d", userId, date);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .get()
-                .url(fullURL(url))
-                .build();
-        client.newCall(request).enqueue(new Callback() {
+        BaseApi.asyncGet(url, new UICallback(handler) {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Message msg = new Message();
-                msg.what = REQUEST_FAIL;
-                handler.sendMessage(msg);
-                Log.e(ILogTag.DEV, e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Message msg = new Message();
-                if (response.isSuccessful()) {
-                    JSONObject json = (JSONObject) JSONObject.parse(response.body().string());
-                    if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
-                        msg.what = QRY_SUCCESS;
-                    } else {
-                        msg.what = ADD_FAIL;
-                    }
-                    msg.obj = json;
-                } else {
-                    msg.what = REQUEST_FAIL;
-                }
-                handler.sendMessage(msg);
+            protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                JSONObject json = getRespBodyJson(response);
+                msg.what = isRequestSuccess(json) ? QRY_SUCCESS : ADD_FAIL;
+                msg.obj = json;
             }
         });
     }
@@ -86,39 +63,23 @@ public class AccBalanceApi extends BaseApi {
      * @param handler    UI处理器
      */
     public static void addAccBalance(AccBalance accBalance, Handler handler) {
-        String url = "/acc/addAccBalance";
         String json = JSON.toJSONString(accBalance);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .post(RequestBody.Companion.create(json, MediaType.parse("application/json")))
-                .url(fullURL(url))
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Message msg = new Message();
-                msg.what = REQUEST_FAIL;
-                handler.sendMessage(msg);
-                Log.e(ILogTag.DEV, e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Message msg = new Message();
-                if (response.isSuccessful()) {
-                    JSONObject json = (JSONObject) JSONObject.parse(response.body().string());
-                    if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
-                        msg.what = ADD_SUCCESS;
-                    } else {
-                        msg.what = ADD_FAIL;
+        BaseApi.asyncPost(
+                "/acc/addAccBalance",
+                RequestBody.Companion.create(json, MediaType.parse("application/json")),
+                new UICallback(handler) {
+                    @Override
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = getRespBodyJson(response);
+                        if (isRequestSuccess(json)) {
+                            msg.what = ADD_SUCCESS;
+                        } else {
+                            msg.what = ADD_FAIL;
+                        }
+                        msg.obj = json;
                     }
-                    msg.obj = json;
-                } else {
-                    msg.what = REQUEST_FAIL;
                 }
-                handler.sendMessage(msg);
-            }
-        });
+        );
     }
 
 

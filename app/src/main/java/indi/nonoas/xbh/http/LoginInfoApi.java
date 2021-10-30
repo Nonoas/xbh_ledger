@@ -2,9 +2,6 @@ package indi.nonoas.xbh.http;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -14,14 +11,10 @@ import java.util.Objects;
 
 import indi.nonoas.xbh.activity.RegistryActivity;
 import indi.nonoas.xbh.common.error.ErrorEnum;
-import indi.nonoas.xbh.common.log.ILogTag;
 import indi.nonoas.xbh.pojo.User;
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -57,11 +50,6 @@ public class LoginInfoApi extends BaseApi {
     public static final int REGISTRY_FAILURE = 5;
 
     /**
-     * cookie
-     */
-    private static String cookie = "";
-
-    /**
      * 登录请求 api
      *
      * @param handler ui处理器
@@ -71,20 +59,19 @@ public class LoginInfoApi extends BaseApi {
         BaseApi.asyncGet(String.format("login/login?userId=%s&password=%s", user.getUserId(), user.getPassword()),
                 new UICallback(handler) {
                     @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        Message msg = new Message();
-                        if (response.isSuccessful()) {
-                            JSONObject json = (JSONObject) JSONObject.parse(Objects.requireNonNull(response.body()).string());
-                            if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
-                                msg.what = LOGIN_SUCCESS;
-                            } else {
-                                msg.what = WRONG_LOGIN_INFO;
-                            }
-                            msg.obj = json;
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = (JSONObject) JSONObject.parse(Objects.requireNonNull(response.body()).string());
+                        if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
+                            msg.what = LOGIN_SUCCESS;
+                            // 保存sessionId
+                            Headers headers = response.headers();
+                            List<String> cookies = headers.values("Set-Cookie");
+                            String session = cookies.get(0);
+                            BaseApi.cookies = session.substring(0, session.indexOf(";"));
                         } else {
-                            msg.what = REQUEST_FAIL;
+                            msg.what = WRONG_LOGIN_INFO;
                         }
-                        handler.sendMessage(msg);
+                        msg.obj = json;
                     }
                 }
         );
@@ -99,34 +86,22 @@ public class LoginInfoApi extends BaseApi {
      * @param handler    事件处理器
      */
     public static void registry(String userId, String password, String verifyCode, Handler handler) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .addHeader("cookie", cookie)
-                .post(new FormBody.Builder()
+
+        BaseApi.asyncPost("login/registry",
+                new FormBody.Builder()
                         .add("userId", userId)
                         .add("password", password)
                         .add("verifyCode", verifyCode)
-                        .build())
-                .url(fullURL("login/registry"))
-                .build();
-        client.newCall(request).enqueue(new UICallback(handler) {
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Message msg = new Message();
-                if (response.isSuccessful()) {
-                    JSONObject json = (JSONObject) JSONObject.parse(response.body().string());
-                    if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
-                        msg.what = REGISTRY_SUCCESS;
-                    } else {
-                        msg.what = REGISTRY_FAILURE;
+                        .build(),
+                new UICallback(handler) {
+                    @Override
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = getRespBodyJson(response);
+                        msg.what = isRequestSuccess(json) ? REGISTRY_SUCCESS : REGISTRY_FAILURE;
+                        msg.obj = json;
                     }
-                    msg.obj = json;
-                } else {
-                    msg.what = REQUEST_FAIL;
                 }
-                handler.sendMessage(msg);
-            }
-        });
+        );
     }
 
     /**
@@ -134,31 +109,24 @@ public class LoginInfoApi extends BaseApi {
      *
      * @param handler 事件处理器 {@link RegistryActivity#sendVerifyCode()}
      */
+    @SuppressWarnings("all")
     public static void sendVerityCode(String email, Handler handler) {
         BaseApi.asyncGet(
                 String.format("mail/sendVerifyMail?email=%s", email),
                 new UICallback(handler) {
                     @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        Message msg = new Message();
-                        if (response.isSuccessful()) {
-                            JSONObject json = (JSONObject) JSONObject.parse(Objects.requireNonNull(response.body()).string());
-                            // 发送成功
-                            if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
-                                msg.what = SEND_VERIFY_CODE_SUCCESS;
-                            } else {
-                                msg.what = SEND_VERIFY_CODE_FAIL;
-                            }
-                            msg.obj = json;
-                            // 保存sessionId
-                            Headers headers = response.headers();
-                            List<String> cookies = headers.values("Set-Cookie");
-                            String session = cookies.get(0);
-                            LoginInfoApi.cookie = session.substring(0, session.indexOf(";"));
-                        } else {
-                            msg.what = REQUEST_FAIL;
-                        }
-                        handler.sendMessage(msg);
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = getRespBodyJson(response);
+                        // 发送成功
+                        msg.what = isRequestSuccess(json)
+                                ? SEND_VERIFY_CODE_SUCCESS
+                                : SEND_VERIFY_CODE_FAIL;
+                        msg.obj = json;
+                        // 保存sessionId
+                        Headers headers = response.headers();
+                        List<String> cookies = headers.values("Set-Cookie");
+                        String session = cookies.get(0);
+                        BaseApi.cookies = session.substring(0, session.indexOf(";"));
                     }
                 }
         );

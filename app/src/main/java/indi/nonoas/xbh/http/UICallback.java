@@ -7,13 +7,15 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 
 import indi.nonoas.xbh.common.log.ILogTag;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+/**
+ * 可以使用handler返回响应信息的回调类
+ */
 public abstract class UICallback implements Callback {
 
     private final Handler handler;
@@ -31,5 +33,23 @@ public abstract class UICallback implements Callback {
     }
 
     @Override
-    public abstract void onResponse(@NonNull Call call, @NonNull Response response) throws IOException;
+    public final void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+        Message msg = new Message();
+        if (response.isSuccessful()) {
+            // if the code is in [200..300)
+            onResponseSuccess(call, response, msg);
+        } else {
+            onResponseFailure(call, response, msg);
+        }
+        handler.sendMessage(msg);
+    }
+
+
+    protected abstract void onResponseSuccess(Call call, Response response, Message msg) throws IOException;
+
+
+    protected void onResponseFailure(Call call, Response response, Message msg) throws IOException {
+        msg.what = BaseApi.REQUEST_FAIL;
+    }
+
 }

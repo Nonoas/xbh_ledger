@@ -1,9 +1,6 @@
-package indi.nonoas.xbh.fragment.ui.acclist;
+package indi.nonoas.xbh.fragment.acclist;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import java.util.List;
 
 /**
  * @author Nonoas

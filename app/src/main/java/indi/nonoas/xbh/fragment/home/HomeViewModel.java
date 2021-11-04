@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.home;
+package indi.nonoas.xbh.fragment.home;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

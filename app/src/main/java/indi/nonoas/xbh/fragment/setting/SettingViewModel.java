@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.setting;
+package indi.nonoas.xbh.fragment.setting;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

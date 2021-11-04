@@ -1,25 +1,18 @@
 package indi.nonoas.xbh.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import indi.nonoas.xbh.R;
-import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityAccAddBinding;
-import indi.nonoas.xbh.fragment.ui.acclist.AccItemPopWindow;
+import indi.nonoas.xbh.fragment.acclist.AccItemPopWindow;
 import indi.nonoas.xbh.utils.StringUtils;
 import indi.nonoas.xbh.utils.SystemUtil;
 

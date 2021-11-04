@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.home;
+package indi.nonoas.xbh.fragment.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

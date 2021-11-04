@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.home;
+package indi.nonoas.xbh.fragment.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,11 +12,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
-import java.util.Objects;
-
 import indi.nonoas.xbh.databinding.FragmentHomeBinding;
-import indi.nonoas.xbh.fragment.ui.acclist.AccListFragment;
-import indi.nonoas.xbh.fragment.ui.stats.StatsFragment;
+import indi.nonoas.xbh.fragment.acclist.AccListFragment;
+import indi.nonoas.xbh.fragment.stats.StatsFragment;
 
 
 public class HomeFragment extends Fragment {

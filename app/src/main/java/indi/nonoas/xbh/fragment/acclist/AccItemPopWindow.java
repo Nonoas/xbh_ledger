@@ -1,8 +1,6 @@
-package indi.nonoas.xbh.fragment.ui.acclist;
+package indi.nonoas.xbh.fragment.acclist;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +10,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,9 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import indi.nonoas.xbh.R;
-import indi.nonoas.xbh.activity.AccAddActivity;
 import indi.nonoas.xbh.databinding.DialogAddAccBinding;
-import indi.nonoas.xbh.pojo.AccBalance;
 
 /**
  * 底部弹窗，用于 账户选择

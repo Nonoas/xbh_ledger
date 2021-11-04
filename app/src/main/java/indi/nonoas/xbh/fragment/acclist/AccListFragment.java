@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.acclist;
+package indi.nonoas.xbh.fragment.acclist;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,7 +38,7 @@ import indi.nonoas.xbh.activity.AccAddActivity;
 import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.common.log.ILogTag;
 import indi.nonoas.xbh.databinding.FrgAccListBinding;
-import indi.nonoas.xbh.fragment.ui.home.HomeViewModel;
+import indi.nonoas.xbh.fragment.home.HomeViewModel;
 import indi.nonoas.xbh.http.AccBalanceApi;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;

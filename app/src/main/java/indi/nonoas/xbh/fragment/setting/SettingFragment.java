@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.fragment.ui.setting;
+package indi.nonoas.xbh.fragment.setting;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,9 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-
-import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FragmentSettingBinding;
 
 

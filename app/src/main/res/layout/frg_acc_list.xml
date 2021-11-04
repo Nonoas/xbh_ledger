@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.ui.acclist.AccListFragment">
+    tools:context=".fragment.acclist.AccListFragment">
 
     <indi.nonoas.xbh.view.FlexibleScrollView
         android:id="@+id/fsv"

@@ -20,7 +20,7 @@ public abstract class UICallback implements Callback {
 
     private final Handler handler;
 
-    public UICallback(Handler handler) {
+    public UICallback(@NonNull Handler handler) {
         this.handler = handler;
     }
 

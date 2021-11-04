@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -45,6 +46,7 @@ public class StatsFragment extends Fragment {
     private HomeViewModel mHomeViewModel;
     private FrgStatsBinding binding;
     private final List<AccBalance> mBalanceList = new ArrayList<>();
+    private final List<AccBalance> periodBalanceList = new ArrayList<>();
 
     private int snackBarFlag = 10;
 
@@ -74,9 +76,7 @@ public class StatsFragment extends Fragment {
                 .findViewById(R.id.appbar);
 
         fsv.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
             int height = ivHeader.getHeight() - actionBar.getHeight();
-
             if (scrollY > height) {
                 actionBar.setBackgroundColor(Color.parseColor(getString(R.color.soft_green)));
             } else {
@@ -98,30 +98,43 @@ public class StatsFragment extends Fragment {
         });
 
 
-        this.genBarChart();
+        this.genLineChart();
         this.genPieChart();
+
+        initData();
 
         return binding.getRoot();
     }
 
     /**
-     * 生成柱状图
+     * 初始化数据
+     */
+    private void initData(){
+
+    }
+
+    /**
+     * 生成折线图
      */
     @SuppressLint("ResourceType")
-    private void genBarChart() {
+    private void genLineChart() {
 
         LineChart lineChart = binding.barChartContainer.barChart;
 
         lineChart.setDescription(null);
         lineChart.setScaleEnabled(false);
 
-        long startTimeStamp = DateTimeUtil.add(System.currentTimeMillis(), DateTimeUtil.TimeMilliEnum.DAY, -6);
-
         List<Entry> list = new ArrayList<>();
 
-        for (int i = 0; i < 7; i++) {
-            list.add(new Entry(i, (float) Math.random() * 100));
-        }
+        statsViewModel.setBalanceList(periodBalanceList);
+        statsViewModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
+            list.clear();
+            for (AccBalance balance : accBalances) {
+                list.add(new Entry(balance.getDate(), Float.parseFloat(balance.getBalance())));
+            }
+            lineChart.notifyDataSetChanged();
+            lineChart.postInvalidate();
+        });
 
         XAxis xAxis = lineChart.getXAxis();
 
@@ -129,7 +142,6 @@ public class StatsFragment extends Fragment {
 
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new DateValueFormatter("MM/dd", startTimeStamp));
 
         YAxis rAxis = lineChart.getAxisRight();
         rAxis.setEnabled(false);

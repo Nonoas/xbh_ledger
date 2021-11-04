@@ -43,7 +43,7 @@ import indi.nonoas.xbh.http.AccBalanceApi;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
 import indi.nonoas.xbh.utils.DateTimeUtil;
-import indi.nonoas.xbh.view.CoverableToast;
+import indi.nonoas.xbh.view.toast.CoverableToast;
 
 /**
  * 账户列表: {@link Fragment} 的子类
@@ -60,9 +60,13 @@ public class AccListFragment extends Fragment {
 
     private ActivityResultLauncher<Intent> intentLauncher;
 
-    /**上下文菜单：修改*/
+    /**
+     * 上下文菜单：修改
+     */
     private final int CMENU_ID_MODIFY = 1;
-    /**上下文菜单：删除*/
+    /**
+     * 上下文菜单：删除
+     */
     private final int CMENU_ID_DELETE = 2;
 
     public AccListFragment() {
@@ -76,7 +80,7 @@ public class AccListFragment extends Fragment {
         return fragment;
     }
 
-    // ==========================================   生命周期  ===================================================
+    // ==========================================   生命周期 beg  ===================================================
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,8 +147,8 @@ public class AccListFragment extends Fragment {
         });
 
 
-
     }
+    // ========================================== 生命周期 end ===================================================
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
@@ -195,7 +199,7 @@ public class AccListFragment extends Fragment {
                 Log.d(ILogTag.DEV, "查询账户列表成功:" + json.toJSONString());
                 break;
             case AccBalanceApi.REQUEST_FAIL:
-                CoverableToast.showToast(getContext(), "服务器请求异常", Toast.LENGTH_LONG);
+                CoverableToast.showShortToast(getContext(), "服务器请求异常", CoverableToast.FAIL);
                 break;
         }
         return false;
@@ -298,7 +302,7 @@ public class AccListFragment extends Fragment {
 
         @Override
         public long getItemId(int i) {
-            return mList.get(i).getSerialNo();
+            return mList.get(i).hashCode();
         }
 
         @Override

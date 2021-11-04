@@ -12,9 +12,12 @@ import java.util.Objects;
 import indi.nonoas.xbh.activity.RegistryActivity;
 import indi.nonoas.xbh.common.error.ErrorEnum;
 import indi.nonoas.xbh.pojo.User;
+import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -61,13 +64,10 @@ public class LoginInfoApi extends BaseApi {
                     @Override
                     protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
                         JSONObject json = (JSONObject) JSONObject.parse(Objects.requireNonNull(response.body()).string());
-                        if (checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"))) {
+                        if (BaseApi.isRequestSuccess(json)) {
                             msg.what = LOGIN_SUCCESS;
                             // 保存sessionId
-                            Headers headers = response.headers();
-                            List<String> cookies = headers.values("Set-Cookie");
-                            String session = cookies.get(0);
-                            BaseApi.cookies = session.substring(0, session.indexOf(";"));
+                            saveCookies(response);
                         } else {
                             msg.what = WRONG_LOGIN_INFO;
                         }

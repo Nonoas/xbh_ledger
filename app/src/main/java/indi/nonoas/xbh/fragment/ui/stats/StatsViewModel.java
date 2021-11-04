@@ -1,19 +1,31 @@
 package indi.nonoas.xbh.fragment.ui.stats;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import indi.nonoas.xbh.pojo.AccBalance;
+
 public class StatsViewModel extends ViewModel {
 
-    private MutableLiveData<String> mText;
+    private MutableLiveData<List<AccBalance>> mBalanceList;
 
     public StatsViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mBalanceList = new MutableLiveData<>();
+        mBalanceList.setValue(new ArrayList<>());
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public List<AccBalance> getBalanceList() {
+        return mBalanceList.getValue();
+    }
+
+    public MutableLiveData<List<AccBalance>> getBalanceListData() {
+        return mBalanceList;
+    }
+
+    public void setBalanceList(List<AccBalance> accBalances) {
+        mBalanceList.setValue(accBalances);
     }
 }

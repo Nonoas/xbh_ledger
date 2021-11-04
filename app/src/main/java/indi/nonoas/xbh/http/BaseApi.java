@@ -3,10 +3,13 @@ package indi.nonoas.xbh.http;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import indi.nonoas.xbh.common.error.ErrorEnum;
+import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Callback;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -20,7 +23,7 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "txq63h.natappfree.cc";
+    private static final String BASE_ADDRESS = "8dze7j.natappfree.cc";
 
     /**
      * 服务地址
@@ -86,14 +89,14 @@ public class BaseApi {
     }
 
     /**
-     * 检查errorCode是否匹配
-     *
-     * @param errorEnum 错误信息枚举
-     * @param errStr    错误码
-     * @return true：相同
+     * 从response中取出cookies保存到内存中
+     * @param response 响应
      */
-    public static boolean checkErrorCode(ErrorEnum errorEnum, String errStr) {
-        return errorEnum.getErrorCode().equals(errStr);
+    public static void saveCookies(Response response){
+        Headers headers = response.headers();
+        List<String> cookies = headers.values("Set-Cookie");
+        String session = cookies.get(0);
+        BaseApi.cookies = session.substring(0, session.indexOf(";"));
     }
 
     /**
@@ -103,7 +106,7 @@ public class BaseApi {
      * @return 判断请求码是否与 {@link ErrorEnum#SUCCESS} 相同
      */
     protected static boolean isRequestSuccess(JSONObject json) {
-        return checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"));
+        return HttpUtil.checkErrorCode(ErrorEnum.SUCCESS, json.getString("errorCode"));
     }
 
     /**

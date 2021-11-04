@@ -14,8 +14,9 @@ import indi.nonoas.xbh.databinding.ActivityRegistryBinding;
 import indi.nonoas.xbh.http.LoginInfoApi;
 import indi.nonoas.xbh.utils.StringUtils;
 import indi.nonoas.xbh.utils.SystemUtil;
-import indi.nonoas.xbh.view.CoverableToast;
+import indi.nonoas.xbh.view.toast.CoverableToast;
 import indi.nonoas.xbh.view.button.VerifyCodeSendButton;
+import indi.nonoas.xbh.view.toast.ToastType;
 
 public class RegistryActivity extends AppCompatActivity {
 
@@ -46,13 +47,9 @@ public class RegistryActivity extends AppCompatActivity {
 
         // 监听beg
         // 发送验证码
-        binding.btnSendVerifyCode.setOnClickListener(view -> {
-            sendVerifyCode();
-        });
+        binding.btnSendVerifyCode.setOnClickListener(view -> sendVerifyCode());
         // 注册按钮
-        binding.btnRegister.setOnClickListener(view -> {
-            registry();
-        });
+        binding.btnRegister.setOnClickListener(view -> registry());
         // 监听end
 
     }
@@ -71,10 +68,10 @@ public class RegistryActivity extends AppCompatActivity {
                 break;
             case LoginInfoApi.REGISTRY_FAILURE:
                 JSONObject json = (JSONObject) msg.obj;
-                CoverableToast.showShortToast(this, "注册失败，" + json.getString("errorMsg"));
+                CoverableToast.showShortToast(this, "注册失败，" + json.getString("errorMsg"), CoverableToast.FAIL);
                 break;
             case LoginInfoApi.REQUEST_FAIL:
-                CoverableToast.showShortToast(this, "服务器异常，注册失败");
+                CoverableToast.showShortToast(this, "注册失败，服务器异常", ToastType.FAIL);
                 break;
             default:
                 break;
@@ -119,10 +116,10 @@ public class RegistryActivity extends AppCompatActivity {
             case LoginInfoApi.SEND_VERIFY_CODE_FAIL:
                 JSONObject json = (JSONObject) msg.obj;
                 btnSendVerifyCode.setText("获取验证码");
-                CoverableToast.showToast(this, json.getString("errorMsg"), 0);
+                CoverableToast.showShortToast(this, json.getString("errorMsg"), CoverableToast.FAIL);
                 break;
             case LoginInfoApi.REQUEST_FAIL:
-                CoverableToast.showToast(this, "服务器异常，获取验证码失败", 0);
+                CoverableToast.showShortToast(this, "服务器异常，获取验证码失败", CoverableToast.FAIL);
                 btnSendVerifyCode.setText("获取验证码");
                 break;
             default:

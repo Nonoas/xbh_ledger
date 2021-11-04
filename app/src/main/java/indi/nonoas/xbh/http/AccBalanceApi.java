@@ -16,6 +16,7 @@ import java.util.Locale;
 import indi.nonoas.xbh.common.error.ErrorEnum;
 import indi.nonoas.xbh.common.log.ILogTag;
 import indi.nonoas.xbh.pojo.AccBalance;
+import indi.nonoas.xbh.utils.StringUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -40,6 +41,9 @@ public class AccBalanceApi extends BaseApi {
 
     public static final int ADD_SUCCESS = 1;
     public static final int ADD_FAIL = 2;
+
+    public static final int QRY_TOT_BALANCE_SUCCESS = 3;
+    public static final int QRY_TOT_BALANCE_FAIL = 4;
 
     /**
      * 获取余额列表api
@@ -80,6 +84,31 @@ public class AccBalanceApi extends BaseApi {
                     }
                 }
         );
+    }
+
+    /**
+     * 查询周期余额
+     *
+     * @param userId  用户id
+     * @param unit    周期单位
+     * @param span    周期数
+     * @param handler UI处理器
+     */
+    public static void qryPeriodTotBalance(String userId, int unit, int span, Handler handler) {
+        BaseApi.asyncGet(
+                StringUtils.format("/acc/qryBalanceRecord?userId=%s&unit=%d&span=%d", userId, unit, span),
+                new UICallback(handler) {
+                    @Override
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = getRespBodyJson(response);
+                        if (isRequestSuccess(json)) {
+                            msg.what = QRY_TOT_BALANCE_SUCCESS;
+                        } else {
+                            msg.what = QRY_TOT_BALANCE_FAIL;
+                        }
+                        msg.obj = json;
+                    }
+                });
     }
 
 

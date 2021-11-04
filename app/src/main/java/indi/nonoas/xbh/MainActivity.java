@@ -3,10 +3,13 @@ package indi.nonoas.xbh;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,6 +27,7 @@ import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
+import indi.nonoas.xbh.http.LoginInfoApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
 
@@ -39,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
      */
     private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
 
+    private final Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+
+            return false;
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +57,13 @@ public class MainActivity extends AppCompatActivity {
 
         // 判断是否登录
         if (!isLogin()) {
-            System.out.println("未登录");
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
+        // 如果本地保存了登录信息，则直接登录
+        LoginInfoApi.login(new Handler(), AppStore.getUser());
 
         Window window = getWindow();
         AppStore.setCurrWindow(window);
@@ -80,21 +92,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-	/**
-	 * 判断是否已经登录
-	 *
-	 * @return 已登录: true
-	 */
-	private boolean isLogin() {
-		DaoSession session = GreenDaoUtil.getDaoSession(this);
-		UserDao userDao = session.getUserDao();
-		List<User> list = userDao.queryBuilder().list();
-		if (list == null || list.isEmpty()) {
-			return false;
-		}
-		AppStore.setUser(list.get(0));
-		return true;
-	}
+    /**
+     * 判断是否已经登录
+     *
+     * @return 已登录: true
+     */
+    private boolean isLogin() {
+        DaoSession session = GreenDaoUtil.getDaoSession(this);
+        UserDao userDao = session.getUserDao();
+        List<User> list = userDao.queryBuilder().list();
+        if (list == null || list.isEmpty()) {
+            return false;
+        }
+        AppStore.setUser(list.get(0));
+        return true;
+    }
 
     @Override
     protected void onStart() {

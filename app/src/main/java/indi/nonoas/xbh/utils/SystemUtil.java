@@ -8,7 +8,6 @@ import android.view.WindowManager;
 
 import androidx.core.view.WindowInsetsControllerCompat;
 
-import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.common.ColorTemplate;
 
 /**

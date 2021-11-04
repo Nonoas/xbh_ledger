@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -20,7 +19,7 @@ import indi.nonoas.xbh.http.LoginInfoApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
 import indi.nonoas.xbh.utils.SystemUtil;
-import indi.nonoas.xbh.view.CoverableToast;
+import indi.nonoas.xbh.view.toast.CoverableToast;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,19 +35,19 @@ public class LoginActivity extends AppCompatActivity {
         switch (msg.what) {
             case LoginInfoApi.REQUEST_FAIL:
                 changeLoginBtnStatus(true);
-                CoverableToast.showToast(LoginActivity.this, "登录失败，请求数据失败！", Toast.LENGTH_LONG);
+                CoverableToast.showShortToast(LoginActivity.this, "登录失败，请求数据失败", CoverableToast.FAIL);
                 break;
             // 密码错误
             case LoginInfoApi.WRONG_LOGIN_INFO:
                 changeLoginBtnStatus(true);
                 json = (JSONObject) msg.obj;
-                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
+                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), CoverableToast.FAIL, Toast.LENGTH_LONG);
                 break;
             // 登陆成功
             case LoginInfoApi.LOGIN_SUCCESS:
                 addUser();
                 json = (JSONObject) msg.obj;
-                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), Toast.LENGTH_LONG);
+                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), CoverableToast.SUCCESS, Toast.LENGTH_LONG);
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 finish();
                 break;

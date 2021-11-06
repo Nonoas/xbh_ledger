@@ -21,9 +21,11 @@ import okhttp3.ResponseBody;
  */
 public class BaseApi {
 
+    private static final HttpInterceptor httpinterceptor = new HttpInterceptor();
+
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "8dze7j.natappfree.cc";
+    private static final String BASE_ADDRESS = "xyp2ts.natappfree.cc";
 
     /**
      * 服务地址
@@ -53,6 +55,7 @@ public class BaseApi {
      */
     public static void asyncGet(String url, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(httpinterceptor)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -73,6 +76,7 @@ public class BaseApi {
      */
     public static void asyncPost(String url, RequestBody body, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(httpinterceptor)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -84,19 +88,22 @@ public class BaseApi {
         client.newCall(request).enqueue(callback);
     }
 
-    public static String fullURL(String url) {
+    protected static String fullURL(String url) {
         return PROTOCOL_HTTP + "://" + BASE_ADDRESS + "/" + url;
     }
 
     /**
      * 从response中取出cookies保存到内存中
+     *
      * @param response 响应
      */
-    public static void saveCookies(Response response){
+    public static void saveCookies(Response response) {
         Headers headers = response.headers();
         List<String> cookies = headers.values("Set-Cookie");
-        String session = cookies.get(0);
-        BaseApi.cookies = session.substring(0, session.indexOf(";"));
+        if (!cookies.isEmpty()) {
+            String session = cookies.get(0);
+            BaseApi.cookies = session.substring(0, session.indexOf(";"));
+        }
     }
 
     /**

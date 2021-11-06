@@ -1,5 +1,6 @@
 package indi.nonoas.xbh.view.toast;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import indi.nonoas.xbh.R;
@@ -20,10 +22,7 @@ public class CoverableToast {
 
     public static final ToastType FAIL = ToastType.FAIL;
 
-    public static void showToast(Context context, String msg, int length) {
-        showToast(context, msg, null, length);
-    }
-
+    @SuppressLint("InflateParams")
     public static void showToast(Context context, String msg, ToastType type, int length) {
         if (toast != null) {
             toast.cancel();
@@ -47,6 +46,26 @@ public class CoverableToast {
     }
 
     /**
+     * 显示 Toast 自动判断显示时间<br/>
+     * msg长度 > 20 则为长时间显示
+     *
+     * @param context 上下文
+     * @param msg     消息文本
+     * @param type    显示类型
+     */
+    public static void showToast(Context context, @NonNull String msg, ToastType type) {
+        if (msg.length() > 20) {
+            showToast(context, msg, type, Toast.LENGTH_LONG);
+        } else {
+            showToast(context, msg, type, Toast.LENGTH_SHORT);
+        }
+    }
+
+    public static void showToast(Context context, String msg, int length) {
+        showToast(context, msg, null, length);
+    }
+
+    /**
      * 显示 “长时间” 的 Toast
      *
      * @param context 上下文对象
@@ -66,7 +85,11 @@ public class CoverableToast {
         showToast(context, msg, type, Toast.LENGTH_SHORT);
     }
 
-    public static void showShortToast(Context context, String msg) {
-        showToast(context, msg, null, Toast.LENGTH_SHORT);
+    public static void showSuccessToast(Context context, String msg) {
+        showToast(context, msg, ToastType.SUCCESS);
+    }
+
+    public static void showFailureToast(Context context, String msg) {
+        showToast(context, msg, ToastType.FAIL);
     }
 }

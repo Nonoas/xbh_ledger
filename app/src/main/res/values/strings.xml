@@ -14,7 +14,6 @@
 
     <string name="open">打开</string>
     <string name="close">关闭</string>
-    <string name="menu_acc">账户列表</string>
     <string name="menu_home">主页</string>
     <string name="login">登录</string>
     <string name="registry">注册</string>
@@ -26,5 +25,6 @@
     <string name="dict_acc_type">账户类型</string>
     <string name="dict_acc_name">账户名称</string>
     <string name="dict_acc_balance">账户余额</string>
+    <string name="dict_no_data">暂无数据</string>
 
 </resources>

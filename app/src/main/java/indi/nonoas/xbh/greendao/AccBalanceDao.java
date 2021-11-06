@@ -25,7 +25,7 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
      */
     public static class Properties {
         public final static Property SerialNo = new Property(0, Long.class, "serialNo", true, "_id");
-        public final static Property AccNo = new Property(1, Long.class, "accNo", false, "ACC_NO");
+        public final static Property AccNo = new Property(1, String.class, "accNo", false, "ACC_NO");
         public final static Property Date = new Property(2, Long.class, "date", false, "DATE");
         public final static Property UserId = new Property(3, String.class, "userId", false, "USER_ID");
         public final static Property AccName = new Property(4, String.class, "accName", false, "ACC_NAME");
@@ -46,7 +46,7 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ACC_BALANCE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: serialNo
-                "\"ACC_NO\" INTEGER," + // 1: accNo
+                "\"ACC_NO\" TEXT," + // 1: accNo
                 "\"DATE\" INTEGER," + // 2: date
                 "\"USER_ID\" TEXT," + // 3: userId
                 "\"ACC_NAME\" TEXT," + // 4: accName
@@ -71,9 +71,9 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
             stmt.bindLong(1, serialNo);
         }
  
-        Long accNo = entity.getAccNo();
+        String accNo = entity.getAccNo();
         if (accNo != null) {
-            stmt.bindLong(2, accNo);
+            stmt.bindString(2, accNo);
         }
  
         Long date = entity.getDate();
@@ -106,9 +106,9 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
             stmt.bindLong(1, serialNo);
         }
  
-        Long accNo = entity.getAccNo();
+        String accNo = entity.getAccNo();
         if (accNo != null) {
-            stmt.bindLong(2, accNo);
+            stmt.bindString(2, accNo);
         }
  
         Long date = entity.getDate();
@@ -141,7 +141,7 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
     public AccBalance readEntity(Cursor cursor, int offset) {
         AccBalance entity = new AccBalance( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // serialNo
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // accNo
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // accNo
             cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // date
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // userId
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // accName
@@ -153,7 +153,7 @@ public class AccBalanceDao extends AbstractDao<AccBalance, Long> {
     @Override
     public void readEntity(Cursor cursor, AccBalance entity, int offset) {
         entity.setSerialNo(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setAccNo(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setAccNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setDate(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setUserId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setAccName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));

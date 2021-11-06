@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,9 +30,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.activity.AccAddActivity;
@@ -104,8 +107,6 @@ public class AccListFragment extends Fragment {
         binding = FrgAccListBinding.inflate(inflater, container, false);
 
         mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        mHomeViewModel.getBalanceData()
-                .observe(getViewLifecycleOwner(), str -> binding.tvBalance.setText(str));
 
         return binding.getRoot();
     }
@@ -126,20 +127,30 @@ public class AccListFragment extends Fragment {
             menu.add(0, CMENU_ID_DELETE, 1, "删除");
         });
 
-        mHomeViewModel.getBalanceListData()
-                .observe(getViewLifecycleOwner(), accBalances -> adapter.notifyDataSetChanged());
+        // 余额列表数据观察
+        mHomeViewModel.getBalanceListData().observe(
+                getViewLifecycleOwner(),
+                accBalances -> {
+                    adapter.notifyDataSetChanged();
+                    refreshBalance();
+                }
+        );
+        // 总余额数据观察
+        mHomeViewModel.getBalanceData().observe(
+                getViewLifecycleOwner(),
+                balance -> binding.tvBalance.setText(balance)
+        );
 
         this.initAccList();
-        this.initBalance();
 
         binding.fab.setOnClickListener(view -> {
             AccItemPopWindow pw = new AccItemPopWindow(getContext());
             pw.setOnSelectedListener((v, item) -> {
                 // 跳转至 账户添加设置 界面
                 Intent intent = new Intent(requireActivity(), AccAddActivity.class);
-                System.out.println(item.get(AccItemPopWindow.K_IMG));
-                intent.putExtra(AccItemPopWindow.K_IMG, (Integer) item.get(AccItemPopWindow.K_IMG));
-                intent.putExtra(AccItemPopWindow.K_NAME, (String) item.get(AccItemPopWindow.K_NAME));
+                System.out.println(item.get(AccItemEnum.K_IMG));
+                intent.putExtra(AccItemEnum.K_IMG, (Integer) item.get(AccItemEnum.K_IMG));
+                intent.putExtra(AccItemEnum.K_NAME, (String) item.get(AccItemEnum.K_NAME));
                 intentLauncher.launch(intent);
                 pw.dismiss();
             });
@@ -153,20 +164,38 @@ public class AccListFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        CoverableToast.showToast(getContext(), info.position + "", Toast.LENGTH_SHORT);
+        int index = info.position;
         switch (item.getItemId()) {
             // 修改
             case CMENU_ID_MODIFY:
                 break;
             // 删除
             case CMENU_ID_DELETE:
-                mBalanceList.remove(info.position);
+                if (null == AppStore.getUser()) {
+                    break;
+                }
+                AccBalanceApi.delAccBalance(
+                        AppStore.getUser().getUserId(),
+                        mBalanceList.get(index).getAccNo(),
+                        delAccHandler);
+                mBalanceList.remove(index);
                 mHomeViewModel.setBalanceList(mBalanceList);
             default:
                 break;
         }
         return super.onContextItemSelected(item);
     }
+
+    private final Handler delAccHandler = new Handler(new WeakReference<Handler.Callback>(msg -> {
+        switch (msg.what) {
+            case AccBalanceApi.DEL_ACC_SUCCESS:
+                CoverableToast.showSuccessToast(getContext(), "删除成功");
+                break;
+            case AccBalanceApi.DEL_ACC_FAIL:
+                break;
+        }
+        return false;
+    }).get());
 
     /**
      * 设置数据并添加数据
@@ -178,11 +207,15 @@ public class AccListFragment extends Fragment {
         if (null == data) {
             return;
         }
+        Map<String, Integer> icMap = AccItemEnum.ICONID_MAP;
+        String accNo = data.getStringExtra(AccItemEnum.K_ID);
+        Integer integer = icMap.get(accNo);
+        int icId = null == integer ? 0 : integer;
+
         Account account = new Account();
-        // TODO 添加生成acc_id的方法
-        account.setId(System.currentTimeMillis());
-        account.setIconId(data.getIntExtra(AccItemPopWindow.K_IMG, R.drawable.ic_other_acc));
-        account.setAccName(data.getStringExtra(AccItemPopWindow.K_NAME));
+        account.setId(accNo);
+        account.setIconId(icId);
+        account.setAccName(data.getStringExtra(AccItemEnum.K_NAME));
         account.setInitBalance(data.getStringExtra("balance"));
 
         addAcc(account);
@@ -212,7 +245,7 @@ public class AccListFragment extends Fragment {
         AccBalanceApi.qryBalance(AppStore.getUser().getUserId(), DateTimeUtil.getCurrDate(), qryHandler);
     }
 
-    private void initBalance() {
+    private void refreshBalance() {
         BigDecimal decimal = new BigDecimal(0);
         for (AccBalance acc : mBalanceList) {
             decimal = decimal.add(new BigDecimal(acc.getBalance()));
@@ -320,11 +353,11 @@ public class AccListFragment extends Fragment {
                 holder = (ViewHolder) view.getTag();
             }
             AccBalance account = mList.get(i);
-            int iconId = account.getIconId();
-            if (iconId != 0) {
-                holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, iconId));
-            } else {
+            Integer iconId = AccItemEnum.ICONID_MAP.get(account.getAccNo());
+            if (null == iconId || 0 == iconId) {
                 holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_other_acc));
+            } else {
+                holder.mImageView.setImageDrawable(AppCompatResources.getDrawable(context, iconId));
             }
             holder.tvAccName.setText(account.getAccName());
             holder.mEditText.setText(account.getBalance());

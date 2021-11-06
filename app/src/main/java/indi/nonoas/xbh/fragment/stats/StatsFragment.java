@@ -3,6 +3,8 @@ package indi.nonoas.xbh.fragment.stats;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -24,17 +27,27 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.EntryXComparator;
 import com.google.android.material.appbar.AppBarLayout;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import indi.nonoas.xbh.R;
+import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.common.ColorTemplate;
+import indi.nonoas.xbh.common.IDict;
 import indi.nonoas.xbh.databinding.FrgStatsBinding;
 import indi.nonoas.xbh.fragment.home.HomeViewModel;
+import indi.nonoas.xbh.http.AccBalanceApi;
 import indi.nonoas.xbh.pojo.AccBalance;
+import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.view.FlexibleScrollView;
+import indi.nonoas.xbh.view.chart.DateValueFormatter;
+import indi.nonoas.xbh.view.toast.CoverableToast;
+import indi.nonoas.xbh.view.toast.ToastType;
 
 
 public class StatsFragment extends Fragment {
@@ -106,9 +119,48 @@ public class StatsFragment extends Fragment {
     /**
      * 初始化数据
      */
-    private void initData(){
-
+    private void initData() {
+        refreshLineChart();
     }
+
+    /**
+     * 刷新折线图数据
+     */
+    private void refreshLineChart() {
+        User user = AppStore.getUser();
+        if (null == user) {
+            return;
+        }
+        AccBalanceApi.qryPeriodTotBalance(user.getUserId(), IDict.Period.DAY, 7, lineChartHandler);
+    }
+
+    /**
+     * @see AccBalanceApi#qryPeriodTotBalance
+     */
+    private final Handler lineChartHandler = new Handler(new WeakReference<Handler.Callback>(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            JSONObject json = (JSONObject) msg.obj;
+            switch (msg.what) {
+                case AccBalanceApi.QRY_TOT_BALANCE_SUCCESS:
+                    String data = json.getString("data");
+                    List<AccBalance> balances = JSONObject.parseArray(data, AccBalance.class);
+                    periodBalanceList.clear();
+                    periodBalanceList.addAll(balances);
+                    statsViewModel.setTotBalanceList(periodBalanceList);
+                    break;
+                case AccBalanceApi.QRY_TOT_BALANCE_FAIL:
+                    CoverableToast.showFailureToast(getContext(), json.getString("errorMsg"));
+                    break;
+                case AccBalanceApi.REQUEST_FAIL:
+                    CoverableToast.showFailureToast(getContext(), "服务器异常");
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+    }).get());
 
     /**
      * 生成折线图
@@ -121,48 +173,54 @@ public class StatsFragment extends Fragment {
         lineChart.setDescription(null);
         lineChart.setScaleEnabled(false);
 
-        List<Entry> list = new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
 
-        statsViewModel.setBalanceList(periodBalanceList);
-        statsViewModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
-            list.clear();
+        // 数据绑定
+        statsViewModel.setTotBalanceList(periodBalanceList);
+        statsViewModel.getTotBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
+            entries.clear();
+            int i = 0;
             for (AccBalance balance : accBalances) {
-                list.add(new Entry(balance.getDate(), Float.parseFloat(balance.getBalance())));
+                float totBalance = Float.parseFloat(balance.getTotBalance());
+                entries.add(new Entry(i++, totBalance));
             }
+
+            XAxis xAxis = lineChart.getXAxis();
+
+            xAxis.setDrawGridLines(false);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setValueFormatter(new DateValueFormatter("MM月dd日", periodBalanceList));
+            xAxis.setGranularity(1f);
+
+            YAxis rAxis = lineChart.getAxisRight();
+            rAxis.setEnabled(false);
+            rAxis.setDrawGridLines(false);
+
+            YAxis lAxis = lineChart.getAxisLeft();
+            lAxis.setEnabled(false);
+            lAxis.setDrawGridLines(false);
+
+            LineData data = new LineData();
+
+            Collections.sort(entries, new EntryXComparator());
+            LineDataSet dataSet = new LineDataSet(entries, "每日余额");
+
+            dataSet.setColor(Color.parseColor(getString(R.color.soft_red)));
+            dataSet.setDrawCircles(false);
+
+            data.addDataSet(dataSet);
+
+            lineChart.setData(data);
+            lineChart.setExtraBottomOffset(20f);
+            lineChart.animateY(800, Easing.EaseInOutQuad);
+
+            lineChart.notifyDataSetChanged();
+            lineChart.invalidate();
             lineChart.notifyDataSetChanged();
             lineChart.postInvalidate();
         });
 
-        XAxis xAxis = lineChart.getXAxis();
 
-        xAxis.setGranularity(1f);
-
-        xAxis.setDrawGridLines(false);
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-
-        YAxis rAxis = lineChart.getAxisRight();
-        rAxis.setEnabled(false);
-        rAxis.setDrawGridLines(false);
-
-        YAxis lAxis = lineChart.getAxisLeft();
-        lAxis.setEnabled(false);
-        lAxis.setDrawGridLines(false);
-
-        LineData data = new LineData();
-
-        LineDataSet dataSet = new LineDataSet(list, "每日余额");
-
-        dataSet.setColor(Color.parseColor(getString(R.color.soft_red)));
-        dataSet.setDrawCircles(false);
-
-        data.addDataSet(dataSet);
-
-        lineChart.setData(data);
-        lineChart.setExtraBottomOffset(20f);
-        lineChart.animateY(800, Easing.EaseInOutQuad);
-
-        lineChart.notifyDataSetChanged();
-        lineChart.invalidate();
     }
 
     /**

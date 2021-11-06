@@ -6,17 +6,17 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class Account {
-	@Id(autoincrement = true)
-	private Long id;
+	@Id
+	private String id;
 	private String accName;
 	private int accType;
 	private String initBalance = "0";
 	private int iconId;
 	private String iconUrl;
 
-	@Generated(hash = 106978072)
-	public Account(Long id, String accName, int accType, String initBalance,
-	               int iconId, String iconUrl) {
+	@Generated(hash = 88043702)
+	public Account(String id, String accName, int accType, String initBalance,
+			int iconId, String iconUrl) {
 		this.id = id;
 		this.accName = accName;
 		this.accType = accType;
@@ -29,11 +29,11 @@ public class Account {
 	public Account() {
 	}
 
-	public Long getId() {
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

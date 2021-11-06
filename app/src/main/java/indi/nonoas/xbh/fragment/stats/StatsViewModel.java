@@ -10,22 +10,22 @@ import indi.nonoas.xbh.pojo.AccBalance;
 
 public class StatsViewModel extends ViewModel {
 
-    private MutableLiveData<List<AccBalance>> mBalanceList;
+    private MutableLiveData<List<AccBalance>> totBalanceList;
 
     public StatsViewModel() {
-        mBalanceList = new MutableLiveData<>();
-        mBalanceList.setValue(new ArrayList<>());
+        totBalanceList = new MutableLiveData<>();
+        totBalanceList.setValue(new ArrayList<>());
     }
 
     public List<AccBalance> getBalanceList() {
-        return mBalanceList.getValue();
+        return totBalanceList.getValue();
     }
 
-    public MutableLiveData<List<AccBalance>> getBalanceListData() {
-        return mBalanceList;
+    public MutableLiveData<List<AccBalance>> getTotBalanceListData() {
+        return totBalanceList;
     }
 
-    public void setBalanceList(List<AccBalance> accBalances) {
-        mBalanceList.setValue(accBalances);
+    public void setTotBalanceList(List<AccBalance> accBalances) {
+        totBalanceList.setValue(accBalances);
     }
 }

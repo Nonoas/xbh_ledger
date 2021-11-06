@@ -19,6 +19,7 @@ import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.utils.StringUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -45,6 +46,9 @@ public class AccBalanceApi extends BaseApi {
     public static final int QRY_TOT_BALANCE_SUCCESS = 3;
     public static final int QRY_TOT_BALANCE_FAIL = 4;
 
+    public static final int DEL_ACC_SUCCESS = 5;
+    public static final int DEL_ACC_FAIL = 6;
+
     /**
      * 获取余额列表api
      */
@@ -70,7 +74,7 @@ public class AccBalanceApi extends BaseApi {
         String json = JSON.toJSONString(accBalance);
         BaseApi.asyncPost(
                 "/acc/addAccBalance",
-                RequestBody.Companion.create(json, MediaType.parse("application/json")),
+                RequestBody.create(MediaType.parse("application/json"), json),
                 new UICallback(handler) {
                     @Override
                     protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
@@ -105,6 +109,33 @@ public class AccBalanceApi extends BaseApi {
                             msg.what = QRY_TOT_BALANCE_SUCCESS;
                         } else {
                             msg.what = QRY_TOT_BALANCE_FAIL;
+                        }
+                        msg.obj = json;
+                    }
+                });
+    }
+
+    /**
+     * 删除某个账户
+     *
+     * @param userId  用户id
+     * @param accId   账户id
+     * @param handler UI处理器
+     */
+    public static void delAccBalance(String userId, String accId, Handler handler) {
+        asyncPost("/acc/delAccBalance",
+                new FormBody.Builder()
+                        .add("userId", userId)
+                        .add("accId", accId)
+                        .build(),
+                new UICallback(handler) {
+                    @Override
+                    protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
+                        JSONObject json = getRespBodyJson(response);
+                        if (isRequestSuccess(json)) {
+                            msg.what = DEL_ACC_SUCCESS;
+                        } else {
+                            msg.what = DEL_ACC_FAIL;
                         }
                         msg.obj = json;
                     }

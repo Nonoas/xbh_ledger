@@ -63,7 +63,7 @@ public class RegistryActivity extends AppCompatActivity {
         switch (msg.what) {
             // 注册成功
             case LoginInfoApi.REGISTRY_SUCCESS:
-                CoverableToast.showShortToast(this, "注册成功");
+                CoverableToast.showSuccessToast(this, "注册成功");
                 this.finish();
                 break;
             case LoginInfoApi.REGISTRY_FAILURE:

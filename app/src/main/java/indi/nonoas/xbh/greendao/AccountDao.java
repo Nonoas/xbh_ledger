@@ -15,7 +15,7 @@ import indi.nonoas.xbh.pojo.Account;
 /** 
  * DAO for table "ACCOUNT".
 */
-public class AccountDao extends AbstractDao<Account, Long> {
+public class AccountDao extends AbstractDao<Account, String> {
 
     public static final String TABLENAME = "ACCOUNT";
 
@@ -24,7 +24,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, String.class, "id", true, "ID");
         public final static Property AccName = new Property(1, String.class, "accName", false, "ACC_NAME");
         public final static Property AccType = new Property(2, int.class, "accType", false, "ACC_TYPE");
         public final static Property InitBalance = new Property(3, String.class, "initBalance", false, "INIT_BALANCE");
@@ -45,7 +45,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ACCOUNT\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: id
                 "\"ACC_NAME\" TEXT," + // 1: accName
                 "\"ACC_TYPE\" INTEGER NOT NULL ," + // 2: accType
                 "\"INIT_BALANCE\" TEXT," + // 3: initBalance
@@ -63,9 +63,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
     protected final void bindValues(DatabaseStatement stmt, Account entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        String id = entity.getId();
         if (id != null) {
-            stmt.bindLong(1, id);
+            stmt.bindString(1, id);
         }
  
         String accName = entity.getAccName();
@@ -90,9 +90,9 @@ public class AccountDao extends AbstractDao<Account, Long> {
     protected final void bindValues(SQLiteStatement stmt, Account entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
+        String id = entity.getId();
         if (id != null) {
-            stmt.bindLong(1, id);
+            stmt.bindString(1, id);
         }
  
         String accName = entity.getAccName();
@@ -114,14 +114,14 @@ public class AccountDao extends AbstractDao<Account, Long> {
     }
 
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
     }    
 
     @Override
     public Account readEntity(Cursor cursor, int offset) {
         Account entity = new Account( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // accName
             cursor.getInt(offset + 2), // accType
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // initBalance
@@ -133,7 +133,7 @@ public class AccountDao extends AbstractDao<Account, Long> {
      
     @Override
     public void readEntity(Cursor cursor, Account entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
         entity.setAccName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setAccType(cursor.getInt(offset + 2));
         entity.setInitBalance(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -142,13 +142,12 @@ public class AccountDao extends AbstractDao<Account, Long> {
      }
     
     @Override
-    protected final Long updateKeyAfterInsert(Account entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected final String updateKeyAfterInsert(Account entity, long rowId) {
+        return entity.getId();
     }
     
     @Override
-    public Long getKey(Account entity) {
+    public String getKey(Account entity) {
         if(entity != null) {
             return entity.getId();
         } else {

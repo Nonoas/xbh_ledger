@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.view.Window;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSONObject;
+
+import java.lang.ref.WeakReference;
 
 import indi.nonoas.xbh.MainActivity;
 import indi.nonoas.xbh.databinding.ActivityLoginBinding;
@@ -27,36 +28,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private User user;
 
-    /**
-     * 处理登录的匿名类对象
-     */
-    private final Handler handler = new Handler(msg -> {
-        JSONObject json;
-        switch (msg.what) {
-            case LoginInfoApi.REQUEST_FAIL:
-                changeLoginBtnStatus(true);
-                CoverableToast.showShortToast(LoginActivity.this, "登录失败，请求数据失败", CoverableToast.FAIL);
-                break;
-            // 密码错误
-            case LoginInfoApi.WRONG_LOGIN_INFO:
-                changeLoginBtnStatus(true);
-                json = (JSONObject) msg.obj;
-                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), CoverableToast.FAIL, Toast.LENGTH_LONG);
-                break;
-            // 登陆成功
-            case LoginInfoApi.LOGIN_SUCCESS:
-                addUser();
-                json = (JSONObject) msg.obj;
-                CoverableToast.showToast(LoginActivity.this, json.getString("errorMsg"), CoverableToast.SUCCESS, Toast.LENGTH_LONG);
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
-                break;
-            default:
-                break;
-        }
-        return true;
-    });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // 改变状态栏样式
         SystemUtil.toggleStatusBarColor(this, SystemUtil.StatusBarType.LIGHT);
 
         // 按钮监听 beg
@@ -72,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.btnLogin.setOnClickListener(v -> {
             String userId = binding.etName.getText().toString();
             String password = binding.etPassword.getText().toString();
-            user = new User(userId, "测试用户", password);
+            user = new User(userId, userId, password);
             changeLoginBtnStatus(false);
             LoginInfoApi.login(handler, user);
         });
@@ -92,6 +64,36 @@ public class LoginActivity extends AppCompatActivity {
         UserDao userDao = daoSession.getUserDao();
         userDao.insert(user);
     }
+
+    /**
+     * 处理登录的匿名类对象
+     */
+    private final Handler handler = new Handler(new WeakReference<Handler.Callback>(msg -> {
+        JSONObject json;
+        switch (msg.what) {
+            case LoginInfoApi.REQUEST_FAIL:
+                changeLoginBtnStatus(true);
+                CoverableToast.showFailureToast(LoginActivity.this, "登录失败，服务器异常");
+                break;
+            // 密码错误
+            case LoginInfoApi.WRONG_LOGIN_INFO:
+                changeLoginBtnStatus(true);
+                json = (JSONObject) msg.obj;
+                CoverableToast.showFailureToast(LoginActivity.this, json.getString("errorMsg"));
+                break;
+            // 登陆成功
+            case LoginInfoApi.LOGIN_SUCCESS:
+                addUser();
+                json = (JSONObject) msg.obj;
+                CoverableToast.showSuccessToast(LoginActivity.this, json.getString("errorMsg"));
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }).get());
 
 
     private void changeLoginBtnStatus(boolean enable) {

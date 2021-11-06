@@ -16,7 +16,7 @@ import org.greenrobot.greendao.annotation.Transient;
 public class AccBalance {
 	@Id(autoincrement = true)
 	private Long serialNo;
-	private Long accNo;
+	private String accNo;
 	private Long date;
 	private String userId;
 	private String accName;
@@ -26,9 +26,11 @@ public class AccBalance {
 	private int iconId;
 	@Transient
 	private String iconUrl;
+	@Transient
+	private String totBalance;
 
-	@Generated(hash = 437533101)
-	public AccBalance(Long serialNo, Long accNo, Long date, String userId, String accName,
+	@Generated(hash = 1785955755)
+	public AccBalance(Long serialNo, String accNo, Long date, String userId, String accName,
 			String balance) {
 		this.serialNo = serialNo;
 		this.accNo = accNo;
@@ -50,11 +52,11 @@ public class AccBalance {
 		this.serialNo = serialNo;
 	}
 
-	public Long getAccNo() {
+	public String getAccNo() {
 		return this.accNo;
 	}
 
-	public void setAccNo(Long accNo) {
+	public void setAccNo(String accNo) {
 		this.accNo = accNo;
 	}
 
@@ -104,5 +106,13 @@ public class AccBalance {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getTotBalance() {
+		return totBalance;
+	}
+
+	public void setTotBalance(String totBalance) {
+		this.totBalance = totBalance;
 	}
 }

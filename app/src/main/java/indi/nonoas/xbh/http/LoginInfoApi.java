@@ -10,14 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 import indi.nonoas.xbh.activity.RegistryActivity;
-import indi.nonoas.xbh.common.error.ErrorEnum;
 import indi.nonoas.xbh.pojo.User;
-import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**
@@ -123,10 +119,7 @@ public class LoginInfoApi extends BaseApi {
                                 : SEND_VERIFY_CODE_FAIL;
                         msg.obj = json;
                         // 保存sessionId
-                        Headers headers = response.headers();
-                        List<String> cookies = headers.values("Set-Cookie");
-                        String session = cookies.get(0);
-                        BaseApi.cookies = session.substring(0, session.indexOf(";"));
+                        BaseApi.saveCookies(response);
                     }
                 }
         );

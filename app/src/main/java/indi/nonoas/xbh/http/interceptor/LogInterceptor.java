@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.http;
+package indi.nonoas.xbh.http.interceptor;
 
 import android.util.Log;
 
@@ -14,7 +14,7 @@ import okhttp3.Response;
 /**
  * okHttp通用拦截
  */
-public class HttpInterceptor implements Interceptor {
+public class LogInterceptor implements Interceptor {
     @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {

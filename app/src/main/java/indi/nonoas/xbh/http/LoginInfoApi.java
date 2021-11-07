@@ -6,14 +6,12 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 
 import indi.nonoas.xbh.activity.RegistryActivity;
 import indi.nonoas.xbh.pojo.User;
 import okhttp3.Call;
 import okhttp3.FormBody;
-import okhttp3.Headers;
 import okhttp3.Response;
 
 /**
@@ -56,7 +54,7 @@ public class LoginInfoApi extends BaseApi {
      */
     public static void login(Handler handler, User user) {
         BaseApi.asyncGet(String.format("login/login?userId=%s&password=%s", user.getUserId(), user.getPassword()),
-                new UICallback(handler) {
+                new BaseHttpCallback(handler) {
                     @Override
                     protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
                         JSONObject json = (JSONObject) JSONObject.parse(Objects.requireNonNull(response.body()).string());
@@ -89,7 +87,7 @@ public class LoginInfoApi extends BaseApi {
                         .add("password", password)
                         .add("verifyCode", verifyCode)
                         .build(),
-                new UICallback(handler) {
+                new BaseHttpCallback(handler) {
                     @Override
                     protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
                         JSONObject json = getRespBodyJson(response);
@@ -109,7 +107,7 @@ public class LoginInfoApi extends BaseApi {
     public static void sendVerityCode(String email, Handler handler) {
         BaseApi.asyncGet(
                 String.format("mail/sendVerifyMail?email=%s", email),
-                new UICallback(handler) {
+                new BaseHttpCallback(handler) {
                     @Override
                     protected void onResponseSuccess(Call call, Response response, Message msg) throws IOException {
                         JSONObject json = getRespBodyJson(response);

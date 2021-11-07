@@ -16,25 +16,24 @@ import okhttp3.Response;
 /**
  * 可以使用handler返回响应信息的回调类
  */
-public abstract class UICallback implements Callback {
+public abstract class BaseHttpCallback implements Callback {
 
     private final Handler handler;
 
-    public UICallback(@NonNull Handler handler) {
+    public BaseHttpCallback(@NonNull Handler handler) {
         this.handler = handler;
     }
 
     @Override
     public void onFailure(@NonNull Call call, @NonNull IOException e) {
-        Message msg = new Message();
+        Message msg = handler.obtainMessage();
         msg.what = BaseApi.REQUEST_FAIL;
         handler.sendMessage(msg);
-        Log.e(ILogTag.DEV, e.getMessage());
     }
 
     @Override
     public final void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-        Message msg = new Message();
+        Message msg = handler.obtainMessage();
         if (response.isSuccessful()) {
             // if the code is in [200..300)
             onResponseSuccess(call, response, msg);

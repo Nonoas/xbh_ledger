@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,7 +29,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +41,7 @@ import indi.nonoas.xbh.common.log.ILogTag;
 import indi.nonoas.xbh.databinding.FrgAccListBinding;
 import indi.nonoas.xbh.fragment.home.HomeViewModel;
 import indi.nonoas.xbh.http.AccBalanceApi;
+import indi.nonoas.xbh.http.HttpUICallback;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.Account;
 import indi.nonoas.xbh.utils.DateTimeUtil;
@@ -157,8 +156,15 @@ public class AccListFragment extends Fragment {
             pw.showAtLocation(binding.getRoot(), Gravity.BOTTOM, 0, 0);
         });
 
-
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 销毁所有消息，避免内存泄露
+        delAccHandler.removeCallbacks(null);
+    }
+
     // ========================================== 生命周期 end ===================================================
 
     @Override
@@ -186,16 +192,23 @@ public class AccListFragment extends Fragment {
         return super.onContextItemSelected(item);
     }
 
-    private final Handler delAccHandler = new Handler(new WeakReference<Handler.Callback>(msg -> {
-        switch (msg.what) {
-            case AccBalanceApi.DEL_ACC_SUCCESS:
-                CoverableToast.showSuccessToast(getContext(), "删除成功");
-                break;
-            case AccBalanceApi.DEL_ACC_FAIL:
-                break;
+    private final Handler delAccHandler = new Handler(new HttpUICallback() {
+        @Override
+        protected void onMsgSuccess(Object obj) {
+            CoverableToast.showSuccessToast(getContext(), "删除成功");
         }
-        return false;
-    }).get());
+
+        @Override
+        protected void onMsgError(int w, Object obj) {
+            JSONObject json = (JSONObject) obj;
+            CoverableToast.showFailureToast(getContext(), "删除失败，" + json.getString("errorMsg"));
+        }
+
+        @Override
+        protected void handleError(int w, Object obj) {
+            CoverableToast.showFailureToast(getContext(), "删除失败，服务器异常");
+        }
+    });
 
     /**
      * 设置数据并添加数据

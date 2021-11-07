@@ -27,6 +27,6 @@ public class HttpCallback extends BaseHttpCallback {
         } else {
             msg.what = BaseApi.MSG_ERROR;
         }
-        handler.sendMessage(msg);
+        msg.obj = json;
     }
 }

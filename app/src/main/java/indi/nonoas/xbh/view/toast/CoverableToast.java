@@ -18,10 +18,6 @@ public class CoverableToast {
 
     private static Toast toast;
 
-    public static final ToastType SUCCESS = ToastType.SUCCESS;
-
-    public static final ToastType FAIL = ToastType.FAIL;
-
     @SuppressLint("InflateParams")
     public static void showToast(Context context, String msg, ToastType type, int length) {
         if (toast != null) {
@@ -37,7 +33,6 @@ public class CoverableToast {
         } else {
             iv.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.ic_success));
         }
-
         tv.setText(msg);
         toast.setView(view);
         toast.setDuration(length);

@@ -68,7 +68,7 @@ public class RegistryActivity extends AppCompatActivity {
                 break;
             case LoginInfoApi.REGISTRY_FAILURE:
                 JSONObject json = (JSONObject) msg.obj;
-                CoverableToast.showShortToast(this, "注册失败，" + json.getString("errorMsg"), CoverableToast.FAIL);
+                CoverableToast.showFailureToast(this, "注册失败，" + json.getString("errorMsg"));
                 break;
             case LoginInfoApi.REQUEST_FAIL:
                 CoverableToast.showShortToast(this, "注册失败，服务器异常", ToastType.FAIL);
@@ -116,10 +116,10 @@ public class RegistryActivity extends AppCompatActivity {
             case LoginInfoApi.SEND_VERIFY_CODE_FAIL:
                 JSONObject json = (JSONObject) msg.obj;
                 btnSendVerifyCode.setText("获取验证码");
-                CoverableToast.showShortToast(this, json.getString("errorMsg"), CoverableToast.FAIL);
+                CoverableToast.showFailureToast(this, json.getString("errorMsg"));
                 break;
             case LoginInfoApi.REQUEST_FAIL:
-                CoverableToast.showShortToast(this, "服务器异常，获取验证码失败", CoverableToast.FAIL);
+                CoverableToast.showFailureToast(this, "服务器异常，获取验证码失败");
                 btnSendVerifyCode.setText("获取验证码");
                 break;
             default:

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,6 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.EntryXComparator;
 import com.google.android.material.appbar.AppBarLayout;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,18 +40,18 @@ import indi.nonoas.xbh.common.IDict;
 import indi.nonoas.xbh.databinding.FrgStatsBinding;
 import indi.nonoas.xbh.fragment.home.HomeViewModel;
 import indi.nonoas.xbh.http.AccBalanceApi;
+import indi.nonoas.xbh.http.HttpUICallback;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.view.FlexibleScrollView;
 import indi.nonoas.xbh.view.chart.DateValueFormatter;
 import indi.nonoas.xbh.view.toast.CoverableToast;
-import indi.nonoas.xbh.view.toast.ToastType;
 
 
 public class StatsFragment extends Fragment {
 
-    private StatsViewModel statsViewModel;
-    private HomeViewModel mHomeViewModel;
+    private StatsViewModel statsModel;
+    private HomeViewModel homeModel;
     private FrgStatsBinding binding;
     private final List<AccBalance> mBalanceList = new ArrayList<>();
     private final List<AccBalance> periodBalanceList = new ArrayList<>();
@@ -73,8 +71,8 @@ public class StatsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        statsViewModel = new ViewModelProvider(this).get(StatsViewModel.class);
-        mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        statsModel = new ViewModelProvider(this).get(StatsViewModel.class);
+        homeModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
         binding = FrgStatsBinding.inflate(inflater, container, false);
 
@@ -116,6 +114,12 @@ public class StatsFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        lineChartHandler.removeCallbacks(null);
+    }
+
     /**
      * 初始化数据
      */
@@ -134,33 +138,28 @@ public class StatsFragment extends Fragment {
         AccBalanceApi.qryPeriodTotBalance(user.getUserId(), IDict.Period.DAY, 7, lineChartHandler);
     }
 
-    /**
-     * @see AccBalanceApi#qryPeriodTotBalance
-     */
-    private final Handler lineChartHandler = new Handler(new WeakReference<Handler.Callback>(new Handler.Callback() {
+    private final Handler lineChartHandler = new Handler(new HttpUICallback() {
         @Override
-        public boolean handleMessage(@NonNull Message msg) {
-            JSONObject json = (JSONObject) msg.obj;
-            switch (msg.what) {
-                case AccBalanceApi.QRY_TOT_BALANCE_SUCCESS:
-                    String data = json.getString("data");
-                    List<AccBalance> balances = JSONObject.parseArray(data, AccBalance.class);
-                    periodBalanceList.clear();
-                    periodBalanceList.addAll(balances);
-                    statsViewModel.setTotBalanceList(periodBalanceList);
-                    break;
-                case AccBalanceApi.QRY_TOT_BALANCE_FAIL:
-                    CoverableToast.showFailureToast(getContext(), json.getString("errorMsg"));
-                    break;
-                case AccBalanceApi.REQUEST_FAIL:
-                    CoverableToast.showFailureToast(getContext(), "服务器异常");
-                    break;
-                default:
-                    break;
-            }
-            return false;
+        protected void onMsgSuccess(Object obj) {
+            JSONObject json = (JSONObject) obj;
+            String data = json.getString("data");
+            List<AccBalance> balances = JSONObject.parseArray(data, AccBalance.class);
+            periodBalanceList.clear();
+            periodBalanceList.addAll(balances);
+            statsModel.setTotBalanceList(periodBalanceList);
         }
-    }).get());
+
+        @Override
+        protected void onMsgError(int msgWhat, Object obj) {
+            JSONObject json = (JSONObject) obj;
+            CoverableToast.showFailureToast(getContext(), json.getString("errorMsg"));
+        }
+
+        @Override
+        protected void handleError(int msgWhat, Object obj) {
+            CoverableToast.showFailureToast(getContext(), "服务器异常");
+        }
+    });
 
     /**
      * 生成折线图
@@ -176,8 +175,8 @@ public class StatsFragment extends Fragment {
         List<Entry> entries = new ArrayList<>();
 
         // 数据绑定
-        statsViewModel.setTotBalanceList(periodBalanceList);
-        statsViewModel.getTotBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
+        statsModel.setTotBalanceList(periodBalanceList);
+        statsModel.getTotBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
             entries.clear();
             int i = 0;
             for (AccBalance balance : accBalances) {
@@ -189,7 +188,7 @@ public class StatsFragment extends Fragment {
 
             xAxis.setDrawGridLines(false);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setValueFormatter(new DateValueFormatter("MM月dd日", periodBalanceList));
+            xAxis.setValueFormatter(new DateValueFormatter("MM-dd", periodBalanceList));
             xAxis.setGranularity(1f);
 
             YAxis rAxis = lineChart.getAxisRight();
@@ -203,7 +202,7 @@ public class StatsFragment extends Fragment {
             LineData data = new LineData();
 
             Collections.sort(entries, new EntryXComparator());
-            LineDataSet dataSet = new LineDataSet(entries, "每日余额");
+            LineDataSet dataSet = new LineDataSet(entries, "总余额");
 
             dataSet.setColor(Color.parseColor(getString(R.color.soft_red)));
             dataSet.setDrawCircles(false);
@@ -254,10 +253,10 @@ public class StatsFragment extends Fragment {
         PieData pieData = new PieData();
         List<PieEntry> pieEntries = new ArrayList<>();
 
-        mHomeViewModel.setBalanceList(mBalanceList);
-        mHomeViewModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
+        homeModel.setBalanceList(mBalanceList);
+        homeModel.getBalanceListData().observe(getViewLifecycleOwner(), accBalances -> {
             pieEntries.clear();
-            List<AccBalance> balanceList = mHomeViewModel.getBalanceList();
+            List<AccBalance> balanceList = homeModel.getBalanceList();
             for (AccBalance b : balanceList) {
                 PieEntry entry = new PieEntry(Float.parseFloat(b.getBalance()), b.getAccName());
                 pieEntries.add(entry);

@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 
 import indi.nonoas.xbh.common.error.ErrorEnum;
 import indi.nonoas.xbh.http.interceptor.LogInterceptor;
+import indi.nonoas.xbh.http.interceptor.CookiesInterceptor;
 import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Callback;
 import okhttp3.Headers;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -26,10 +26,11 @@ import okhttp3.ResponseBody;
 public class BaseApi {
 
     private static final LogInterceptor LOG_INTERCEPTOR = new LogInterceptor();
+    private static final CookiesInterceptor COOKIE_INTERCEPTOR = new CookiesInterceptor();
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "xyp2ts.natappfree.cc";
+    private static final String BASE_ADDRESS = "wkjizf.natappfree.cc";
 
     /**
      * 服务地址
@@ -65,18 +66,32 @@ public class BaseApi {
      * @param url      请求地址（相对于根地址的相对地址）
      * @param callback 回调对象
      */
-    public static void asyncGet(String url, Callback callback, Interceptor... interceptors) {
+    public static void asyncGet(String url, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(LOG_INTERCEPTOR)
+                .addInterceptor(COOKIE_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
         Request request = new Request.Builder()
-                .addHeader("cookie", cookies)
                 .get()
                 .url(fullURL(url))
                 .build();
         client.newCall(request).enqueue(callback);
+    }
+
+    public static void asyncGet(String url, Handler handler) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(LOG_INTERCEPTOR)
+                .addInterceptor(COOKIE_INTERCEPTOR)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .get()
+                .url(fullURL(url))
+                .build();
+        client.newCall(request).enqueue(new HttpCallback(handler));
     }
 
     /**
@@ -89,6 +104,7 @@ public class BaseApi {
     public static void asyncPost(String url, RequestBody body, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(LOG_INTERCEPTOR)
+                .addInterceptor(COOKIE_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -110,6 +126,7 @@ public class BaseApi {
     public static void asyncPost(String url, RequestBody body, Handler handler) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(LOG_INTERCEPTOR)
+                .addInterceptor(COOKIE_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();

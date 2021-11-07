@@ -54,7 +54,7 @@ import indi.nonoas.xbh.view.toast.CoverableToast;
  */
 public class AccListFragment extends Fragment {
 
-    private HomeViewModel mHomeViewModel;
+    private HomeViewModel homeModel;
 
     private FrgAccListBinding binding;
     private final List<AccBalance> mBalanceList = new ArrayList<>();
@@ -88,10 +88,11 @@ public class AccListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 接收跳转后的结果
         intentLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
+                    if (Activity.RESULT_OK == result.getResultCode()) {
                         setData(result);
                     }
                 }
@@ -105,7 +106,7 @@ public class AccListFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FrgAccListBinding.inflate(inflater, container, false);
 
-        mHomeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        homeModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
         return binding.getRoot();
     }
@@ -127,7 +128,7 @@ public class AccListFragment extends Fragment {
         });
 
         // 余额列表数据观察
-        mHomeViewModel.getBalanceListData().observe(
+        homeModel.getBalanceListData().observe(
                 getViewLifecycleOwner(),
                 accBalances -> {
                     adapter.notifyDataSetChanged();
@@ -135,7 +136,7 @@ public class AccListFragment extends Fragment {
                 }
         );
         // 总余额数据观察
-        mHomeViewModel.getBalanceData().observe(
+        homeModel.getBalanceData().observe(
                 getViewLifecycleOwner(),
                 balance -> binding.tvBalance.setText(balance)
         );
@@ -147,7 +148,7 @@ public class AccListFragment extends Fragment {
             pw.setOnSelectedListener((v, item) -> {
                 // 跳转至 账户添加设置 界面
                 Intent intent = new Intent(requireActivity(), AccAddActivity.class);
-                System.out.println(item.get(AccItemEnum.K_IMG));
+                intent.putExtra(AccItemEnum.K_ID, (String) item.get(AccItemEnum.K_ID));
                 intent.putExtra(AccItemEnum.K_IMG, (Integer) item.get(AccItemEnum.K_IMG));
                 intent.putExtra(AccItemEnum.K_NAME, (String) item.get(AccItemEnum.K_NAME));
                 intentLauncher.launch(intent);
@@ -163,6 +164,8 @@ public class AccListFragment extends Fragment {
         super.onDestroy();
         // 销毁所有消息，避免内存泄露
         delAccHandler.removeCallbacks(null);
+        qryHandler.removeCallbacks(null);
+        addAccHandler.removeCallbacks(null);
     }
 
     // ========================================== 生命周期 end ===================================================
@@ -185,7 +188,7 @@ public class AccListFragment extends Fragment {
                         mBalanceList.get(index).getAccNo(),
                         delAccHandler);
                 mBalanceList.remove(index);
-                mHomeViewModel.setBalanceList(mBalanceList);
+                homeModel.setBalanceList(mBalanceList);
             default:
                 break;
         }
@@ -199,13 +202,13 @@ public class AccListFragment extends Fragment {
         }
 
         @Override
-        protected void onMsgError(int w, Object obj) {
+        protected void onMsgError(int msgWhat, Object obj) {
             JSONObject json = (JSONObject) obj;
             CoverableToast.showFailureToast(getContext(), "删除失败，" + json.getString("errorMsg"));
         }
 
         @Override
-        protected void handleError(int w, Object obj) {
+        protected void handleError(int msgWhat, Object obj) {
             CoverableToast.showFailureToast(getContext(), "删除失败，服务器异常");
         }
     });
@@ -235,20 +238,24 @@ public class AccListFragment extends Fragment {
 
     }
 
-    private final Handler qryHandler = new Handler(msg -> {
-        switch (msg.what) {
-            case AccBalanceApi.QRY_SUCCESS:
-                JSONObject json = (JSONObject) msg.obj;
-                mBalanceList.clear();
-                mBalanceList.addAll(JSONObject.parseArray(json.getString("data"), AccBalance.class));
-                mHomeViewModel.setBalanceList(mBalanceList);
-                Log.d(ILogTag.DEV, "查询账户列表成功:" + json.toJSONString());
-                break;
-            case AccBalanceApi.REQUEST_FAIL:
-                CoverableToast.showShortToast(getContext(), "服务器请求异常", CoverableToast.FAIL);
-                break;
+    private final Handler qryHandler = new Handler(new HttpUICallback() {
+        @Override
+        protected void onMsgSuccess(Object obj) {
+            JSONObject json = (JSONObject) obj;
+            mBalanceList.clear();
+            mBalanceList.addAll(JSONObject.parseArray(json.getString("data"), AccBalance.class));
+            homeModel.setBalanceList(mBalanceList);
+            Log.d(ILogTag.DEV, "查询账户列表成功:" + json.toJSONString());
         }
-        return false;
+
+        @Override
+        protected void onMsgError(int msgWhat, Object obj) {
+        }
+
+        @Override
+        protected void handleError(int msgWhat, Object obj) {
+            CoverableToast.showFailureToast(getContext(), "服务器请求异常");
+        }
     });
 
     /**
@@ -263,33 +270,33 @@ public class AccListFragment extends Fragment {
         for (AccBalance acc : mBalanceList) {
             decimal = decimal.add(new BigDecimal(acc.getBalance()));
         }
-        mHomeViewModel.setBalance(decimal.toString());
+        homeModel.setBalance(decimal.toString());
     }
 
     /**
      * 处添加账户api处理器
      */
-    private final Handler addAccHandler = new Handler(msg -> {
-        switch (msg.what) {
-            case AccBalanceApi.ADD_SUCCESS:
-                CoverableToast.showToast(getContext(), "添加账户成功", Toast.LENGTH_SHORT);
-                initAccList();
-                break;
-            case AccBalanceApi.ADD_FAIL:
-                JSONObject json = (JSONObject) msg.obj;
-                CoverableToast.showToast(
-                        getContext(),
-                        String.format("%s,%s", json.getString("errorCode"), json.getString("errorMsg")),
-                        Toast.LENGTH_SHORT
-                );
-                break;
-            case AccBalanceApi.REQUEST_FAIL:
-                CoverableToast.showToast(getContext(), "添加失败，访问服务器异常", Toast.LENGTH_SHORT);
-                break;
-            default:
-                break;
+    private final Handler addAccHandler = new Handler(new HttpUICallback() {
+        @Override
+        protected void onMsgSuccess(Object obj) {
+            CoverableToast.showToast(getContext(), "添加账户成功", Toast.LENGTH_SHORT);
+            initAccList();
         }
-        return false;
+
+        @Override
+        protected void onMsgError(int msgWhat, Object obj) {
+            JSONObject json = (JSONObject) obj;
+            CoverableToast.showToast(
+                    getContext(),
+                    String.format("%s,%s", json.getString("errorCode"), json.getString("errorMsg")),
+                    Toast.LENGTH_SHORT
+            );
+        }
+
+        @Override
+        protected void handleError(int msgWhat, Object obj) {
+            CoverableToast.showFailureToast(getContext(), "添加失败，访问服务器异常");
+        }
     });
 
     /**

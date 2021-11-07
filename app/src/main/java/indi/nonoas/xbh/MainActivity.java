@@ -62,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-        // 如果本地保存了登录信息，则直接登录
-        LoginInfoApi.login(new Handler(), AppStore.getUser());
 
         Window window = getWindow();
         AppStore.setCurrWindow(window);

@@ -19,58 +19,61 @@ import indi.nonoas.xbh.utils.SystemUtil;
 
 public class AccAddActivity extends AppCompatActivity {
 
-	private ActivityAccAddBinding mBinding;
+    private ActivityAccAddBinding mBinding;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		mBinding = ActivityAccAddBinding.inflate(getLayoutInflater());
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mBinding = ActivityAccAddBinding.inflate(getLayoutInflater());
 
-		// 切换状态栏样式
-		SystemUtil.toggleStatusBarColor(this, SystemUtil.StatusBarType.GREEN);
+        // 切换状态栏样式
+        SystemUtil.toggleStatusBarColor(this, SystemUtil.StatusBarType.GREEN);
 
-		setContentView(mBinding.getRoot());
+        setContentView(mBinding.getRoot());
 
-		ActionBar actionBar = getSupportActionBar();
-		if (actionBar != null) {
-			actionBar.setDisplayHomeAsUpEnabled(true);
-		}
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
-		// 接收 Intent 数据
-		Intent intent = getIntent();
-		String typeName = intent.getStringExtra(AccItemEnum.K_NAME);
-		int iconId = intent.getIntExtra(AccItemEnum.K_IMG, R.drawable.ic_other_acc);
+        // 接收 Intent 数据
+        Intent intent = getIntent();
+        String id = intent.getStringExtra(AccItemEnum.K_ID);
+        String typeName = intent.getStringExtra(AccItemEnum.K_NAME);
+        int iconId = intent.getIntExtra(AccItemEnum.K_IMG, R.drawable.ic_other_acc);
 
-		mBinding.tvAccType.setText(typeName);
-		mBinding.ivAccIcon.setImageDrawable(AppCompatResources.getDrawable(this, iconId));
+        // 设置UI
+        mBinding.tvAccType.setText(typeName);
+        mBinding.ivAccIcon.setImageDrawable(AppCompatResources.getDrawable(this, iconId));
 
-		mBinding.btnSave.setOnClickListener(view -> {
+        mBinding.btnSave.setOnClickListener(view -> {
 
-			String accName = mBinding.etAccName.getText().toString().trim();
-			if (StringUtils.isEmpty(accName)) {
-				Toast.makeText(this, "账户名称不能为空", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			String accBalance = mBinding.etAccBalance.getText().toString().trim();
+            String accName = mBinding.etAccName.getText().toString().trim();
+            if (StringUtils.isEmpty(accName)) {
+                Toast.makeText(this, "账户名称不能为空", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String accBalance = mBinding.etAccBalance.getText().toString().trim();
 
-			Intent resultIntent = new Intent();
-			resultIntent.putExtra(AccItemEnum.K_IMG, iconId);
-			resultIntent.putExtra(AccItemEnum.K_NAME, accName);
-			resultIntent.putExtra("balance", accBalance);
-			setResult(RESULT_OK, resultIntent);
-			finish();
-		});
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(AccItemEnum.K_ID, id);
+            resultIntent.putExtra(AccItemEnum.K_IMG, iconId);
+            resultIntent.putExtra(AccItemEnum.K_NAME, accName);
+            resultIntent.putExtra("balance", accBalance);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
 
 
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-		//返回按钮点击事件
-		if (item.getItemId() == android.R.id.home) {
-			finish();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //返回按钮点击事件
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

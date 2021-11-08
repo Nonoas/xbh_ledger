@@ -2,7 +2,6 @@ package indi.nonoas.xbh.utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,7 +29,7 @@ public class DateTimeUtil {
      * @return 偏移后的时间戳
      */
     public static long add(long source, TimeMilliEnum timeEnum, int count) {
-        return source + timeEnum.milli * count;
+        return source + timeEnum.MILLI * count;
     }
 
     public enum TimeMilliEnum{
@@ -39,10 +38,10 @@ public class DateTimeUtil {
         /**
          * 毫秒数
          */
-        public final long milli;
+        public final long MILLI;
 
-        TimeMilliEnum(long milli){
-            this.milli = milli;
+        TimeMilliEnum(long MILLI){
+            this.MILLI = MILLI;
         }
     }
 }

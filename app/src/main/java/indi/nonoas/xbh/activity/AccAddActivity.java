@@ -13,7 +13,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.ActivityAccAddBinding;
 import indi.nonoas.xbh.fragment.acclist.AccItemEnum;
-import indi.nonoas.xbh.fragment.acclist.AccItemPopWindow;
 import indi.nonoas.xbh.utils.StringUtils;
 import indi.nonoas.xbh.utils.SystemUtil;
 
@@ -42,12 +41,17 @@ public class AccAddActivity extends AppCompatActivity {
         String typeName = intent.getStringExtra(AccItemEnum.K_NAME);
         int iconId = intent.getIntExtra(AccItemEnum.K_IMG, R.drawable.ic_other_acc);
 
+        // 设置默认值
+        // 账户名称
+        mBinding.etAccName.setText(typeName);
+        //账户余额
+        mBinding.etAccBalance.setText("0");
+
         // 设置UI
         mBinding.tvAccType.setText(typeName);
         mBinding.ivAccIcon.setImageDrawable(AppCompatResources.getDrawable(this, iconId));
 
         mBinding.btnSave.setOnClickListener(view -> {
-
             String accName = mBinding.etAccName.getText().toString().trim();
             if (StringUtils.isEmpty(accName)) {
                 Toast.makeText(this, "账户名称不能为空", Toast.LENGTH_SHORT).show();
@@ -63,8 +67,6 @@ public class AccAddActivity extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);
             finish();
         });
-
-
     }
 
     @Override

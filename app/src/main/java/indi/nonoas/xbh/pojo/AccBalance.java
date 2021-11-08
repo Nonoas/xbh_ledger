@@ -17,7 +17,7 @@ public class AccBalance {
 	@Id(autoincrement = true)
 	private Long serialNo;
 	private String accNo;
-	private Long date;
+	private Integer date;
 	private String userId;
 	private String accName;
 	private String balance;
@@ -29,9 +29,9 @@ public class AccBalance {
 	@Transient
 	private String totBalance;
 
-	@Generated(hash = 1785955755)
-	public AccBalance(Long serialNo, String accNo, Long date, String userId, String accName,
-			String balance) {
+	@Generated(hash = 574442426)
+	public AccBalance(Long serialNo, String accNo, Integer date, String userId,
+			String accName, String balance) {
 		this.serialNo = serialNo;
 		this.accNo = accNo;
 		this.date = date;
@@ -60,11 +60,11 @@ public class AccBalance {
 		this.accNo = accNo;
 	}
 
-	public Long getDate() {
+	public Integer getDate() {
 		return this.date;
 	}
 
-	public void setDate(Long date) {
+	public void setDate(Integer date) {
 		this.date = date;
 	}
 

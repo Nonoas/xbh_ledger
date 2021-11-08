@@ -30,7 +30,7 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "wkjizf.natappfree.cc";
+    private static final String BASE_ADDRESS = "9erd7x.natappfree.cc";
 
     /**
      * 服务地址
@@ -138,7 +138,7 @@ public class BaseApi {
         client.newCall(request).enqueue(new HttpCallback(handler));
     }
 
-    protected static String fullURL(String url) {
+    public static String fullURL(String url) {
         return PROTOCOL_HTTP + "://" + BASE_ADDRESS + "/" + url;
     }
 
@@ -173,11 +173,7 @@ public class BaseApi {
      * @return JSONObject
      */
     protected static JSONObject getRespBodyJson(Response response) throws IOException {
-        ResponseBody body = response.body();
-        if (null == body) {
-            return new JSONObject();
-        }
-        return (JSONObject) JSONObject.parse(body.string());
+        return HttpUtil.getRespBodyJson(response);
     }
 
 

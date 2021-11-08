@@ -49,7 +49,7 @@ public class CoverableToast {
      * @param type    显示类型
      */
     public static void showToast(Context context, @NonNull String msg, ToastType type) {
-        if (msg.length() > 20) {
+        if (msg.length() > 10) {
             showToast(context, msg, type, Toast.LENGTH_LONG);
         } else {
             showToast(context, msg, type, Toast.LENGTH_SHORT);

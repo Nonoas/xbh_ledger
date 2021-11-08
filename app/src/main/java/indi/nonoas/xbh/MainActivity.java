@@ -3,13 +3,10 @@ package indi.nonoas.xbh;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -27,7 +24,6 @@ import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
-import indi.nonoas.xbh.http.LoginInfoApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
 
@@ -43,13 +39,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
 
-    private final Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(@NonNull Message msg) {
-
-            return false;
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

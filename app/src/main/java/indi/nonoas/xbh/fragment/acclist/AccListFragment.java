@@ -223,19 +223,7 @@ public class AccListFragment extends Fragment {
         if (null == data) {
             return;
         }
-        Map<String, Integer> icMap = AccItemEnum.ICONID_MAP;
-        String accNo = data.getStringExtra(AccItemEnum.K_ID);
-        Integer integer = icMap.get(accNo);
-        int icId = null == integer ? 0 : integer;
-
-        Account account = new Account();
-        account.setId(accNo);
-        account.setIconId(icId);
-        account.setAccName(data.getStringExtra(AccItemEnum.K_NAME));
-        account.setInitBalance(data.getStringExtra("balance"));
-
-        addAcc(account);
-
+        addAcc(data);
     }
 
     private final Handler qryHandler = new Handler(new HttpUICallback() {
@@ -302,31 +290,29 @@ public class AccListFragment extends Fragment {
     /**
      * 添加账户到数据库
      *
-     * @param account 账户
+     * @param data 账户余额信息
      */
-    private void addAcc(Account account) {
+    private void addAcc(Intent data) {
+        Map<String, Integer> icMap = AccItemEnum.ICONID_MAP;
+        String accNo = data.getStringExtra(AccItemEnum.K_ID);
+        Integer integer = icMap.get(accNo);
+        int icId = null == integer ? 0 : integer;
 
-        // 添加到余额记录
-        AccBalance accBalance = new AccBalance();
-        accBalance.setIconId(account.getIconId());
-        accBalance.setBalance(account.getInitBalance());
-        accBalance.setUserId(AppStore.getUser().getUserId());
-        accBalance.setAccName(account.getAccName());
-        accBalance.setAccNo(account.getId());
-        accBalance.setDate((long) DateTimeUtil.getCurrDate());
+        AccBalance balance = new AccBalance();
+        balance.setAccNo(accNo);
+        balance.setIconId(icId);
+        balance.setUserId(AppStore.getUser().getUserId());
+        balance.setAccName(data.getStringExtra(AccItemEnum.K_NAME));
+        balance.setBalance(data.getStringExtra("balance"));
+        balance.setDate(DateTimeUtil.getCurrDate());
+
         // 调用 api
-        AccBalanceApi.addAccBalance(accBalance, addAccHandler);
+        AccBalanceApi.addAccBalance(balance, addAccHandler);
 
-    }
-
-    private void notifyAccListChanged() {
-        BaseAdapter adapter = (BaseAdapter) lvAcc.getAdapter();
-        adapter.notifyDataSetChanged();
     }
 
     /**
      * listView 适配器
-     * // todo 可改用 RecycleView
      */
     static class MyAdapter extends BaseAdapter {
 

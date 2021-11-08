@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/padding_m">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,8 +30,8 @@
                 android:id="@+id/iv_acc_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_other_acc"
-                android:layout_marginEnd="@dimen/padding_m"/>
+                android:layout_marginEnd="@dimen/padding_m"
+                android:src="@drawable/ic_other_acc" />
 
             <TextView
                 android:id="@+id/tv_acc_type"
@@ -44,6 +45,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/dict_acc_name"
             android:inputType="text"
+            android:padding="@dimen/padding_xl"
             tools:ignore="Autofill" />
 
         <EditText
@@ -52,15 +54,18 @@
             android:layout_height="wrap_content"
             android:hint="@string/dict_acc_balance"
             android:inputType="numberDecimal"
+            android:padding="@dimen/padding_xl"
             tools:ignore="Autofill" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_xl"
+            android:text="保存" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_padding"
-        android:text="保存" />
+
 
 </LinearLayout>

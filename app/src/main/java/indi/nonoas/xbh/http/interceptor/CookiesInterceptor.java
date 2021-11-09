@@ -7,10 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import indi.nonoas.xbh.MyApplication;
 import indi.nonoas.xbh.http.BaseApi;
@@ -32,12 +29,11 @@ public class CookiesInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        // 从内存读取cookie
+        // 从内存读取cookie，如果内存没有则从本地读取
         String cookie = BaseApi.cookies;
         if (StringUtils.isEmpty(cookie)) {
             cookie = getCookie(request.url().toString(), request.url().host());
         }
-        // 从本地读取cookie，如果有则直接使用
         if (!TextUtils.isEmpty(cookie)) {
             Request.Builder builder = request.newBuilder();
             builder.addHeader("Cookie", cookie);

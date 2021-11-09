@@ -1,5 +1,7 @@
 package indi.nonoas.xbh.http.interceptor;
 
+import android.util.Log;
+
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
@@ -11,6 +13,7 @@ import indi.nonoas.xbh.http.BaseApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.CookieUtil;
 import indi.nonoas.xbh.utils.HttpUtil;
+import indi.nonoas.xbh.utils.StringUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -18,7 +21,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * okHttp通用拦截
+ * 登录拦截器，用于登录失效时重连
  */
 public class LogInterceptor implements Interceptor {
 
@@ -27,12 +30,16 @@ public class LogInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request originalReq = chain.request();
         Response originalResp = chain.proceed(originalReq);
+        // 如果请求失败，则直接返回响应
+        if (!originalResp.isSuccessful()) {
+            return originalResp;
+        }
         ResponseBody body = originalResp.body();
         MediaType mediaType = body.contentType();
-        String str = body.string();
+        String bodyStr = body.string();
         // 判断是否登录过期
-        JSONObject json = JSONObject.parseObject(str);
-        if (HttpUtil.checkErrorCode(ErrorEnum.LOGIN_EXPIRED, json.getString("errorCode"))) {
+        JSONObject json = JSONObject.parseObject(bodyStr);
+        if (HttpUtil.checkErrorCode(ErrorEnum.LOGIN_EXPIRED, json)) {
             originalResp.body().close();
             Request loginRequest = getLoginRequest();
             Response loginResponse = chain.proceed(loginRequest);
@@ -49,7 +56,7 @@ public class LogInterceptor implements Interceptor {
         }
         // 重建原来的响应
         return originalResp.newBuilder()
-                .body(ResponseBody.create(mediaType, str))
+                .body(ResponseBody.create(mediaType, bodyStr))
                 .build();
     }
 

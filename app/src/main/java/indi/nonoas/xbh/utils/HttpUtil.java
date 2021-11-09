@@ -11,7 +11,10 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class HttpUtil {
-    private HttpUtil(){
+
+    public static final String ERROR_CODE = "errorCode";
+
+    private HttpUtil() {
     }
 
     /**
@@ -26,6 +29,17 @@ public class HttpUtil {
     }
 
     /**
+     * 检查errorCode是否匹配
+     *
+     * @param errorEnum 错误信息枚举
+     * @param json      响应体
+     * @return true：相同
+     */
+    public static boolean checkErrorCode(ErrorEnum errorEnum, JSONObject json) {
+        return errorEnum.getErrorCode().equals(json.getString(ERROR_CODE));
+    }
+
+    /**
      * 从 Response 中解析出 body 到 json
      *
      * @param response 响应体
@@ -37,6 +51,6 @@ public class HttpUtil {
         if (null == body) {
             return new JSONObject();
         }
-        return  JSONObject.parseObject(body.string());
+        return JSONObject.parseObject(body.string());
     }
 }

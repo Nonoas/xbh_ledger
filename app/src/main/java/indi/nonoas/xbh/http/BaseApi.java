@@ -30,7 +30,7 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "td3d26.natappfree.cc";
+    private static final String BASE_ADDRESS = "cvb4sb.natappfree.cc";
 
     /**
      * 服务地址
@@ -68,8 +68,8 @@ public class BaseApi {
      */
     public static void asyncGet(String url, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(LOG_INTERCEPTOR)
                 .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOG_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();
@@ -82,8 +82,8 @@ public class BaseApi {
 
     public static void asyncGet(String url, Handler handler) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(LOG_INTERCEPTOR)
                 .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOG_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();

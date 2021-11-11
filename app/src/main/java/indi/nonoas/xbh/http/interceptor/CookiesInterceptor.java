@@ -57,14 +57,7 @@ public class CookiesInterceptor implements Interceptor {
      * @return cookie字符串
      */
     private String getCookie(String url, String domain) {
-        SharedPreferences sp = MyApplication.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
-        if (!TextUtils.isEmpty(url) && sp.contains(url) && !TextUtils.isEmpty(sp.getString(url, ""))) {
-            return sp.getString(url, "");
-        }
-        if (!TextUtils.isEmpty(domain) && sp.contains(domain) && !TextUtils.isEmpty(sp.getString(domain, ""))) {
-            return sp.getString(domain, "");
-        }
-        return null;
+        return CookieUtil.getCookie(url, domain);
     }
 
     /**

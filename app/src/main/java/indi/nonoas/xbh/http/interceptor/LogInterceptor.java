@@ -1,7 +1,5 @@
 package indi.nonoas.xbh.http.interceptor;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
@@ -13,7 +11,6 @@ import indi.nonoas.xbh.http.BaseApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.CookieUtil;
 import indi.nonoas.xbh.utils.HttpUtil;
-import indi.nonoas.xbh.utils.StringUtils;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -24,6 +21,8 @@ import okhttp3.ResponseBody;
  * 登录拦截器，用于登录失效时重连
  */
 public class LogInterceptor implements Interceptor {
+
+    public static String cookie = "";
 
     @SuppressWarnings("all")
     @Override
@@ -40,21 +39,32 @@ public class LogInterceptor implements Interceptor {
         // 判断是否登录过期
         JSONObject json = JSONObject.parseObject(bodyStr);
         if (HttpUtil.checkErrorCode(ErrorEnum.LOGIN_EXPIRED, json)) {
-            originalResp.body().close();
-            Request loginRequest = getLoginRequest();
-            Response loginResponse = chain.proceed(loginRequest);
-            // 如果登录成功再重新发送原来的请求
-            if (loginResponse.isSuccessful()) {
-                List<String> cookies = loginResponse.headers("set-cookie");
-                if (!cookies.isEmpty()) {
-                    String cookie = CookieUtil.encodeCookie(cookies);
-                    CookieUtil.saveCookie(loginRequest.url().toString(), loginRequest.url().host(), cookie);
+            String currCookie = CookieUtil.getCookie(originalReq.url().toString(), originalReq.url().host());
+            synchronized (LogInterceptor.class) {
+                String localCookie = CookieUtil.getCookie(originalReq.url().toString(), originalReq.url().host());
+                // 判断本地cookie是否已经更新，如果没有更新才进行以下操作
+                if (currCookie.equals(localCookie)) {
+                    originalResp.body().close();
+                    Request loginRequest = getLoginRequest();
+                    Response loginResponse = chain.proceed(loginRequest);
+                    // 如果登录成功再重新发送原来的请求
+                    if (loginResponse.isSuccessful()) {
+                        List<String> cookies = loginResponse.headers("Set-cookie");
+                        if (!cookies.isEmpty()) {
+                            cookie = CookieUtil.encodeCookie(cookies);
+                            CookieUtil.saveCookie(loginRequest.url().toString(), loginRequest.url().host(), cookie);
+                        }
+                        loginResponse.body().close();
+                        Request.Builder builder = originalReq.newBuilder().header("Cookie", cookie);
+                        return chain.proceed(builder.build());
+                    }
+                } else {
+                    Request.Builder builder = originalReq.newBuilder().header("Cookie", cookie);
+                    return chain.proceed(builder.build());
                 }
-                loginResponse.body().close();
-                return chain.proceed(originalReq);
             }
         }
-        // 重建原来的响应
+        // 重建原来的请求
         return originalResp.newBuilder()
                 .body(ResponseBody.create(mediaType, bodyStr))
                 .build();

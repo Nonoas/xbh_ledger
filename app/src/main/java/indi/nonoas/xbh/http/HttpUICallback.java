@@ -5,6 +5,8 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * 通用UI处理类，用于根据http返回结果，对UI进行操作
  */
@@ -16,7 +18,7 @@ public abstract class HttpUICallback implements Handler.Callback {
     @Override
     public boolean handleMessage(@NonNull Message msg) {
         int w = msg.what;
-        Object obj = msg.obj;
+        JSONObject obj = (JSONObject) msg.obj;
         switch (w) {
             // 请求失败
             case BaseApi.REQUEST_FAIL:
@@ -37,7 +39,7 @@ public abstract class HttpUICallback implements Handler.Callback {
      *
      * @param obj 一般为 JSONObject
      */
-    protected abstract void onMsgSuccess(Object obj);
+    protected abstract void onMsgSuccess(JSONObject obj);
 
     /**
      * 返回消息类型为 “错误”
@@ -45,7 +47,7 @@ public abstract class HttpUICallback implements Handler.Callback {
      * @param msgWhat 消息id
      * @param obj     消息内容，一般为 JSONObject
      */
-    protected abstract void onMsgError(int msgWhat, Object obj);
+    protected abstract void onMsgError(int msgWhat, JSONObject obj);
 
     /**
      * 响应错误，一般为服务器异常
@@ -53,5 +55,5 @@ public abstract class HttpUICallback implements Handler.Callback {
      * @param msgWhat 消息id
      * @param obj     消息内容，一般为 JSONObject
      */
-    protected abstract void handleError(int msgWhat, Object obj);
+    protected abstract void handleError(int msgWhat, JSONObject obj);
 }

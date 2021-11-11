@@ -197,18 +197,17 @@ public class AccListFragment extends Fragment {
 
     private final Handler delAccHandler = new Handler(new HttpUICallback() {
         @Override
-        protected void onMsgSuccess(Object obj) {
+        protected void onMsgSuccess(JSONObject json) {
             CoverableToast.showSuccessToast(getContext(), "删除成功");
         }
 
         @Override
-        protected void onMsgError(int msgWhat, Object obj) {
-            JSONObject json = (JSONObject) obj;
+        protected void onMsgError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), "删除失败，" + json.getString("errorMsg"));
         }
 
         @Override
-        protected void handleError(int msgWhat, Object obj) {
+        protected void handleError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), "删除失败，服务器异常");
         }
     });
@@ -228,8 +227,7 @@ public class AccListFragment extends Fragment {
 
     private final Handler qryHandler = new Handler(new HttpUICallback() {
         @Override
-        protected void onMsgSuccess(Object obj) {
-            JSONObject json = (JSONObject) obj;
+        protected void onMsgSuccess(JSONObject json) {
             mBalanceList.clear();
             mBalanceList.addAll(JSONObject.parseArray(json.getString("data"), AccBalance.class));
             homeModel.setBalanceList(mBalanceList);
@@ -237,11 +235,12 @@ public class AccListFragment extends Fragment {
         }
 
         @Override
-        protected void onMsgError(int msgWhat, Object obj) {
+        protected void onMsgError(int msgWhat, JSONObject json) {
+            CoverableToast.showFailureToast(getContext(),json.getString("errorMsg"));
         }
 
         @Override
-        protected void handleError(int msgWhat, Object obj) {
+        protected void handleError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), "服务器请求异常");
         }
     });
@@ -266,14 +265,13 @@ public class AccListFragment extends Fragment {
      */
     private final Handler addAccHandler = new Handler(new HttpUICallback() {
         @Override
-        protected void onMsgSuccess(Object obj) {
+        protected void onMsgSuccess(JSONObject json) {
             CoverableToast.showToast(getContext(), "添加账户成功", Toast.LENGTH_SHORT);
             initAccList();
         }
 
         @Override
-        protected void onMsgError(int msgWhat, Object obj) {
-            JSONObject json = (JSONObject) obj;
+        protected void onMsgError(int msgWhat, JSONObject json) {
             CoverableToast.showToast(
                     getContext(),
                     String.format("%s,%s", json.getString("errorCode"), json.getString("errorMsg")),
@@ -282,7 +280,7 @@ public class AccListFragment extends Fragment {
         }
 
         @Override
-        protected void handleError(int msgWhat, Object obj) {
+        protected void handleError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), "添加失败，访问服务器异常");
         }
     });

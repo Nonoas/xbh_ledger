@@ -46,6 +46,7 @@ public class CookieUtil {
     public static String encodeCookie(List<String> cookies) {
         StringBuilder sb = new StringBuilder();
         Set<String> set = new HashSet<>();
+        // cookie去重
         for (String cookie : cookies) {
             String[] arr = cookie.split(";");
             Collections.addAll(set, arr);
@@ -56,10 +57,28 @@ public class CookieUtil {
         }
 
         int last = sb.lastIndexOf(";");
-        if (sb.length() - 1 == last) {
+        if (last > 0 && sb.length() - 1 == last) {
             sb.deleteCharAt(last);
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 从SharedPreferences中读取cookie
+     *
+     * @param url    请求url
+     * @param domain 主机
+     * @return cookie字符串
+     */
+    public static String getCookie(String url, String domain) {
+        SharedPreferences sp = MyApplication.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
+        if (!TextUtils.isEmpty(domain) && sp.contains(domain) && !TextUtils.isEmpty(sp.getString(domain, ""))) {
+            return sp.getString(domain, "");
+        }
+        if (!TextUtils.isEmpty(url) && sp.contains(url) && !TextUtils.isEmpty(sp.getString(url, ""))) {
+            return sp.getString(url, "");
+        }
+        return null;
     }
 }

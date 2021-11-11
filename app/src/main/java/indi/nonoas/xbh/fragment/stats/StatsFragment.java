@@ -140,8 +140,7 @@ public class StatsFragment extends Fragment {
 
     private final Handler lineChartHandler = new Handler(new HttpUICallback() {
         @Override
-        protected void onMsgSuccess(Object obj) {
-            JSONObject json = (JSONObject) obj;
+        protected void onMsgSuccess(JSONObject json) {
             String data = json.getString("data");
             List<AccBalance> balances = JSONObject.parseArray(data, AccBalance.class);
             periodBalanceList.clear();
@@ -150,13 +149,12 @@ public class StatsFragment extends Fragment {
         }
 
         @Override
-        protected void onMsgError(int msgWhat, Object obj) {
-            JSONObject json = (JSONObject) obj;
+        protected void onMsgError(int msgWhat,JSONObject json) {
             CoverableToast.showFailureToast(getContext(), json.getString("errorMsg"));
         }
 
         @Override
-        protected void handleError(int msgWhat, Object obj) {
+        protected void handleError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), "服务器异常");
         }
     });

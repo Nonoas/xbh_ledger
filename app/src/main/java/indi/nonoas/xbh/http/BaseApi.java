@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import indi.nonoas.xbh.common.error.ErrorEnum;
-import indi.nonoas.xbh.http.interceptor.LogInterceptor;
+import indi.nonoas.xbh.http.interceptor.LogInInterceptor;
 import indi.nonoas.xbh.http.interceptor.CookiesInterceptor;
+import indi.nonoas.xbh.http.interceptor.LogInterceptor;
 import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Callback;
 import okhttp3.Headers;
@@ -18,7 +19,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * 业务Api调用基类
@@ -26,6 +26,7 @@ import okhttp3.ResponseBody;
 public class BaseApi {
 
     private static final LogInterceptor LOG_INTERCEPTOR = new LogInterceptor();
+    private static final LogInInterceptor LOGIN_INTERCEPTOR = new LogInInterceptor();
     private static final CookiesInterceptor COOKIE_INTERCEPTOR = new CookiesInterceptor();
 
     private static final String PROTOCOL_HTTP = "http";
@@ -69,6 +70,7 @@ public class BaseApi {
     public static void asyncGet(String url, Callback callback) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOGIN_INTERCEPTOR)
                 .addInterceptor(LOG_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -80,9 +82,39 @@ public class BaseApi {
         client.newCall(request).enqueue(callback);
     }
 
+    /**
+     * 异步post请求
+     *
+     * @param url      请求地址（相对于根地址的相对地址）
+     * @param body     请求体
+     * @param callback 回调对象
+     */
+    public static void asyncPost(String url, RequestBody body, Callback callback) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOGIN_INTERCEPTOR)
+                .addInterceptor(LOG_INTERCEPTOR)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Request request = new Request.Builder()
+                .addHeader("cookie", cookies)
+                .post(body)
+                .url(fullURL(url))
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
+
+    /**
+     * 异步get请求
+     *
+     * @param url     请求地址（相对于根地址的相对地址）
+     * @param handler UI回调对象
+     */
     public static void asyncGet(String url, Handler handler) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOGIN_INTERCEPTOR)
                 .addInterceptor(LOG_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -97,36 +129,15 @@ public class BaseApi {
     /**
      * 异步post请求
      *
-     * @param url      请求地址（相对于根地址的相对地址）
-     * @param body     请求体
-     * @param callback 回调对象
-     */
-    public static void asyncPost(String url, RequestBody body, Callback callback) {
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(LOG_INTERCEPTOR)
-                .addInterceptor(COOKIE_INTERCEPTOR)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .build();
-        Request request = new Request.Builder()
-                .addHeader("cookie", cookies)
-                .post(body)
-                .url(fullURL(url))
-                .build();
-        client.newCall(request).enqueue(callback);
-    }
-
-    /**
-     * 异步post请求
-     *
      * @param url     请求地址（相对于根地址的相对地址）
      * @param body    请求体
      * @param handler UI回调对象
      */
     public static void asyncPost(String url, RequestBody body, Handler handler) {
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(LOG_INTERCEPTOR)
                 .addInterceptor(COOKIE_INTERCEPTOR)
+                .addInterceptor(LOGIN_INTERCEPTOR)
+                .addInterceptor(LOG_INTERCEPTOR)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .build();

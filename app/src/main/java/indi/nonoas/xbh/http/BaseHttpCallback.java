@@ -2,19 +2,21 @@ package indi.nonoas.xbh.http;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
 
-import indi.nonoas.xbh.common.log.ILogTag;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
- * 可以使用handler返回响应信息的回调类
+ * 可以使用handler返回响应信息的回调类，该类默认实现了 {@link Callback#onFailure} 方法，
+ * 并且处理了 {@code (!response.isSuccessful())} 的情况
+ * 将 {@code (response.isSuccessful())} 的情况交由子类去实现。
+ *
+ * @author Nonoas
  */
 public abstract class BaseHttpCallback implements Callback {
 
@@ -44,6 +46,9 @@ public abstract class BaseHttpCallback implements Callback {
     }
 
 
+    /**
+     * 在 {@code response.isSuccessful()} 时会调用这个方法
+     */
     protected abstract void onResponseSuccess(Call call, Response response, Message msg) throws IOException;
 
 

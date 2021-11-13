@@ -12,11 +12,8 @@ import okhttp3.Response;
 
 public class HttpCallback extends BaseHttpCallback {
 
-    private final Handler handler;
-
     public HttpCallback(Handler handler) {
         super(handler);
-        this.handler = handler;
     }
 
     @Override

@@ -33,32 +33,28 @@ public class LogInterceptor implements Interceptor {
         if (!originalResp.isSuccessful()) {
             return originalResp;
         }
-        ResponseBody body = originalResp.body();
-        MediaType mediaType = body.contentType();
-        String bodyStr = body.string();
+        ResponseBody respBody = originalResp.body();
+        MediaType mediaType = respBody.contentType();
+        String bodyStr = respBody.string();
+        respBody.close();
         // 判断是否登录过期
         JSONObject json = JSONObject.parseObject(bodyStr);
         if (HttpUtil.checkErrorCode(ErrorEnum.LOGIN_EXPIRED, json)) {
             String currCookie = CookieUtil.getCookie(originalReq.url().toString(), originalReq.url().host());
             synchronized (LogInterceptor.class) {
-                String localCookie = CookieUtil.getCookie(originalReq.url().toString(), originalReq.url().host());
-                // 判断本地cookie是否已经更新，如果没有更新才进行以下操作
-                if (currCookie.equals(localCookie)) {
-                    originalResp.body().close();
-                    Request loginRequest = getLoginRequest();
-                    Response loginResponse = chain.proceed(loginRequest);
-                    // 如果登录成功再重新发送原来的请求
-                    if (loginResponse.isSuccessful()) {
-                        List<String> cookies = loginResponse.headers("Set-cookie");
-                        if (!cookies.isEmpty()) {
-                            cookie = CookieUtil.encodeCookie(cookies);
-                            CookieUtil.saveCookie(loginRequest.url().toString(), loginRequest.url().host(), cookie);
-                        }
-                        loginResponse.body().close();
-                        Request.Builder builder = originalReq.newBuilder().header("Cookie", cookie);
-                        return chain.proceed(builder.build());
-                    }
-                } else {
+                // 如果cookie已经更新，则携带cookie重新请求
+                if (!cookie.equals(currCookie)) {
+                    Request.Builder builder = originalReq.newBuilder().header("Cookie", cookie);
+                    return chain.proceed(builder.build());
+                }
+
+                // 发起登录
+                Request loginRequest = getLoginRequest();
+                Response loginResp = chain.proceed(loginRequest);
+                // 如果登录成功再重新发送原来的请求
+                if (loginResp.isSuccessful()) {
+                    dealCookie(loginRequest, loginResp);
+                    loginResp.body().close();
                     Request.Builder builder = originalReq.newBuilder().header("Cookie", cookie);
                     return chain.proceed(builder.build());
                 }
@@ -68,6 +64,20 @@ public class LogInterceptor implements Interceptor {
         return originalResp.newBuilder()
                 .body(ResponseBody.create(mediaType, bodyStr))
                 .build();
+    }
+
+    /**
+     * 处理返回的cookie
+     *
+     * @param loginReq  登录请求
+     * @param loginResp 登录响应
+     */
+    private void dealCookie(Request loginReq, Response loginResp) {
+        List<String> cookies = loginResp.headers("Set-cookie");
+        if (!cookies.isEmpty()) {
+            cookie = CookieUtil.encodeCookie(cookies);
+            CookieUtil.saveCookie(loginReq.url().toString(), loginReq.url().host(), cookie);
+        }
     }
 
     // 获取登录的request

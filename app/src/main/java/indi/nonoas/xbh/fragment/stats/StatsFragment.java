@@ -30,7 +30,6 @@ import com.github.mikephil.charting.utils.EntryXComparator;
 import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import indi.nonoas.xbh.R;
@@ -43,6 +42,7 @@ import indi.nonoas.xbh.http.AccBalanceApi;
 import indi.nonoas.xbh.http.HttpUICallback;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.User;
+import indi.nonoas.xbh.utils.LogUtil;
 import indi.nonoas.xbh.view.FlexibleScrollView;
 import indi.nonoas.xbh.view.chart.DateValueFormatter;
 import indi.nonoas.xbh.view.toast.CoverableToast;
@@ -78,19 +78,6 @@ public class StatsFragment extends Fragment {
 
         FlexibleScrollView fsv = binding.fsv;
         ImageView ivHeader = binding.statsHeaderImg;
-
-        AppBarLayout actionBar = requireActivity()
-                .findViewById(R.id.app_bar_main)
-                .findViewById(R.id.appbar);
-
-        fsv.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            int height = ivHeader.getHeight() - actionBar.getHeight();
-            if (scrollY > height) {
-                actionBar.setBackgroundColor(Color.parseColor(getString(R.color.soft_green)));
-            } else {
-                actionBar.setBackgroundColor(Color.TRANSPARENT);
-            }
-        });
 
         binding.fab.setOnClickListener(view -> {
             if (toast != null) {
@@ -135,7 +122,11 @@ public class StatsFragment extends Fragment {
         if (null == user) {
             return;
         }
-        AccBalanceApi.qryPeriodTotBalance(user.getUserId(), IDict.Period.DAY, 7, lineChartHandler);
+        // 如果数据为空才进行网络请求
+        LogUtil.d(getClass().getName(), String.valueOf(statsModel.getTotBalanceList().isEmpty()));
+        if (statsModel.getTotBalanceList().isEmpty()) {
+            AccBalanceApi.qryPeriodTotBalance(user.getUserId(), IDict.Period.DAY, 7, lineChartHandler);
+        }
     }
 
     private final Handler lineChartHandler = new Handler(new HttpUICallback() {
@@ -149,7 +140,7 @@ public class StatsFragment extends Fragment {
         }
 
         @Override
-        protected void onMsgError(int msgWhat,JSONObject json) {
+        protected void onMsgError(int msgWhat, JSONObject json) {
             CoverableToast.showFailureToast(getContext(), json.getString("errorMsg"));
         }
 
@@ -199,7 +190,7 @@ public class StatsFragment extends Fragment {
 
             LineData data = new LineData();
 
-            Collections.sort(entries, new EntryXComparator());
+            entries.sort(new EntryXComparator());
             LineDataSet dataSet = new LineDataSet(entries, "总余额");
 
             dataSet.setColor(Color.parseColor(getString(R.color.soft_red)));

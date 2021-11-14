@@ -60,6 +60,8 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.alibaba:fastjson:1.1.54.android'
+    implementation 'com.yarolegovich:sliding-root-nav:1.1.1'
+
 
 }
 

@@ -1,8 +1,6 @@
 package indi.nonoas.xbh.fragment.home;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -10,6 +8,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.AppBarLayout;
@@ -27,19 +26,19 @@ class MViewPagerListener {
 
 		private int currPos;
 
-		private final AppBarLayout barLayout;
-		private final Toolbar toolbar;
-		private final Activity activity;
+		private  AppBarLayout barLayout;
+		private Toolbar toolbar;
+		private final Fragment frg;
 
-		OnPageChangeListener(Context context) {
-			this.activity = (Activity) context;
-			barLayout = activity.findViewById(R.id.appbar);
-			toolbar = activity.findViewById(R.id.toolbar);
+		OnPageChangeListener(Fragment frg) {
+			this.frg = frg;
+//			barLayout = this.frg.findViewById(R.id.appbar);
+//			toolbar = this.frg.findViewById(R.id.toolbar);
 		}
 
 		@Override
 		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-			SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.DARK);
+			SystemUtil.toggleStatusBarColor(frg.requireActivity(), SystemUtil.StatusBarType.DARK);
 		}
 
 		@SuppressLint("ResourceType")
@@ -74,9 +73,9 @@ class MViewPagerListener {
 		public void onPageScrollStateChanged(int state) {
 			if (state != ViewPager.SCROLL_STATE_IDLE) return;
 			if (0 == currPos) {
-				SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.DARK);
+//				SystemUtil.toggleStatusBarColor(view, SystemUtil.StatusBarType.DARK);
 			} else {
-				SystemUtil.toggleStatusBarColor(activity, SystemUtil.StatusBarType.LIGHT);
+//				SystemUtil.toggleStatusBarColor(view, SystemUtil.StatusBarType.LIGHT);
 			}
 		}
 	}

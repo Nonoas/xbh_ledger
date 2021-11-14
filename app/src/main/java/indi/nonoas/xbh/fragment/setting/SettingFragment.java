@@ -15,12 +15,21 @@ import com.google.android.material.appbar.AppBarLayout;
 
 import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FragmentSettingBinding;
+import indi.nonoas.xbh.fragment.home.HomeFragment;
 
 
 public class SettingFragment extends Fragment {
 
     private SettingViewModel settingViewModel;
     private FragmentSettingBinding binding;
+
+    public static SettingFragment newInstance() {
+        SettingFragment fragment = new SettingFragment();
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @SuppressLint("ResourceType")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -29,11 +38,10 @@ public class SettingFragment extends Fragment {
 
         binding = FragmentSettingBinding.inflate(inflater, container, false);
 
-        AppBarLayout actionBar = requireActivity()
-                .findViewById(R.id.app_bar_main)
-                .findViewById(R.id.appbar);
-        actionBar.setBackgroundColor(Color.parseColor(getString(R.color.soft_green)));
-        actionBar.setVisibility(View.VISIBLE);
+//        AppBarLayout actionBar = requireActivity()
+//                .findViewById(R.id.appbar);
+//        actionBar.setBackgroundColor(Color.parseColor(getString(R.color.soft_green)));
+//        actionBar.setVisibility(View.VISIBLE);
 
         return binding.getRoot();
     }

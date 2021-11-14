@@ -17,7 +17,7 @@ public class StatsViewModel extends ViewModel {
         totBalanceList.setValue(new ArrayList<>());
     }
 
-    public List<AccBalance> getBalanceList() {
+    public List<AccBalance> getTotBalanceList() {
         return totBalanceList.getValue();
     }
 

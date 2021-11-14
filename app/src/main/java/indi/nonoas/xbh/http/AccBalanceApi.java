@@ -20,15 +20,6 @@ import okhttp3.Response;
  * 账户余额api
  */
 public class AccBalanceApi extends BaseApi {
-    /**
-     * 请求数据异常
-     */
-    public static final int REQUEST_FAIL = -1;
-
-    /**
-     * 查询成功
-     */
-    public static final int QRY_SUCCESS = 0;
 
     /**
      * 获取余额列表api

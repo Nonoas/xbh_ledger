@@ -1,43 +1,70 @@
 package indi.nonoas.xbh;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.navigation.NavigationView;
+import com.yarolegovich.slidingrootnav.SlidingRootNav;
+import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 
 import indi.nonoas.xbh.activity.LoginActivity;
 import indi.nonoas.xbh.common.AppStore;
 import indi.nonoas.xbh.databinding.ActivityMainBinding;
+import indi.nonoas.xbh.fragment.acclist.AccListFragment;
+import indi.nonoas.xbh.fragment.home.HomeFragment;
+import indi.nonoas.xbh.fragment.setting.SettingFragment;
+import indi.nonoas.xbh.fragment.stats.StatsFragment;
 import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
+import indi.nonoas.xbh.view.DrawerAdapter;
+import indi.nonoas.xbh.view.DrawerItem;
+import indi.nonoas.xbh.view.SimpleItem;
+import indi.nonoas.xbh.view.SpaceItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnItemSelectedListener {
 
     private int statusBarHeight = -1;
 
     private AppBarConfiguration appBarConfig;
     private ActivityMainBinding binding;
 
-    /**
-     * fragment的id数组
-     */
-    private final int[] frgIds = {R.id.nav_home, R.id.nav_setting};
+    private String[] screenTitles;
+    private Drawable[] screenIcons;
+
+    private SlidingRootNav slidingRootNav;
+
+    private final int POS_HOME = 0;
+    private final int POS_ABOUT = 1;
+    private final int POS_LOGOUT = 2;
+
+    HomeFragment homeFragment = HomeFragment.newInstance();
+    SettingFragment settingFragment = SettingFragment.newInstance();
 
 
     @Override
@@ -52,31 +79,69 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Window window = getWindow();
-        AppStore.setCurrWindow(window);
-
-        WindowInsetsControllerCompat compat = new WindowInsetsControllerCompat(window, window.getDecorView());
-        AppStore.setWinInsetCtrlCompat(compat);
-
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.TRANSPARENT);
-
-        window.requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
+        Toolbar toolbar = binding.toolbar;
 
-        //获取status_bar_height资源的ID
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            //根据资源ID获取响应的尺寸值
-            statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+        slidingRootNav = new SlidingRootNavBuilder(this)
+                .withDragDistance(180)
+                .withRootViewScale(0.85f)
+                .withRootViewElevation(25)
+                .withToolbarMenuToggle(toolbar)
+                .withMenuOpened(false)
+                .withContentClickableWhenMenuOpened(false)
+                .withSavedState(savedInstanceState)
+                .withMenuLayout(R.layout.drawer_menu)
+                .inject();
+
+        screenIcons = loadScreenIcons();
+        screenTitles = loadScreenTitles();
+
+        DrawerAdapter adapter = new DrawerAdapter(Arrays.asList(
+                createItemFor(POS_HOME).setChecked(true),
+                createItemFor(POS_ABOUT),
+                new SpaceItem(0),
+                createItemFor(POS_LOGOUT)
+        ));
+        adapter.setListener(this);
+
+        RecyclerView list = findViewById(R.id.drawer_list);
+        list.setNestedScrollingEnabled(false);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        list.setAdapter(adapter);
+
+        adapter.setSelected(POS_HOME);
+    }
+
+    private String[] loadScreenTitles() {
+        return getResources().getStringArray(R.array.id_activityScreenTitles);
+    }
+
+    private Drawable[] loadScreenIcons() {
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.id_id_activityScreenIcons);
+        Drawable[] icons = new Drawable[typedArray.length()];
+        for (int i = 0; i < typedArray.length(); i++) {
+            int id = typedArray.getResourceId(i, 0);
+            if (id != 0) {
+                icons[i] = ContextCompat.getDrawable(this, id);
+            }
         }
-        binding.appBarMain.appbar.setPadding(0, statusBarHeight, 0, 0);
+        typedArray.recycle();
+        return icons;
+    }
 
+    private DrawerItem createItemFor(int position) {
+        return new SimpleItem(screenIcons[position], screenTitles[position])
+                .withIconTint(color(R.color.black))
+                .withTextTint(color(R.color.black))
+                .withSelectedIconTint(color(R.color.soft_green))
+                .withSelectedTextTint(color(R.color.soft_green));
+    }
+
+    @ColorInt
+    private int color(@ColorRes int res) {
+        return ContextCompat.getColor(this, res);
     }
 
     /**
@@ -98,33 +163,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // 抽屉导航
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navView = binding.navView;
 
-        TextView tfUser = navView.getHeaderView(0).findViewById(R.id.tf_user);
-        User user = AppStore.getUser();
-        tfUser.setText(user != null ? user.getName() : "未登录");
-
-        navView.setPadding(0, statusBarHeight, 0, 0);
-
-        NavController navController = Navigation.findNavController(this, R.id.fragment_content);
-
-        appBarConfig = new AppBarConfiguration
-                .Builder(frgIds)
-                .setOpenableLayout(drawer)
-                .build();
-
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
-        NavigationUI.setupWithNavController(navView, navController);
 
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.fragment_content);
-        return NavigationUI.navigateUp(navController, appBarConfig)
-                || super.onSupportNavigateUp();
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (position == POS_HOME) {
+            transaction.replace(R.id.container, homeFragment);
+        }
+
+        if (position == POS_ABOUT) {
+            transaction.replace(R.id.container, settingFragment);
+        }
+
+        if (position == POS_LOGOUT) {
+            finish();
+        }
+
+        slidingRootNav.closeMenu();
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

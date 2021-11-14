@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="id_activityScreenTitles">
+        <item>主页</item>
+        <item>关于</item>
+        <item />
+        <item>退出</item>
+    </string-array>
+
+    <string-array name="id_id_activityScreenIcons">
+        <item>@drawable/ic_menu_home</item>
+        <item>@drawable/ic_menu_setting</item>
+        <item>0</item>
+        <item>@drawable/ic_menu_acc</item>
+    </string-array>
+
+</resources>

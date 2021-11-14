@@ -15,7 +15,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.AppBarLayout;
 
-import indi.nonoas.xbh.R;
 import indi.nonoas.xbh.databinding.FragmentHomeBinding;
 import indi.nonoas.xbh.fragment.acclist.AccListFragment;
 import indi.nonoas.xbh.fragment.stats.StatsFragment;
@@ -30,7 +29,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public static HomeFragment newInstance(String param1, String param2) {
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
 
@@ -49,12 +48,10 @@ public class HomeFragment extends Fragment {
         // viewpager初始化
         ViewPager vp = binding.vpHome;
         vp.setAdapter(new MyFragmentStatePagerAdapter(getChildFragmentManager()));
-        vp.addOnPageChangeListener(new MViewPagerListener.OnPageChangeListener(requireActivity()));
+        vp.addOnPageChangeListener(new MViewPagerListener.OnPageChangeListener(this));
 
-        AppBarLayout actionBar = requireActivity()
-                .findViewById(R.id.app_bar_main)
-                .findViewById(R.id.appbar);
-        actionBar.setBackgroundColor(Color.TRANSPARENT);
+//        AppBarLayout actionBar = binding.appbar;
+//        actionBar.setBackgroundColor(Color.TRANSPARENT);
 
         return binding.getRoot();
     }

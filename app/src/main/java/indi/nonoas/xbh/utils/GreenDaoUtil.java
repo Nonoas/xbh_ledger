@@ -7,6 +7,7 @@ import org.greenrobot.greendao.database.Database;
 import indi.nonoas.xbh.common.IDBSetting;
 import indi.nonoas.xbh.greendao.DaoMaster;
 import indi.nonoas.xbh.greendao.DaoSession;
+import indi.nonoas.xbh.greendao.MyOpenHelper;
 
 public class GreenDaoUtil {
 
@@ -17,7 +18,7 @@ public class GreenDaoUtil {
 	 * @return DaoSession
 	 */
 	public static DaoSession getDaoSession(Context context) {
-		DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, IDBSetting.Name.XBH_DB);
+		MyOpenHelper helper = new MyOpenHelper(context, IDBSetting.Name.XBH_DB);
 		Database db = helper.getWritableDb();
 		return new DaoMaster(db).newSession();
 	}

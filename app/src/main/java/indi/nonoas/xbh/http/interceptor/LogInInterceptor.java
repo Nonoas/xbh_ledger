@@ -10,6 +10,7 @@ import indi.nonoas.xbh.common.error.ErrorEnum;
 import indi.nonoas.xbh.http.BaseApi;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.CookieUtil;
+import indi.nonoas.xbh.utils.DefaultValueUtil;
 import indi.nonoas.xbh.utils.HttpUtil;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -42,13 +43,12 @@ public class LogInInterceptor implements Interceptor {
         JSONObject json = JSONObject.parseObject(bodyStr);
         if (HttpUtil.checkErrorCode(ErrorEnum.LOGIN_EXPIRED, json)) {
             String currCookie = CookieUtil.getCookie(originalReq.url().toString(), originalReq.url().host());
-            cookie = currCookie;
+            cookie = DefaultValueUtil.getValOrNullStr(currCookie);
             synchronized (LogInInterceptor.class) {
                 // 如果已经更新，则直接携带cookie重新请求
                 if (!cookie.equals(currCookie)) {
                     reqBuilder.header("Cookie", cookie);
                     return chain.proceed(reqBuilder.build());
-
                 }
                 // 否则发起登录请求
                 Request loginRequest = getLoginRequest();

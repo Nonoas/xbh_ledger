@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 import java.util.List;
 
-import indi.nonoas.xbh.MyApplication;
 import indi.nonoas.xbh.http.BaseApi;
 import indi.nonoas.xbh.utils.CookieUtil;
 import indi.nonoas.xbh.utils.StringUtils;

@@ -31,7 +31,7 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "huuhyj.natappfree.cc";
+    private static final String BASE_ADDRESS = "kd4q5v.natappfree.cc";
 
     /**
      * 服务地址

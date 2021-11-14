@@ -13,6 +13,9 @@ public interface IDict {
         int DAY = 2;
     }
 
+    /**
+     * 登录状态
+     */
     interface LockStatus {
         int OFFLINE = 0;
         int LOGIN = 1;

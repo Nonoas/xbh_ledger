@@ -79,6 +79,6 @@ public class CookieUtil {
         if (!TextUtils.isEmpty(url) && sp.contains(url) && !TextUtils.isEmpty(sp.getString(url, ""))) {
             return sp.getString(url, "");
         }
-        return null;
+        return "";
     }
 }

@@ -4,7 +4,6 @@ package indi.nonoas.xbh.view;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,20 +16,45 @@ import java.util.Map;
  * @author Nonoas
  * @date 2021/11/14
  */
+@SuppressWarnings({"rawtypes", "ConstantConditions"})
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder> {
 
-    private final List<DrawerItem> items;
-    private final Map<Class<? extends DrawerItem>, Integer> viewTypes;
-    private final SparseArray<DrawerItem> holderFactories;
+    private List<DrawerItem> items;
+    private Map<Class<? extends DrawerItem>, Integer> viewTypes;
+    private SparseArray<DrawerItem> holderFactories;
 
     private OnItemSelectedListener listener;
-
 
     public DrawerAdapter(List<DrawerItem> items) {
         this.items = items;
         this.viewTypes = new HashMap<>();
         this.holderFactories = new SparseArray<>();
+
         processViewTypes();
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ViewHolder holder = holderFactories.get(viewType).createViewHolder(parent);
+        holder.adapter = this;
+        return holder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        items.get(position).bindViewHolder(holder);
+    }
+
+    @Override
+    public int getItemCount() {
+        return items.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return viewTypes.get(items.get(position).getClass());
     }
 
     private void processViewTypes() {
@@ -46,9 +70,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
 
     public void setSelected(int position) {
         DrawerItem newChecked = items.get(position);
-        if (!newChecked.isSelected()) {
+        if (!newChecked.isSelectable()) {
             return;
         }
+
         for (int i = 0; i < items.size(); i++) {
             DrawerItem item = items.get(i);
             if (item.isChecked()) {
@@ -57,57 +82,35 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerAdapter.ViewHolder
                 break;
             }
         }
+
         newChecked.setChecked(true);
         notifyItemChanged(position);
+
         if (listener != null) {
             listener.onItemSelected(position);
-
         }
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ViewHolder holder = holderFactories.get(viewType).createViewHolder(parent);
-        holder.drawerAdapter = this;
-        return holder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        items.get(position).bindViewHolder(holder);
-    }
-
-    @Override
-    public int getItemCount() {
-        return items.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return viewTypes.get(items.get(position).getClass());
     }
 
     public void setListener(OnItemSelectedListener listener) {
         this.listener = listener;
     }
 
-    public interface OnItemSelectedListener {
-        void onItemSelected(int position);
-    }
-
     static abstract class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private DrawerAdapter drawerAdapter;
+        private DrawerAdapter adapter;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            drawerAdapter.setSelected(getAdapterPosition());
+            adapter.setSelected(getAdapterPosition());
         }
+    }
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(int position);
     }
 }

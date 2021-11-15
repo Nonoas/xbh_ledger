@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="56dp"
+    android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingLeft="@dimen/padding_xl"
     android:paddingRight="@dimen/padding_xl">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp" />
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        tools:ignore="ContentDescription" />
+
+    <androidx.legacy.widget.Space
+        android:layout_width="@dimen/padding_l"
+        android:layout_height="0dp" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:paddingLeft="@dimen/padding_l"
-        android:paddingRight="@dimen/padding_l"/>
+        android:paddingRight="@dimen/padding_l" />
 
 </LinearLayout>

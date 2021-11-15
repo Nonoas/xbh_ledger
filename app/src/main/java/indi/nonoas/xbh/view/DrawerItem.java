@@ -23,8 +23,7 @@ public abstract class DrawerItem<T extends DrawerAdapter.ViewHolder>{
         return isChecked;
     }
 
-    public boolean isSelected() {
-        // todo 有问题吧
+    public boolean isSelectable() {
         return true;
     }
 }

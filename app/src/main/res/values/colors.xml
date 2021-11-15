@@ -12,6 +12,10 @@
     <color name="windowBg">#F1F1F1</color>
     <color name="transparent">#00000000</color>
 
+    <!-- 文字颜色 -->
+    <color name="primary_text_color">@color/black</color>
+    <color name="secondary_text_color">#666</color>
+
     <!-- soft色组 -->
     <color name="soft_green">#99CCCC</color>
     <color name="soft_white">#FFFFFF</color>

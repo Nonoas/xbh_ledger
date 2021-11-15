@@ -7,11 +7,11 @@
         <item>退出</item>
     </string-array>
 
-    <string-array name="id_id_activityScreenIcons">
+    <array name="id_activityScreenIcons">
         <item>@drawable/ic_menu_home</item>
         <item>@drawable/ic_menu_setting</item>
         <item>0</item>
-        <item>@drawable/ic_menu_acc</item>
-    </string-array>
+        <item>@drawable/ic_menu_exit</item>
+    </array>
 
 </resources>

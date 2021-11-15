@@ -78,10 +78,12 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
-        android:background="@color/purple_700"
         android:foregroundTint="@android:color/white"
+        android:tint="@color/white"
+        app:backgroundTint="@color/soft_green"
         app:layout_behavior=".behavior.ScaleDownShowBehavior"
         app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white"
         tools:ignore="ContentDescription" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

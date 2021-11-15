@@ -38,7 +38,7 @@ class MViewPagerListener {
 
 		@Override
 		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-			SystemUtil.toggleStatusBarColor(frg.requireActivity(), SystemUtil.StatusBarType.DARK);
+//			SystemUtil.toggleStatusBarColor(frg.requireActivity(), SystemUtil.StatusBarType.DARK);
 		}
 
 		@SuppressLint("ResourceType")

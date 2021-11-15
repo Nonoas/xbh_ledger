@@ -48,10 +48,7 @@ public class HomeFragment extends Fragment {
         // viewpager初始化
         ViewPager vp = binding.vpHome;
         vp.setAdapter(new MyFragmentStatePagerAdapter(getChildFragmentManager()));
-        vp.addOnPageChangeListener(new MViewPagerListener.OnPageChangeListener(this));
-
-//        AppBarLayout actionBar = binding.appbar;
-//        actionBar.setBackgroundColor(Color.TRANSPARENT);
+//        vp.addOnPageChangeListener(new MViewPagerListener.OnPageChangeListener(this));
 
         return binding.getRoot();
     }

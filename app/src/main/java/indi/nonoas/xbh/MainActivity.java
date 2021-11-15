@@ -46,10 +46,9 @@ import indi.nonoas.xbh.view.DrawerAdapter;
 import indi.nonoas.xbh.view.DrawerItem;
 import indi.nonoas.xbh.view.SimpleItem;
 import indi.nonoas.xbh.view.SpaceItem;
+import indi.nonoas.xbh.view.toast.CoverableToast;
 
 public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnItemSelectedListener {
-
-    private int statusBarHeight = -1;
 
     private AppBarConfiguration appBarConfig;
     private ActivityMainBinding binding;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
 
     private final int POS_HOME = 0;
     private final int POS_ABOUT = 1;
-    private final int POS_LOGOUT = 2;
+    private final int POS_LOGOUT = 3;
 
     HomeFragment homeFragment = HomeFragment.newInstance();
     SettingFragment settingFragment = SettingFragment.newInstance();
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
 
         slidingRootNav = new SlidingRootNavBuilder(this)
                 .withDragDistance(180)
-                .withRootViewScale(0.85f)
+                .withRootViewScale(0.8f)
                 .withRootViewElevation(25)
                 .withToolbarMenuToggle(toolbar)
                 .withMenuOpened(false)
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
         DrawerAdapter adapter = new DrawerAdapter(Arrays.asList(
                 createItemFor(POS_HOME).setChecked(true),
                 createItemFor(POS_ABOUT),
-                new SpaceItem(0),
+                new SpaceItem(48),
                 createItemFor(POS_LOGOUT)
         ));
         adapter.setListener(this);
@@ -119,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
     }
 
     private Drawable[] loadScreenIcons() {
-        TypedArray typedArray = getResources().obtainTypedArray(R.array.id_id_activityScreenIcons);
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.id_activityScreenIcons);
         Drawable[] icons = new Drawable[typedArray.length()];
         for (int i = 0; i < typedArray.length(); i++) {
             int id = typedArray.getResourceId(i, 0);
@@ -131,10 +130,11 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
         return icons;
     }
 
-    private DrawerItem createItemFor(int position) {
-        return new SimpleItem(screenIcons[position], screenTitles[position])
-                .withIconTint(color(R.color.black))
-                .withTextTint(color(R.color.black))
+
+    private DrawerItem createItemFor(int pos) {
+        return new SimpleItem(screenIcons[pos], screenTitles[pos])
+                .withIconTint(color(R.color.secondary_text_color))
+                .withTextTint(color(R.color.primary_text_color))
                 .withSelectedIconTint(color(R.color.soft_green))
                 .withSelectedTextTint(color(R.color.soft_green));
     }
@@ -165,11 +165,6 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
         super.onStart();
 
 
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
     }
 
     @Override

@@ -22,11 +22,10 @@ public class SpaceItem extends DrawerItem<SpaceItem.ViewHolder> {
     public ViewHolder createViewHolder(ViewGroup parent) {
         Context c = parent.getContext();
         View view = new View(c);
-        int height = c.getResources().getDisplayMetrics().densityDpi * spaceDp;
+        int height = (int) (c.getResources().getDisplayMetrics().density * spaceDp);
         view.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                height
-        ));
+                height));
         return new ViewHolder(view);
     }
 
@@ -35,14 +34,15 @@ public class SpaceItem extends DrawerItem<SpaceItem.ViewHolder> {
 
     }
 
-    static class ViewHolder extends DrawerAdapter.ViewHolder {
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
+    @Override
+    public boolean isSelectable() {
+        return false;
     }
 
-    @Override
-    public boolean isSelected() {
-        return false;
+    static class ViewHolder extends DrawerAdapter.ViewHolder {
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

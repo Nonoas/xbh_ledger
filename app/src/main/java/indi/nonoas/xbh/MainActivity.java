@@ -42,6 +42,7 @@ import indi.nonoas.xbh.greendao.DaoSession;
 import indi.nonoas.xbh.greendao.UserDao;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.GreenDaoUtil;
+import indi.nonoas.xbh.utils.StatusBarUtil;
 import indi.nonoas.xbh.view.DrawerAdapter;
 import indi.nonoas.xbh.view.DrawerItem;
 import indi.nonoas.xbh.view.SimpleItem;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        StatusBarUtil.setStatusBar(this, StatusBarUtil.StatusBarType.LIGHT);
+
         // 判断是否登录
         if (!isLogin()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.getRoot().findViewById(R.id.user_name);
 
         Toolbar toolbar = binding.toolbar;
 
@@ -165,6 +169,11 @@ public class MainActivity extends AppCompatActivity implements DrawerAdapter.OnI
         super.onStart();
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override

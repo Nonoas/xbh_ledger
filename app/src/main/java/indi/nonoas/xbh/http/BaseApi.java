@@ -31,12 +31,12 @@ public class BaseApi {
 
     private static final String PROTOCOL_HTTP = "http";
     private static final String PROTOCOL_HTTPS = "https";
-    private static final String BASE_ADDRESS = "kd4q5v.natappfree.cc";
+//    private static final String BASE_ADDRESS = "kd4q5v.natappfree.cc";
 
     /**
      * 服务地址
      */
-//    private static final String BASE_ADDRESS = "115.29.202.83:8090";
+    private static final String BASE_ADDRESS = "115.29.202.83:8090";
 
     /**
      * 用于存放 cookies

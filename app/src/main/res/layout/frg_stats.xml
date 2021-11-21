@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <indi.nonoas.xbh.view.FlexibleScrollView
+        <indi.nonoas.xbh.view.scrollView.FlexibleScrollView
             android:id="@+id/fsv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -64,7 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp" />
             </LinearLayout>
-        </indi.nonoas.xbh.view.FlexibleScrollView>
+        </indi.nonoas.xbh.view.scrollView.FlexibleScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"

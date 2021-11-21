@@ -27,7 +27,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.EntryXComparator;
-import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ import indi.nonoas.xbh.http.HttpUICallback;
 import indi.nonoas.xbh.pojo.AccBalance;
 import indi.nonoas.xbh.pojo.User;
 import indi.nonoas.xbh.utils.LogUtil;
-import indi.nonoas.xbh.view.FlexibleScrollView;
+import indi.nonoas.xbh.view.scrollView.FlexibleScrollView;
 import indi.nonoas.xbh.view.chart.DateValueFormatter;
 import indi.nonoas.xbh.view.toast.CoverableToast;
 

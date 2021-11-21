@@ -1,4 +1,4 @@
-package indi.nonoas.xbh.view;
+package indi.nonoas.xbh.view.scrollView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,12 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
-import androidx.core.widget.NestedScrollView;
-
 
 public class FlexibleScrollView extends ScrollView {
 
-    private static final String TAG = "FlexibleScrollView";
+    private static final String TAG = FlexibleScrollView.class.getName();
 
     //移动因子, 是一个百分比, 比如手指移动了100px, 那么View就只移动 100 * MOVE_FACTOR px
     private static final float MOVE_FACTOR = 0.4f;
@@ -80,8 +78,8 @@ public class FlexibleScrollView extends ScrollView {
 
         if (contentView == null) return;
 
-        originalRect.set(contentView.getLeft(), contentView.getTop(), contentView
-                .getRight(), contentView.getBottom());
+        originalRect.set(contentView.getLeft(), contentView.getTop(),
+                contentView.getRight(), contentView.getBottom());
     }
 
     /**
@@ -114,7 +112,7 @@ public class FlexibleScrollView extends ScrollView {
                 //将标志位设回false
                 canPullDown = canPullUp = isMoved = false;
 
-                showProgressBar(false, 0);
+                onDragCancel();
 
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -129,22 +127,24 @@ public class FlexibleScrollView extends ScrollView {
                 float nowY = ev.getY();
                 int deltaY = (int) (nowY - startY);
                 //是否应该移动布局
-                boolean shouldMove =
-                        (canPullDown && deltaY > 0)    //可以下拉， 并且手指向下移动
-                                || (canPullUp && deltaY < 0)    //可以上拉， 并且手指向上移动
-                                || (canPullUp && canPullDown); //既可以上拉也可以下拉（这种情况出现在ScrollView包裹的控件比ScrollView还小）
+                boolean shouldMove = (canPullDown && deltaY > 0)    //可以下拉， 并且手指向下移动
+                        || (canPullUp && deltaY < 0)    //可以上拉， 并且手指向上移动
+                        || (canPullUp && canPullDown); //既可以上拉也可以下拉（这种情况出现在ScrollView包裹的控件比ScrollView还小）
 
-                if (shouldMove) {
-                    //计算偏移量
-                    int offset = (int) (deltaY * MOVE_FACTOR);
-                    //随着手指的移动而移动布局
-                    contentView.layout(originalRect.left, originalRect.top + offset,
-                            originalRect.right, originalRect.bottom + offset);
-
-                    showProgressBar(true, offset);
-
-                    isMoved = true;  //记录移动了布局
+                if (!shouldMove) {
+                    break;
                 }
+                //计算偏移量
+                int offset = (int) (deltaY * MOVE_FACTOR);
+                //随着手指的移动而移动布局
+                contentView.layout(originalRect.left, originalRect.top + offset,
+                        originalRect.right, originalRect.bottom + offset);
+                if (offset > 0) {
+                    onDownDrag(offset);
+                } else {
+                    onUpDrag(offset);
+                }
+                isMoved = true;  //记录移动了布局
                 break;
             default:
                 break;
@@ -168,22 +168,39 @@ public class FlexibleScrollView extends ScrollView {
         return contentView.getHeight() <= getHeight() + getScrollY();
     }
 
-
-    private void showProgressBar(boolean show, int offset) {
-        if (originalRect.top + offset < 0 || null == progressBar) {
-            return;
-        }
-        if (show) {
-            progressBar.setVisibility(VISIBLE);
-            ViewGroup.LayoutParams layoutParams = progressBar.getLayoutParams();
-            layoutParams.height = originalRect.top + offset;
-            int padding = (int) (layoutParams.height * 0.2);
-            progressBar.setPadding(padding, padding, padding, padding);
-            progressBar.setLayoutParams(layoutParams);
-        } else {
+    /**
+     * 拖动取消时调用
+     */
+    protected void onDragCancel() {
+        if (progressBar != null) {
             progressBar.setVisibility(GONE);
         }
+    }
 
+    /**
+     * 上拉时调用
+     *
+     * @param offset 偏移量
+     */
+    protected void onUpDrag(int offset) {
+
+    }
+
+    /**
+     * 下拉时
+     *
+     * @param offset 偏移量
+     */
+    protected void onDownDrag(int offset) {
+        if (null == progressBar) {
+            return;
+        }
+        progressBar.setVisibility(VISIBLE);
+        ViewGroup.LayoutParams layoutParams = progressBar.getLayoutParams();
+        layoutParams.height = originalRect.top + offset;
+        int padding = (int) (layoutParams.height * 0.2);
+        progressBar.setPadding(padding, padding, padding, padding);
+        progressBar.setLayoutParams(layoutParams);
     }
 
 
